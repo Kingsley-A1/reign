@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description"
+        content="King Daily - The Ruler's Journal for planning daily activities and tracking progress with an elite, royal experience.">
+    <meta name="theme-color" content="#0B0F19">
+    <title>King Daily | The Ruler's Journal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- App Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-192.png">
+
+    <!-- PWA Install Prompt Logic -->
+    <script>
+        // PWA Install Prompt Handler
+        let deferredPrompt = null;
+        let installBannerDismissed = false;
+
+        // Check if app is already installed
+        function isAppInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone === true ||
+                localStorage.getItem('pwaInstalled') === 'true';
+        }
+
+        // Show the install banner
+        function showInstallBanner() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner && !installBannerDismissed && !isAppInstalled()) {
+                setTimeout(() => {
+                    banner.classList.add('show');
+                }, 2000); // Show after 2 seconds
+            }
+        }
+
+        // Hide the install banner
+        function hideInstallBanner() {
+            const banner = document.getElementById('pwa-install-banner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
+        }
+
+        // Handle install button click
+        async function installPWA() {
+            if (!deferredPrompt) {
+                console.log('Install prompt not available');
+                return;
+            }
+
+            // Show the install prompt
+            deferredPrompt.prompt();
+
+            // Wait for user response
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Install prompt outcome: ${outcome}`);
+
+            if (outcome === 'accepted') {
+                localStorage.setItem('pwaInstalled', 'true');
+                if (typeof Toastify !== 'undefined') {
+                    Toastify({
+                        text: "👑 King Daily installed successfully!",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        style: {
+                            background: "linear-gradient(135deg, #D4AF37 0%, #C5A028 100%)",
+                            color: "#0B0F19",
+                            fontWeight: "600"
+                        }
+                    }).showToast();
+                }
+            }
+
+            // Clear the deferred prompt
+            deferredPrompt = null;
+            hideInstallBanner();
+        }
+
+        // Dismiss the install banner
+        function dismissInstallBanner() {
+            installBannerDismissed = true;
+            hideInstallBanner();
+            // Don't show again for 7 days
+            localStorage.setItem('pwaInstallDismissed', Date.now().toString());
+        }
+
+        // Check if banner was recently dismissed
+        function wasBannerRecentlyDismissed() {
+            const dismissedTime = localStorage.getItem('pwaInstallDismissed');
+            if (!dismissedTime) return false;
+            const sevenDays = 7 * 24 * 60 * 60 * 1000;
+            return (Date.now() - parseInt(dismissedTime)) < sevenDays;
+        }
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('Install prompt captured');
+
+            // Show banner if not recently dismissed
+            if (!wasBannerRecentlyDismissed()) {
+                showInstallBanner();
+            }
+        });
+
+        // Listen for app installed event
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            localStorage.setItem('pwaInstalled', 'true');
+            deferredPrompt = null;
+            hideInstallBanner();
+        });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker registered:', reg.scope))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand" onclick="app.navigate('dashboard')">
+                <i class="ph-fill ph-crown"></i>
+                <div>
+                    <h1>KING DAILY</h1>
+                    <p class="tagline hidden-mobile">Rule Your Day</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="header-time hidden-mobile">
+                    <p class="date" id="current-date">Today</p>
+                    <p class="time" id="current-time">00:00</p>
+                </div>
+
+                <div class="header-buttons">
+                    <button onclick="app.exportData()" class="icon-btn" title="Export Backup">
+                        <i class="ph-bold ph-download-simple"></i>
+                    </button>
+                    <label class="icon-btn" title="Import Backup" style="cursor: pointer;">
+                        <i class="ph-bold ph-upload-simple"></i>
+                        <input type="file" accept=".json" style="display: none;" onchange="app.importData(this)">
+                    </label>
+                    <button onclick="app.resetData()" class="icon-btn danger" title="Reset All Data">
+                        <i class="ph-bold ph-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar (Desktop) -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <button onclick="app.navigate('dashboard')" class="nav-btn active" data-target="dashboard">
+                        <i class="ph-duotone ph-throne"></i>
+                        <span>The Throne</span>
+                    </button>
+                    <button onclick="app.navigate('morning')" class="nav-btn" data-target="morning">
+                        <i class="ph-duotone ph-sun-horizon"></i>
+                        <span>Morning Protocol</span>
+                    </button>
+                    <button onclick="app.navigate('evening')" class="nav-btn" data-target="evening">
+                        <i class="ph-duotone ph-moon-stars"></i>
+                        <span>Evening Report</span>
+                    </button>
+                    <button onclick="app.navigate('archive')" class="nav-btn" data-target="archive">
+                        <i class="ph-duotone ph-book-bookmark"></i>
+                        <span>Journal Archive</span>
+                    </button>
+                    <button onclick="app.navigate('events')" class="nav-btn" data-target="events">
+                        <i class="ph-duotone ph-calendar-check"></i>
+                        <span>Royal Calendar</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="main-content fade-in" id="main-view">
+                <!-- Dynamic Content Rendered Here -->
+            </main>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <nav class="mobile-nav">
+            <button onclick="app.navigate('dashboard')" class="mobile-nav-btn active" data-target="dashboard">
+                <i class="ph-duotone ph-throne"></i>
+                <span>Home</span>
+            </button>
+            <button onclick="app.navigate('morning')" class="mobile-nav-btn" data-target="morning">
+                <i class="ph-duotone ph-sun"></i>
+                <span>Dawn</span>
+            </button>
+            <button onclick="app.navigate('evening')" class="mobile-nav-btn" data-target="evening">
+                <i class="ph-duotone ph-moon"></i>
+                <span>Dusk</span>
+            </button>
+            <button onclick="app.navigate('archive')" class="mobile-nav-btn" data-target="archive">
+                <i class="ph-duotone ph-book-open"></i>
+                <span>Logs</span>
+            </button>
+            <button onclick="app.navigate('events')" class="mobile-nav-btn" data-target="events">
+                <i class="ph-duotone ph-calendar"></i>
+                <span>Events</span>
+            </button>
+        </nav>
+
+        <!-- Modal Container -->
+        <div id="modal" class="modal-overlay">
+            <div class="modal-content glass-card">
+                <!-- Modal content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="pwa-install-banner">
+        <button class="pwa-install-close" onclick="dismissInstallBanner()" title="Dismiss">
+            <i class="ph-bold ph-x"></i>
+        </button>
+        <div class="pwa-install-content">
+            <div class="pwa-install-icon">
+                <img src="icons/icon-192.png" alt="King Daily">
+            </div>
+            <div class="pwa-install-text">
+                <h3 class="pwa-install-title">
+                    <i class="ph-fill ph-crown crown"></i>
+                    Install King Daily
+                </h3>
+                <p class="pwa-install-desc">
+                    Add to your home screen for <strong>instant access</strong> and a native app experience. Works
+                    offline!
+                </p>
+                <div class="pwa-install-actions">
+                    <button class="pwa-install-btn primary" onclick="installPWA()">
+                        <i class="ph-bold ph-download-simple"></i>
+                        Install
+                    </button>
+                    <button class="pwa-install-btn secondary" onclick="dismissInstallBanner()">
+                        Not Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/views.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
