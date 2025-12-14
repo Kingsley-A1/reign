@@ -342,6 +342,10 @@ const AdminApp = {
                             <option value="moderator">Moderator</option>
                             <option value="admin">Admin</option>
                         </select>
+                        <button onclick="AdminApp.exportUsers()" class="btn-export">
+                            <i class="ph-bold ph-download"></i>
+                            Export
+                        </button>
                     </div>
                 </div>
                 <table class="admin-table">
@@ -773,9 +777,142 @@ const AdminApp = {
 
     getMockUsers() {
         return [
-            { id: '1', name: 'John Doe', email: 'john@example.com', initials: 'JD', role: 'user', status: 'active', streak: 15, lastActive: '2 mins ago' },
-            { id: '2', name: 'Jane Smith', email: 'jane@example.com', initials: 'JS', role: 'moderator', status: 'active', streak: 32, lastActive: '1 hour ago' },
-            { id: '3', name: 'Bob Wilson', email: 'bob@example.com', initials: 'BW', role: 'user', status: 'inactive', streak: 0, lastActive: '3 days ago' },
+            {
+                id: '1',
+                name: 'John Doe',
+                email: 'john@example.com',
+                initials: 'JD',
+                role: 'user',
+                status: 'active',
+                streak: 15,
+                lastActive: '2 mins ago',
+                joinDate: '2024-01-15',
+                tasksCompleted: 234,
+                journalEntries: 45,
+                coursesEnrolled: 3,
+                bio: 'Productivity enthusiast and lifelong learner.',
+                location: 'New York, USA',
+                phone: '+1 555-0123'
+            },
+            {
+                id: '2',
+                name: 'Jane Smith',
+                email: 'jane@example.com',
+                initials: 'JS',
+                role: 'moderator',
+                status: 'active',
+                streak: 32,
+                lastActive: '1 hour ago',
+                joinDate: '2023-11-20',
+                tasksCompleted: 567,
+                journalEntries: 89,
+                coursesEnrolled: 7,
+                bio: 'Community moderator helping others succeed.',
+                location: 'London, UK',
+                phone: '+44 20 7946 0958'
+            },
+            {
+                id: '3',
+                name: 'Bob Wilson',
+                email: 'bob@example.com',
+                initials: 'BW',
+                role: 'user',
+                status: 'inactive',
+                streak: 0,
+                lastActive: '3 days ago',
+                joinDate: '2024-06-01',
+                tasksCompleted: 12,
+                journalEntries: 3,
+                coursesEnrolled: 1,
+                bio: 'Just getting started with productivity.',
+                location: 'Toronto, Canada',
+                phone: '+1 416-555-0199'
+            },
+            {
+                id: '4',
+                name: 'Sarah Johnson',
+                email: 'sarah@example.com',
+                initials: 'SJ',
+                role: 'user',
+                status: 'active',
+                streak: 45,
+                lastActive: '5 mins ago',
+                joinDate: '2023-08-10',
+                tasksCompleted: 892,
+                journalEntries: 156,
+                coursesEnrolled: 12,
+                bio: 'Top contributor and streak champion!',
+                location: 'Sydney, Australia',
+                phone: '+61 2 9876 5432'
+            },
+            {
+                id: '5',
+                name: 'Michael Chen',
+                email: 'michael@example.com',
+                initials: 'MC',
+                role: 'admin',
+                status: 'active',
+                streak: 28,
+                lastActive: '30 mins ago',
+                joinDate: '2023-05-15',
+                tasksCompleted: 445,
+                journalEntries: 78,
+                coursesEnrolled: 5,
+                bio: 'Platform administrator and developer.',
+                location: 'San Francisco, USA',
+                phone: '+1 415-555-0147'
+            },
+            {
+                id: '6',
+                name: 'Emily Davis',
+                email: 'emily@example.com',
+                initials: 'ED',
+                role: 'user',
+                status: 'suspended',
+                streak: 0,
+                lastActive: '2 weeks ago',
+                joinDate: '2024-02-28',
+                tasksCompleted: 56,
+                journalEntries: 12,
+                coursesEnrolled: 2,
+                bio: 'Account suspended for review.',
+                location: 'Berlin, Germany',
+                phone: '+49 30 12345678'
+            },
+            {
+                id: '7',
+                name: 'David Kim',
+                email: 'david@example.com',
+                initials: 'DK',
+                role: 'user',
+                status: 'active',
+                streak: 7,
+                lastActive: '1 hour ago',
+                joinDate: '2024-09-01',
+                tasksCompleted: 89,
+                journalEntries: 21,
+                coursesEnrolled: 3,
+                bio: 'Focused on building better habits.',
+                location: 'Seoul, South Korea',
+                phone: '+82 2 1234 5678'
+            },
+            {
+                id: '8',
+                name: 'Lisa Anderson',
+                email: 'lisa@example.com',
+                initials: 'LA',
+                role: 'moderator',
+                status: 'active',
+                streak: 21,
+                lastActive: '45 mins ago',
+                joinDate: '2023-12-01',
+                tasksCompleted: 312,
+                journalEntries: 67,
+                coursesEnrolled: 8,
+                bio: 'Helping the community grow and thrive.',
+                location: 'Dublin, Ireland',
+                phone: '+353 1 234 5678'
+            }
         ];
     },
 
@@ -798,10 +935,153 @@ const AdminApp = {
 
     // User actions
     viewUser(userId) {
-        Utils.showToast(`Viewing user ${userId}`, 'indigo');
+        const user = this.getMockUsers().find(u => u.id === userId);
+        if (!user) {
+            Utils.showToast('User not found', 'danger');
+            return;
+        }
+
+        // Create modal overlay
+        const modalHtml = `
+            <div class="admin-modal-overlay" onclick="AdminApp.closeUserModal(event)">
+                <div class="admin-modal" onclick="event.stopPropagation()">
+                    <div class="admin-modal-header">
+                        <h3>User Details</h3>
+                        <button onclick="AdminApp.closeUserModal()" class="admin-modal-close">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <div class="admin-modal-body">
+                        <!-- User Profile Section -->
+                        <div class="user-profile-section">
+                            <div class="user-profile-avatar">
+                                <span>${user.initials}</span>
+                            </div>
+                            <div class="user-profile-info">
+                                <h4>${user.name}</h4>
+                                <p>${user.email}</p>
+                                <div class="user-badges">
+                                    <span class="role-badge ${user.role}">${user.role}</span>
+                                    <span class="status-badge ${user.status}">${user.status}</span>
+                                    ${user.streak > 0 ? `<span class="streak-badge">${user.streak} 🔥</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Stats -->
+                        <div class="user-stats-grid">
+                            <div class="user-stat-item">
+                                <i class="ph-duotone ph-checks"></i>
+                                <div>
+                                    <span class="stat-num">${user.tasksCompleted || 0}</span>
+                                    <span class="stat-label">Tasks Completed</span>
+                                </div>
+                            </div>
+                            <div class="user-stat-item">
+                                <i class="ph-duotone ph-book-bookmark"></i>
+                                <div>
+                                    <span class="stat-num">${user.journalEntries || 0}</span>
+                                    <span class="stat-label">Journal Entries</span>
+                                </div>
+                            </div>
+                            <div class="user-stat-item">
+                                <i class="ph-duotone ph-graduation-cap"></i>
+                                <div>
+                                    <span class="stat-num">${user.coursesEnrolled || 0}</span>
+                                    <span class="stat-label">Courses</span>
+                                </div>
+                            </div>
+                            <div class="user-stat-item">
+                                <i class="ph-duotone ph-fire"></i>
+                                <div>
+                                    <span class="stat-num">${user.streak || 0}</span>
+                                    <span class="stat-label">Day Streak</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Details -->
+                        <div class="user-details-section">
+                            <div class="detail-row">
+                                <span class="detail-label">Bio</span>
+                                <span class="detail-value">${user.bio || 'No bio provided'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Location</span>
+                                <span class="detail-value">${user.location || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Phone</span>
+                                <span class="detail-value">${user.phone || 'Not provided'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Joined</span>
+                                <span class="detail-value">${user.joinDate || 'Unknown'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Last Active</span>
+                                <span class="detail-value">${user.lastActive}</span>
+                            </div>
+                        </div>
+
+                        <!-- Admin Actions -->
+                        <div class="user-actions-section">
+                            <h5>Admin Actions</h5>
+                            <div class="action-buttons-grid">
+                                <button onclick="AdminApp.impersonateUser('${user.id}')" class="action-btn primary">
+                                    <i class="ph-bold ph-user-switch"></i>
+                                    Impersonate
+                                </button>
+                                <button onclick="AdminApp.promoteUser('${user.id}')" class="action-btn success">
+                                    <i class="ph-bold ph-arrow-up"></i>
+                                    Promote
+                                </button>
+                                <button onclick="AdminApp.resetPassword('${user.id}')" class="action-btn warning">
+                                    <i class="ph-bold ph-key"></i>
+                                    Reset Password
+                                </button>
+                                <button onclick="AdminApp.sendEmailToUser('${user.id}')" class="action-btn secondary">
+                                    <i class="ph-bold ph-envelope"></i>
+                                    Send Email
+                                </button>
+                                ${user.status === 'suspended' ? `
+                                    <button onclick="AdminApp.unsuspendUser('${user.id}')" class="action-btn success">
+                                        <i class="ph-bold ph-check-circle"></i>
+                                        Unsuspend
+                                    </button>
+                                ` : `
+                                    <button onclick="AdminApp.suspendUser('${user.id}')" class="action-btn danger">
+                                        <i class="ph-bold ph-prohibit"></i>
+                                        Suspend
+                                    </button>
+                                `}
+                                <button onclick="AdminApp.deleteUser('${user.id}')" class="action-btn danger">
+                                    <i class="ph-bold ph-trash"></i>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add modal to page
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.body.style.overflow = 'hidden';
+    },
+
+    closeUserModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        const modal = document.querySelector('.admin-modal-overlay');
+        if (modal) {
+            modal.remove();
+            document.body.style.overflow = '';
+        }
     },
 
     impersonateUser(userId) {
+        this.closeUserModal();
         const user = this.getMockUsers().find(u => u.id === userId);
         if (user) {
             this.isImpersonating = true;
@@ -819,10 +1099,88 @@ const AdminApp = {
         Utils.showToast('Exited impersonation mode', 'gold');
     },
 
-    suspendUser(userId) {
-        if (confirm('Are you sure you want to suspend this user?')) {
-            Utils.showToast(`User ${userId} suspended`, 'danger');
+    promoteUser(userId) {
+        this.closeUserModal();
+        const user = this.getMockUsers().find(u => u.id === userId);
+        if (!user) return;
+
+        const roles = ['user', 'moderator', 'admin', 'super_admin'];
+        const currentIndex = roles.indexOf(user.role);
+        if (currentIndex < roles.length - 1) {
+            const newRole = roles[currentIndex + 1];
+            Utils.showToast(`${user.name} promoted to ${newRole}`, 'success');
+        } else {
+            Utils.showToast(`${user.name} is already at highest role`, 'warning');
         }
+    },
+
+    suspendUser(userId) {
+        this.closeUserModal();
+        const user = this.getMockUsers().find(u => u.id === userId);
+        if (!user) return;
+
+        if (confirm(`Are you sure you want to suspend ${user.name}?`)) {
+            Utils.showToast(`${user.name} has been suspended`, 'danger');
+            this.navigate('users'); // Refresh
+        }
+    },
+
+    unsuspendUser(userId) {
+        this.closeUserModal();
+        const user = this.getMockUsers().find(u => u.id === userId);
+        if (!user) return;
+
+        Utils.showToast(`${user.name} has been unsuspended`, 'success');
+        this.navigate('users'); // Refresh
+    },
+
+    resetPassword(userId) {
+        this.closeUserModal();
+        const user = this.getMockUsers().find(u => u.id === userId);
+        if (!user) return;
+
+        if (confirm(`Send password reset email to ${user.email}?`)) {
+            Utils.showToast(`Password reset email sent to ${user.email}`, 'success');
+        }
+    },
+
+    sendEmailToUser(userId) {
+        this.closeUserModal();
+        const user = this.getMockUsers().find(u => u.id === userId);
+        if (!user) return;
+
+        const message = prompt(`Send email to ${user.name}:`, 'Hello from Reign Admin!');
+        if (message) {
+            Utils.showToast(`Email sent to ${user.email}`, 'success');
+        }
+    },
+
+    deleteUser(userId) {
+        this.closeUserModal();
+        const user = this.getMockUsers().find(u => u.id === userId);
+        if (!user) return;
+
+        if (confirm(`⚠️ DELETE USER\n\nAre you sure you want to permanently delete ${user.name}?\n\nThis action cannot be undone.`)) {
+            Utils.showToast(`${user.name} has been deleted`, 'danger');
+            this.navigate('users'); // Refresh
+        }
+    },
+
+    exportUsers() {
+        const users = this.getMockUsers();
+        const csv = [
+            'Name,Email,Role,Status,Streak,Join Date,Location',
+            ...users.map(u => `${u.name},${u.email},${u.role},${u.status},${u.streak},${u.joinDate || ''},${u.location || ''}`)
+        ].join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reign_users_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        Utils.showToast('Users exported to CSV', 'success');
     },
 
     sendAnnouncement() {
@@ -832,7 +1190,7 @@ const AdminApp = {
     logout() {
         localStorage.removeItem('kingdaily_token');
         localStorage.removeItem('kingdaily_user');
-        window.location.href = 'auth.html';
+        window.location.href = '../auth.html';
     }
 };
 
