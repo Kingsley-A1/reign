@@ -153,6 +153,9 @@
     <div class="app-container">
         <!-- Header -->
         <header class="header">
+            <button class="mobile-menu-btn" onclick="app.toggleSidebar()" title="Menu">
+                <i class="ph-bold ph-list"></i>
+            </button>
             <div class="header-brand" onclick="app.navigate('dashboard')">
                 <i class="ph-fill ph-crown"></i>
                 <div>
@@ -213,6 +216,9 @@
 
         <!-- Main Layout -->
         <div class="main-layout">
+            <!-- Sidebar Overlay (Mobile) -->
+            <div class="sidebar-overlay" onclick="app.toggleSidebar()"></div>
+
             <!-- Sidebar (Desktop) -->
             <aside class="sidebar">
                 <nav class="sidebar-nav">

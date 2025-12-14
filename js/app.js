@@ -30,7 +30,27 @@ const app = {
         // Navigate to dashboard
         this.navigate('dashboard');
 
-        console.log('King Daily initialized successfully.');
+        console.log('Reign initialized successfully.');
+    },
+
+    /**
+     * Toggle mobile sidebar
+     */
+    toggleSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+
+        if (sidebar && overlay) {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+
+            // Prevent body scroll when sidebar is open
+            if (sidebar.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
     },
 
     /**

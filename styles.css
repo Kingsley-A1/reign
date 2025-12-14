@@ -246,6 +246,53 @@ h6 {
     color: var(--danger);
 }
 
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 0.75rem;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--royal-gold-10);
+    color: var(--royal-gold);
+}
+
+@media (min-width: 768px) {
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+
+/* Mobile Sidebar Overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 900;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
 /* --- Sidebar (Desktop) --- */
 .sidebar {
     width: 256px;
@@ -254,6 +301,10 @@ h6 {
     background: var(--royal-surface);
     border-right: 1px solid var(--royal-gold-10);
     flex-shrink: 0;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    position: sticky;
+    top: 70px;
 }
 
 @media (min-width: 768px) {
@@ -262,9 +313,35 @@ h6 {
     }
 }
 
+/* Mobile Sidebar Slide-out */
+@media (max-width: 767px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 280px;
+        z-index: 950;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        background: linear-gradient(180deg, var(--royal-surface) 0%, var(--royal-dark) 100%);
+        padding-top: 1rem;
+    }
+
+    .sidebar.open {
+        display: flex;
+        transform: translateX(0);
+    }
+
+    .sidebar .nav-btn {
+        padding: 0.875rem 1rem;
+    }
+}
+
 .sidebar-nav {
     flex: 1;
     padding: 1.5rem;
+    padding-bottom: 3rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
