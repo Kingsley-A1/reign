@@ -1,19 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>King Learn | Master Your Craft</title>
     <!-- SEO & Social -->
-    <meta name="description" content="King Learn — A simple, focused learning tracker to build consistent study streaks, track progress and store certificates locally.">
+    <meta name="description"
+        content="King Learn — A simple, focused learning tracker to build consistent study streaks, track progress and store certificates locally.">
     <meta name="theme-color" content="#0F172A">
     <meta property="og:title" content="King Learn | Master Your Craft">
-    <meta property="og:description" content="Track your learning, log progress, and earn certificates. Lightweight and privacy-first.">
+    <meta property="og:description"
+        content="Track your learning, log progress, and earn certificates. Lightweight and privacy-first.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="King Learn">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="icon" href="favicon.ico">
-    
+    <meta name="twitter:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
     <!-- Tailwind CSS (CDN for quick dev; prefer compiled CSS for production) -->
     <script>
         tailwind.config = {
@@ -36,15 +42,17 @@
         }
     </script>
     <script defer src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Chart.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <!-- Icons (Phosphor) -->
     <script defer src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
 
     <!-- Toastify for Notifications -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -76,65 +84,88 @@
             background-color: #0F172A;
             color: #F8FAFC;
         }
+
         .glass-panel {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .input-field {
             background: #334155;
             border: 1px solid #475569;
             color: white;
             transition: all 0.2s;
         }
+
         .input-field:focus {
             border-color: #6366f1;
             outline: none;
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.06);
         }
+
         /* Chart container constraint */
         .chart-container {
-            position: relative; 
-            height: 300px; 
+            position: relative;
+            height: 300px;
             width: 100%;
         }
+
         /* Hide scrollbar for clean UI */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
+
         .no-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
         .fade-in {
             animation: fadeIn 0.3s ease-out;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
+
 <body class="h-screen flex flex-col overflow-hidden">
 
     <!-- Top Navigation -->
-    <header class="h-16 border-b border-slate-800 flex items-center justify-between px-4 md:px-6 bg-king-dark z-20 shrink-0" role="banner">
+    <header
+        class="h-16 border-b border-slate-800 flex items-center justify-between px-4 md:px-6 bg-king-dark z-20 shrink-0"
+        role="banner">
         <div class="flex items-center gap-3 cursor-pointer" onclick="app.navigate('dashboard')">
-            <div class="w-10 h-10 bg-gradient-to-br from-king-gold to-yellow-600 rounded-lg flex items-center justify-center text-king-dark font-bold text-xl shadow-lg shadow-yellow-900/20">
+            <div
+                class="w-10 h-10 bg-gradient-to-br from-king-gold to-yellow-600 rounded-lg flex items-center justify-center text-king-dark font-bold text-xl shadow-lg shadow-yellow-900/20">
                 <i class="ph-fill ph-crown"></i>
             </div>
             <div>
                 <h1 class="font-display font-bold text-xl tracking-tight text-white">King Learn</h1>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold hidden md:block">Mastery & Progress</p>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold hidden md:block">Mastery &
+                    Progress</p>
             </div>
         </div>
         <div class="flex items-center gap-4">
-            <div class="hidden md:flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
+            <div
+                class="hidden md:flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
                 <i class="ph-fill ph-fire text-orange-500"></i>
                 <span class="text-sm font-medium" id="streak-display">0 Day Streak</span>
             </div>
             <!-- Settings / Profile Trigger (Mock) -->
-            <button onclick="Toastify({text: 'Profile Settings coming soon!', duration: 2000, style: {background: '#334155'}}).showToast()" class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white hover:bg-indigo-500 transition-colors">
+            <button
+                onclick="Toastify({text: 'Profile Settings coming soon!', duration: 2000, style: {background: '#334155'}}).showToast()"
+                class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white hover:bg-indigo-500 transition-colors">
                 <i class="ph-bold ph-user"></i>
             </button>
         </div>
@@ -142,25 +173,34 @@
 
     <!-- Main Layout -->
     <div class="flex-1 flex overflow-hidden relative">
-        
+
         <!-- Sidebar (Desktop) -->
-        <aside class="hidden md:flex w-64 flex-col border-r border-slate-800 bg-king-dark/50 backdrop-blur-sm z-10 shrink-0" role="navigation" aria-label="Main Navigation">
+        <aside
+            class="hidden md:flex w-64 flex-col border-r border-slate-800 bg-king-dark/50 backdrop-blur-sm z-10 shrink-0"
+            role="navigation" aria-label="Main Navigation">
             <nav class="flex-1 p-4 space-y-2">
-                <button onclick="app.navigate('dashboard')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all active-nav" data-target="dashboard">
+                <button onclick="app.navigate('dashboard')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all active-nav"
+                    data-target="dashboard">
                     <i class="ph-duotone ph-squares-four text-xl"></i>
                     <span class="font-medium">Dashboard</span>
                 </button>
-                <button onclick="app.navigate('courses')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" data-target="courses">
+                <button onclick="app.navigate('courses')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    data-target="courses">
                     <i class="ph-duotone ph-books text-xl"></i>
                     <span class="font-medium">My Courses</span>
                 </button>
-                <button onclick="app.navigate('analytics')" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all" data-target="analytics">
+                <button onclick="app.navigate('analytics')"
+                    class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                    data-target="analytics">
                     <i class="ph-duotone ph-chart-line-up text-xl"></i>
                     <span class="font-medium">Analytics</span>
                 </button>
             </nav>
             <div class="p-4 border-t border-slate-800">
-                <button onclick="app.showModal('add-course-modal')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/20 transition-all transform hover:scale-[1.02]">
+                <button onclick="app.showModal('add-course-modal')"
+                    class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/20 transition-all transform hover:scale-[1.02]">
                     <i class="ph-bold ph-plus"></i>
                     <span>New Course</span>
                 </button>
@@ -168,24 +208,32 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto relative bg-gradient-to-br from-king-dark to-slate-900 p-4 md:p-8 pb-24 md:pb-8" id="main-view" role="main">
+        <main
+            class="flex-1 overflow-y-auto relative bg-gradient-to-br from-king-dark to-slate-900 p-4 md:p-8 pb-24 md:pb-8"
+            id="main-view" role="main">
             <!-- Views will be injected here -->
         </main>
 
     </div>
 
     <!-- Mobile Bottom Nav -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex justify-around items-center px-2 z-40 pb-safe">
-        <button onclick="app.navigate('dashboard')" class="nav-btn-mobile flex flex-col items-center gap-1 p-2 text-indigo-400 transition-colors" data-target="dashboard">
+    <nav
+        class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex justify-around items-center px-2 z-40 pb-safe">
+        <button onclick="app.navigate('dashboard')"
+            class="nav-btn-mobile flex flex-col items-center gap-1 p-2 text-indigo-400 transition-colors"
+            data-target="dashboard">
             <i class="ph-duotone ph-squares-four text-2xl"></i>
             <span class="text-[10px] font-medium">Home</span>
         </button>
         <button onclick="app.showModal('add-course-modal')" class="flex flex-col items-center justify-center -mt-8">
-            <div class="w-14 h-14 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 border-4 border-slate-900 transform active:scale-95 transition-transform">
+            <div
+                class="w-14 h-14 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 border-4 border-slate-900 transform active:scale-95 transition-transform">
                 <i class="ph-bold ph-plus text-2xl"></i>
             </div>
         </button>
-        <button onclick="app.navigate('analytics')" class="nav-btn-mobile flex flex-col items-center gap-1 p-2 text-slate-500 transition-colors" data-target="analytics">
+        <button onclick="app.navigate('analytics')"
+            class="nav-btn-mobile flex flex-col items-center gap-1 p-2 text-slate-500 transition-colors"
+            data-target="analytics">
             <i class="ph-duotone ph-chart-bar text-2xl"></i>
             <span class="text-[10px] font-medium">Stats</span>
         </button>
@@ -194,27 +242,34 @@
     <!-- MODALS -->
 
     <!-- Add Course Modal -->
-    <div id="add-course-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="add-course-title">
-        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 shadow-2xl transform scale-100 transition-all max-h-[90vh] overflow-y-auto">
+    <div id="add-course-modal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4"
+        role="dialog" aria-modal="true" aria-labelledby="add-course-title">
+        <div
+            class="glass-panel w-full max-w-lg rounded-2xl p-6 shadow-2xl transform scale-100 transition-all max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="add-course-title" class="text-2xl font-display font-bold text-white">Register New Course</h2>
-                <button onclick="app.hideModal('add-course-modal')" class="text-slate-400 hover:text-white"><i class="ph-bold ph-x text-xl"></i></button>
+                <button onclick="app.hideModal('add-course-modal')" class="text-slate-400 hover:text-white"><i
+                        class="ph-bold ph-x text-xl"></i></button>
             </div>
-            
+
             <form id="add-course-form" onsubmit="app.handleAddCourse(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">Course Title</label>
-                    <input type="text" name="title" required placeholder="e.g. Google Cloud ML Engineer" class="input-field w-full rounded-lg px-4 py-3">
+                    <input type="text" name="title" required placeholder="e.g. Google Cloud ML Engineer"
+                        class="input-field w-full rounded-lg px-4 py-3">
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-1">Platform/Source</label>
-                        <input type="text" name="platform" placeholder="Coursera, Udemy..." class="input-field w-full rounded-lg px-4 py-3">
+                        <input type="text" name="platform" placeholder="Coursera, Udemy..."
+                            class="input-field w-full rounded-lg px-4 py-3">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-300 mb-1">Duration (Hours)</label>
-                        <input type="number" name="duration" placeholder="e.g. 40" class="input-field w-full rounded-lg px-4 py-3">
+                        <input type="number" name="duration" placeholder="e.g. 40"
+                            class="input-field w-full rounded-lg px-4 py-3">
                     </div>
                 </div>
 
@@ -225,7 +280,8 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Daily Goal (Mins)</label>
-                            <input type="number" name="dailyGoal" value="60" class="input-field w-full rounded-lg px-3 py-2 text-sm">
+                            <input type="number" name="dailyGoal" value="60"
+                                class="input-field w-full rounded-lg px-3 py-2 text-sm">
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">End Date Goal</label>
@@ -234,84 +290,108 @@
                     </div>
                     <div class="mt-3">
                         <label class="block text-xs font-medium text-slate-400 mb-1">Why are you learning this?</label>
-                        <textarea name="pledge" rows="2" placeholder="I commit to finish this because..." class="input-field w-full rounded-lg px-3 py-2 text-sm"></textarea>
+                        <textarea name="pledge" rows="2" placeholder="I commit to finish this because..."
+                            class="input-field w-full rounded-lg px-3 py-2 text-sm"></textarea>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-lg shadow-lg mt-4">Start Journey</button>
+                <button type="submit"
+                    class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-lg shadow-lg mt-4">Start
+                    Journey</button>
             </form>
         </div>
     </div>
 
     <!-- Daily Log Modal -->
-    <div id="log-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="log-title">
+    <div id="log-modal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4"
+        role="dialog" aria-modal="true" aria-labelledby="log-title">
         <div class="glass-panel w-full max-w-2xl rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <h2 id="log-title" class="text-2xl font-display font-bold text-white">Daily Learning Log</h2>
                     <p class="text-slate-400 text-sm" id="log-course-name">Course Name</p>
                 </div>
-                <button onclick="app.hideModal('log-modal')" class="text-slate-400 hover:text-white"><i class="ph-bold ph-x text-xl"></i></button>
+                <button onclick="app.hideModal('log-modal')" class="text-slate-400 hover:text-white"><i
+                        class="ph-bold ph-x text-xl"></i></button>
             </div>
-            
+
             <form id="log-form" onsubmit="app.handleSaveLog(event)" class="space-y-6">
                 <input type="hidden" name="courseId" id="log-course-id">
-                
+
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-2">What did you learn today?</label>
-                    <textarea name="learned" required rows="3" class="input-field w-full rounded-xl px-4 py-3" placeholder="Key concepts, new syntax, architectural patterns..."></textarea>
+                    <textarea name="learned" required rows="3" class="input-field w-full rounded-xl px-4 py-3"
+                        placeholder="Key concepts, new syntax, architectural patterns..."></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-red-400 mb-2">The Challenge</label>
-                        <textarea name="challenge" rows="3" class="input-field w-full rounded-xl px-4 py-3 bg-red-900/10 border-red-900/30 focus:border-red-500" placeholder="What blocked you? Error messages, confusing concepts..."></textarea>
+                        <textarea name="challenge" rows="3"
+                            class="input-field w-full rounded-xl px-4 py-3 bg-red-900/10 border-red-900/30 focus:border-red-500"
+                            placeholder="What blocked you? Error messages, confusing concepts..."></textarea>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-emerald-400 mb-2">The Solution</label>
-                        <textarea name="solution" rows="3" class="input-field w-full rounded-xl px-4 py-3 bg-emerald-900/10 border-emerald-900/30 focus:border-emerald-500" placeholder="How did you fix it? Resources used, logic applied..."></textarea>
+                        <textarea name="solution" rows="3"
+                            class="input-field w-full rounded-xl px-4 py-3 bg-emerald-900/10 border-emerald-900/30 focus:border-emerald-500"
+                            placeholder="How did you fix it? Resources used, logic applied..."></textarea>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-4 bg-slate-800 p-4 rounded-xl">
                     <label class="text-sm font-medium text-slate-300">Time Spent:</label>
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="app.adjustTime(-15)" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white">-</button>
-                        <input type="number" name="timeSpent" id="log-time-spent" value="60" class="w-16 text-center bg-transparent text-white font-bold text-lg border-none focus:ring-0">
+                        <button type="button" onclick="app.adjustTime(-15)"
+                            class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white">-</button>
+                        <input type="number" name="timeSpent" id="log-time-spent" value="60"
+                            class="w-16 text-center bg-transparent text-white font-bold text-lg border-none focus:ring-0">
                         <span class="text-slate-500 text-sm">mins</span>
-                        <button type="button" onclick="app.adjustTime(15)" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white">+</button>
+                        <button type="button" onclick="app.adjustTime(15)"
+                            class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white">+</button>
                     </div>
                     <div class="flex-1"></div>
                     <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="milestone" class="w-5 h-5 rounded border-slate-600 text-indigo-600 focus:ring-indigo-500 bg-slate-700">
+                        <input type="checkbox" name="milestone"
+                            class="w-5 h-5 rounded border-slate-600 text-indigo-600 focus:ring-indigo-500 bg-slate-700">
                         <span class="text-sm text-yellow-400 font-medium hidden md:inline">Major Milestone?</span>
                         <span class="text-sm text-yellow-400 font-medium md:hidden">Milestone?</span>
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-lg shadow-lg">Save Log Entry</button>
+                <button type="submit"
+                    class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-lg shadow-lg">Save
+                    Log Entry</button>
             </form>
         </div>
     </div>
 
     <!-- Certificate Modal -->
-    <div id="cert-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="cert-title">
+    <div id="cert-modal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4"
+        role="dialog" aria-modal="true" aria-labelledby="cert-title">
         <div class="glass-panel w-full max-w-md rounded-2xl p-6 text-center">
-            <div class="w-16 h-16 bg-yellow-500/20 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div
+                class="w-16 h-16 bg-yellow-500/20 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="ph-fill ph-medal text-3xl"></i>
             </div>
             <h2 id="cert-title" class="text-2xl font-bold text-white mb-2">Congratulations!</h2>
-            <p class="text-slate-400 mb-6">Attach your certificate for <span id="cert-course-name" class="text-white font-semibold"></span></p>
-            
+            <p class="text-slate-400 mb-6">Attach your certificate for <span id="cert-course-name"
+                    class="text-white font-semibold"></span></p>
+
             <form onsubmit="app.handleCertUpload(event)">
                 <input type="hidden" id="cert-course-id">
-                <div class="border-2 border-dashed border-slate-600 rounded-xl p-8 mb-4 hover:border-indigo-500 hover:bg-slate-800/50 transition-all cursor-pointer relative">
-                    <input type="file" id="cert-file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required accept="image/jpeg,image/png,image/webp,application/pdf">
+                <div
+                    class="border-2 border-dashed border-slate-600 rounded-xl p-8 mb-4 hover:border-indigo-500 hover:bg-slate-800/50 transition-all cursor-pointer relative">
+                    <input type="file" id="cert-file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        required accept="image/jpeg,image/png,image/webp,application/pdf">
                     <i class="ph-duotone ph-file-arrow-up text-4xl text-slate-500 mb-2"></i>
                     <p class="text-sm text-slate-400">Click to upload image/PDF (Max 500KB)</p>
                 </div>
                 <p id="cert-error" class="text-red-400 text-xs mb-4 hidden"></p>
-                <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold">Save Certificate</button>
+                <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold">Save
+                    Certificate</button>
             </form>
         </div>
     </div>
@@ -335,7 +415,7 @@
                     lastLogDate: null // Stored as ISO Date String (YYYY-MM-DD)
                 }
             },
-            
+
             // --- CORE LIFECYCLE ---
 
             init() {
@@ -383,13 +463,13 @@
                     const isTarget = btn.dataset.target === view;
                     btn.classList.toggle('text-white', isTarget);
                     btn.classList.toggle('bg-slate-800', isTarget && window.innerWidth >= 768); // Desktop active bg
-                    
+
                     // Mobile specific
                     if (window.innerWidth < 768) {
                         btn.classList.toggle('text-indigo-400', isTarget);
                         btn.classList.toggle('text-slate-500', !isTarget);
                     } else {
-                         btn.classList.toggle('text-slate-400', !isTarget);
+                        btn.classList.toggle('text-slate-400', !isTarget);
                     }
                 });
 
@@ -435,7 +515,7 @@
                         </div>
                         <div class="glass-panel p-4 rounded-xl">
                             <p class="text-slate-400 text-xs uppercase font-bold tracking-wider mb-1">Hours Invested</p>
-                            <p class="text-3xl font-bold text-indigo-400">${(totalMins/60).toFixed(1)}</p>
+                            <p class="text-3xl font-bold text-indigo-400">${(totalMins / 60).toFixed(1)}</p>
                         </div>
                         <div class="glass-panel p-4 rounded-xl">
                             <p class="text-slate-400 text-xs uppercase font-bold tracking-wider mb-1">Streak</p>
@@ -466,29 +546,29 @@
             renderAnalytics(container) {
                 // Prepare Data
                 const logs = this.data.courses.flatMap(c => c.logs || []);
-                
+
                 // Chart 1: Last 7 Days Activity
                 const last7Days = [];
                 const last7DaysLabels = [];
-                for(let i=6; i>=0; i--) {
+                for (let i = 6; i >= 0; i--) {
                     const d = new Date();
                     d.setDate(d.getDate() - i);
                     const dayStr = d.toLocaleDateString(); // Localized format for comparison logic might differ, but display is fine
                     // Comparison logic: match ISO string Date part
                     const isoDate = d.toISOString().split('T')[0];
-                    
+
                     const dayLogs = logs.filter(l => l.date.startsWith(isoDate));
                     const mins = dayLogs.reduce((sum, l) => sum + l.timeSpent, 0);
-                    
+
                     last7Days.push(mins);
-                    last7DaysLabels.push(d.toLocaleDateString('en-US', {weekday: 'short'}));
+                    last7DaysLabels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
                 }
 
                 // Chart 2: Time by Platform
                 const platformMap = {};
                 this.data.courses.forEach(c => {
                     const cMins = (c.logs || []).reduce((sum, l) => sum + l.timeSpent, 0);
-                    if(cMins > 0) {
+                    if (cMins > 0) {
                         platformMap[c.platform] = (platformMap[c.platform] || 0) + cMins;
                     }
                 });
@@ -534,8 +614,8 @@
                             maintainAspectRatio: false,
                             plugins: { legend: { display: false } },
                             scales: {
-                                y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8'} },
-                                x: { grid: { display: false }, ticks: { color: '#94a3b8'} }
+                                y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
                             }
                         }
                     });
@@ -554,8 +634,8 @@
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            plugins: { 
-                                legend: { position: 'right', labels: { color: '#cbd5e1' } } 
+                            plugins: {
+                                legend: { position: 'right', labels: { color: '#cbd5e1' } }
                             }
                         }
                     });
@@ -565,7 +645,7 @@
             createCourseCard(course) {
                 const totalSpent = (course.logs || []).reduce((acc, log) => acc + log.timeSpent, 0);
                 const lastLog = course.logs && course.logs.length > 0 ? course.logs[0] : null;
-                
+
                 return `
                     <div class="glass-panel p-5 rounded-2xl hover:border-indigo-500/50 transition-all cursor-pointer group relative overflow-hidden flex flex-col h-full" onclick="app.navigate('course-${course.id}')">
                         <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
@@ -579,7 +659,7 @@
                         <div class="space-y-3 mt-auto">
                             <div class="flex justify-between text-xs text-slate-400 border-t border-slate-700 pt-3">
                                 <span>${course.logs ? course.logs.length : 0} Logs</span>
-                                <span>${(totalSpent/60).toFixed(1)}h Spent</span>
+                                <span>${(totalSpent / 60).toFixed(1)}h Spent</span>
                             </div>
                             ${lastLog ? `
                                 <div class="bg-slate-800/50 p-2 rounded text-xs border border-slate-700/50">
@@ -605,7 +685,7 @@
                                 <i class="ph-bold ph-arrow-left"></i> Back
                             </button>
                             <h1 class="text-2xl md:text-3xl font-display font-bold text-white break-words">${course.title}</h1>
-                            <p class="text-indigo-400 text-sm font-medium uppercase tracking-widest mt-1">${course.platform} • ${(totalSpent/60).toFixed(1)} Hours Logged</p>
+                            <p class="text-indigo-400 text-sm font-medium uppercase tracking-widest mt-1">${course.platform} • ${(totalSpent / 60).toFixed(1)} Hours Logged</p>
                         </div>
                         <div class="flex flex-wrap gap-3">
                             ${course.status !== 'completed' ? `
@@ -738,7 +818,7 @@
                 document.getElementById(id).classList.add('hidden');
                 // Reset errors
                 const err = document.getElementById('cert-error');
-                if(err) err.classList.add('hidden');
+                if (err) err.classList.add('hidden');
             },
 
             notify(msg, type = 'success') {
@@ -757,7 +837,7 @@
             handleAddCourse(e) {
                 e.preventDefault();
                 const formData = new FormData(e.target);
-                
+
                 const newCourse = {
                     id: Date.now(),
                     title: formData.get('title'),
@@ -811,7 +891,7 @@
 
                 if (!course.logs) course.logs = [];
                 course.logs.unshift(newLog);
-                
+
                 this.updateStreak();
                 this.saveData();
                 this.hideModal('log-modal');
@@ -824,7 +904,7 @@
                 // Streak Logic (Normalized to YYYY-MM-DD)
                 const now = new Date();
                 const today = now.toISOString().split('T')[0];
-                
+
                 // If last log was yesterday, increment. If today, do nothing. Else, reset.
                 if (this.data.profile.lastLogDate !== today) {
                     const yesterdayDate = new Date();
@@ -844,7 +924,7 @@
             checkStreakIntegrity() {
                 // Run on init to check if streak was broken while away
                 if (!this.data.profile.lastLogDate) return;
-                
+
                 const now = new Date();
                 const today = now.toISOString().split('T')[0];
                 const yesterdayDate = new Date();
@@ -859,12 +939,12 @@
             },
 
             completeCourse(courseId) {
-                if(!confirm("Mark course as completed? This is a great achievement.")) return;
+                if (!confirm("Mark course as completed? This is a great achievement.")) return;
                 const course = this.data.courses.find(c => c.id === courseId);
                 course.status = 'completed';
                 course.endDateActual = new Date().toISOString();
                 this.saveData();
-                
+
                 document.getElementById('cert-course-id').value = courseId;
                 document.getElementById('cert-course-name').innerText = course.title;
                 this.showModal('cert-modal');
@@ -873,7 +953,7 @@
             },
 
             deleteCourse(courseId) {
-                if(!confirm("Are you sure? This will delete all logs and data for this course forever.")) return;
+                if (!confirm("Are you sure? This will delete all logs and data for this course forever.")) return;
                 this.data.courses = this.data.courses.filter(c => c.id !== courseId);
                 this.saveData();
                 this.navigate('dashboard');
@@ -900,12 +980,12 @@
                         const course = this.data.courses.find(c => c.id === courseId);
                         try {
                             // Try saving to verify quota
-                            course.certificate = evt.target.result; 
+                            course.certificate = evt.target.result;
                             this.saveData();
                             this.hideModal('cert-modal');
                             this.renderCourseDetail(document.getElementById('main-view'), courseId.toString());
                             this.notify("Certificate Uploaded!");
-                        } catch(err) {
+                        } catch (err) {
                             course.certificate = null; // Revert
                             errorMsg.innerText = "Storage full. Cannot save image.";
                             errorMsg.classList.remove('hidden');
@@ -916,7 +996,7 @@
             },
 
             removeCertificate(courseId) {
-                if(!confirm("Remove this certificate?")) return;
+                if (!confirm("Remove this certificate?")) return;
                 const course = this.data.courses.find(c => c.id === courseId);
                 course.certificate = null;
                 this.saveData();
@@ -934,7 +1014,7 @@
             }
         };
 
-            // Initialize App
+        // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
             // Accessibility: Close modals with Escape
             document.addEventListener('keydown', (e) => {
@@ -947,4 +1027,5 @@
 
     </script>
 </body>
+
 </html>

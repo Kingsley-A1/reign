@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Support REIGN - Help us build the ultimate productivity kingdom">
+    <title>Support | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/support.html">
+    <meta property="og:title" content="Support REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .support-hero {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(184, 134, 11, 0.05));
+            border-radius: 1.5rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .support-hero-icon {
+            width: 5rem;
+            height: 5rem;
+            background: linear-gradient(135deg, var(--royal-gold), #B8860B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .support-hero-icon i {
+            font-size: 2.5rem;
+            color: var(--bg-primary);
+        }
+
+        .support-hero h1 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .support-hero p {
+            color: var(--text-secondary);
+            font-size: 1.0625rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .payment-card {
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.02));
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1), transparent 70%);
+            pointer-events: none;
+        }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-bank-logo {
+            width: 3.5rem;
+            height: 3.5rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .payment-bank-info h3 {
+            font-weight: 700;
+            color: white;
+            font-size: 1.125rem;
+        }
+
+        .payment-bank-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .payment-detail {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .payment-detail-label {
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-detail-value {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .payment-detail-value span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+            letter-spacing: 0.1em;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            padding: 0.625rem 1rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 0.625rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .account-name-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .account-name-box p:first-child {
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .account-name-box p:last-child {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .appreciation-card {
+            background: linear-gradient(145deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.02));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .appreciation-card i {
+            font-size: 3rem;
+            color: #a78bfa;
+            margin-bottom: 1rem;
+        }
+
+        .appreciation-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .appreciation-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .impact-card {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .impact-card i {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .impact-card h4 {
+            font-weight: 700;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .impact-card p {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Light Mode */
+        [data-theme="light"] .support-hero {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(255, 250, 240, 0.8));
+        }
+
+        [data-theme="light"] .payment-card {
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.08), white);
+        }
+
+        [data-theme="light"] .payment-detail,
+        [data-theme="light"] .account-name-box {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .appreciation-card {
+            background: linear-gradient(145deg, rgba(139, 92, 246, 0.08), white);
+        }
+
+        [data-theme="light"] .impact-card {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <!-- Hero Section -->
+                <div class="support-hero">
+                    <div class="support-hero-icon">
+                        <i class="ph-fill ph-hand-heart"></i>
+                    </div>
+                    <h1>Support the Kingdom</h1>
+                    <p>REIGN is built with love and dedication. Your support helps us continue building tools that
+                        empower you to rule your day.</p>
+                </div>
+
+                <!-- Payment Card -->
+                <div class="payment-card">
+                    <div class="payment-header">
+                        <div class="payment-bank-logo">OPay</div>
+                        <div class="payment-bank-info">
+                            <h3>OPay Transfer</h3>
+                            <p>Instant bank transfer</p>
+                        </div>
+                    </div>
+
+                    <div class="payment-detail">
+                        <p class="payment-detail-label">Account Number</p>
+                        <div class="payment-detail-value">
+                            <span id="account-number">8088071657</span>
+                            <button class="copy-btn" onclick="copyAccountNumber()" id="copy-btn">
+                                <i class="ph-bold ph-copy"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="account-name-box">
+                        <p>Account Name</p>
+                        <p>Kingsley Maduabuchi</p>
+                    </div>
+                </div>
+
+                <!-- Impact Section -->
+                <h3
+                    style="font-family: var(--font-serif); font-size: 1.25rem; color: white; margin-bottom: 1rem; text-align: center;">
+                    <i class="ph-fill ph-sparkle" style="color: var(--royal-gold);"></i> Your Support Powers
+                </h3>
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <i class="ph-duotone ph-server" style="color: #3b82f6;"></i>
+                        <h4>Server Costs</h4>
+                        <p>Keep REIGN running smoothly 24/7</p>
+                    </div>
+                    <div class="impact-card">
+                        <i class="ph-duotone ph-rocket-launch" style="color: #f59e0b;"></i>
+                        <h4>New Features</h4>
+                        <p>Fund development of exciting updates</p>
+                    </div>
+                    <div class="impact-card">
+                        <i class="ph-duotone ph-users" style="color: #10b981;"></i>
+                        <h4>Community</h4>
+                        <p>Help us grow and support more users</p>
+                    </div>
+                </div>
+
+                <!-- Appreciation -->
+                <div class="appreciation-card">
+                    <i class="ph-fill ph-crown"></i>
+                    <h3>You Are Royalty</h3>
+                    <p>Every contribution, no matter the size, makes you a vital part of the REIGN kingdom. We deeply
+                        appreciate your generosity and trust in our vision. Together, we build something extraordinary.
+                    </p>
+                </div>
+
+                <!-- Actions -->
+                <div class="grid grid-1 grid-2 gap-4">
+                    <a href="../index.html" class="btn btn-outline btn-block">
+                        <i class="ph-bold ph-arrow-left"></i> Back to Throne
+                    </a>
+                    <a href="about.html" class="btn btn-primary btn-block"
+                        style="background: linear-gradient(135deg, var(--royal-gold), #B8860B);">
+                        <i class="ph-bold ph-info"></i> About REIGN
+                    </a>
+                </div>
+            </main>
+        </div>
+
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Support REIGN',
+                pageIcon: 'ph-hand-heart'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+        });
+
+        function copyAccountNumber() {
+            const accountNumber = document.getElementById('account-number').textContent;
+            const copyBtn = document.getElementById('copy-btn');
+
+            navigator.clipboard.writeText(accountNumber).then(() => {
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<i class="ph-bold ph-check"></i><span>Copied!</span>';
+
+                Utils.showToast('Account number copied! 🙏', 'gold');
+
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<i class="ph-bold ph-copy"></i><span>Copy</span>';
+                }, 3000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = accountNumber;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<i class="ph-bold ph-check"></i><span>Copied!</span>';
+                Utils.showToast('Account number copied! 🙏', 'gold');
+
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = '<i class="ph-bold ph-copy"></i><span>Copy</span>';
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+
+</html>

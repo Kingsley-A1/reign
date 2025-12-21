@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Journal Archive - Your complete history of growth">
+    <title>Journal Archive | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/archive.html">
+    <meta property="og:title" content="Journal Archive | REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .archive-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .archive-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+        }
+
+        .archive-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .archive-tab.active {
+            background: linear-gradient(135deg, var(--royal-gold), #B8860B);
+            color: var(--bg-primary);
+            border-color: var(--royal-gold);
+        }
+
+        .chronicle-date-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .chronicle-date-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chronicle-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chronicle-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .chronicle-card-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chronicle-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chronicle-card-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .chronicle-card-title {
+            font-weight: 600;
+            color: white;
+            margin: 0;
+            font-size: 0.9375rem;
+        }
+
+        .chronicle-card-preview {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <div class="page-hero">
+                    <div class="page-hero-icon"
+                        style="background: linear-gradient(135deg, var(--royal-gold), #B8860B);">
+                        <i class="ph-fill ph-scroll"></i>
+                    </div>
+                    <h1 class="page-hero-title">The Royal Chronicle</h1>
+                    <p class="page-hero-subtitle">Your complete journey of growth and conquest. <span
+                            id="total-count"></span></p>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="archive-tabs">
+                    <button class="archive-tab active" data-filter="all" onclick="filterArchive('all')">
+                        <i class="ph-bold ph-list"></i> All
+                    </button>
+                    <button class="archive-tab" data-filter="journal" onclick="filterArchive('journal')">
+                        <i class="ph-bold ph-notebook"></i> Journal
+                    </button>
+                    <button class="archive-tab" data-filter="idea" onclick="filterArchive('idea')">
+                        <i class="ph-bold ph-lightbulb"></i> Ideas
+                    </button>
+                    <button class="archive-tab" data-filter="good" onclick="filterArchive('good')">
+                        <i class="ph-bold ph-heart"></i> Good
+                    </button>
+                    <button class="archive-tab" data-filter="lesson" onclick="filterArchive('lesson')">
+                        <i class="ph-bold ph-book-open-text"></i> Lessons
+                    </button>
+                </div>
+
+                <!-- Archive List -->
+                <div id="archive-list">
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading your chronicle...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content" id="modal-content"></div>
+            </div>
+        </div>
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        let allActivities = [];
+        let currentFilter = 'all';
+
+        const activityConfig = {
+            journal: { icon: 'ph-notebook', color: 'var(--royal-gold)', label: 'Journal' },
+            idea: { icon: 'ph-lightbulb', color: '#f59e0b', label: 'Idea' },
+            good: { icon: 'ph-heart', color: '#ef4444', label: 'Good Moment' },
+            lesson: { icon: 'ph-book-open-text', color: '#3b82f6', label: 'Lesson' }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Journal Archive',
+                pageIcon: 'ph-book-bookmark'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+            loadArchive();
+        });
+
+        function loadArchive() {
+            const data = Storage.getData();
+
+            // Gather all activities
+            allActivities = [
+                ...(data.ideas || []).map(i => ({ ...i, activityType: 'idea', date: i.createdAt })),
+                ...(data.dailyGood || []).map(g => ({ ...g, activityType: 'good' })),
+                ...(data.lessons || []).map(l => ({ ...l, activityType: 'lesson' })),
+                ...Object.entries(data.logs || {}).map(([date, log]) => ({
+                    date,
+                    log,
+                    activityType: 'journal',
+                    id: `journal-${date}`
+                }))
+            ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            document.getElementById('total-count').textContent = `${allActivities.length} entries`;
+            renderArchive();
+        }
+
+        function filterArchive(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.archive-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.filter === filter);
+            });
+            renderArchive();
+        }
+
+        function renderArchive() {
+            const container = document.getElementById('archive-list');
+            let filtered = currentFilter === 'all' ? allActivities : allActivities.filter(a => a.activityType === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state glass-card">
+                        <i class="ph-duotone ph-scroll"></i>
+                        <h3>No Entries Found</h3>
+                        <p>${currentFilter === 'all' ? 'Start your journey by logging your first entry.' : `No ${currentFilter} entries yet.`}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by date
+            const grouped = groupByDate(filtered);
+            container.innerHTML = Object.entries(grouped).map(([dateLabel, activities]) => `
+                <div class="chronicle-date-group">
+                    <h4 class="chronicle-date-label">
+                        <i class="ph-bold ph-calendar"></i> ${dateLabel}
+                    </h4>
+                    <div>${activities.map(activity => renderActivityCard(activity)).join('')}</div>
+                </div>
+            `).join('');
+        }
+
+        function groupByDate(activities) {
+            const groups = {};
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+            activities.forEach(a => {
+                const d = new Date(a.date).toDateString();
+                let label;
+                if (d === today) label = 'Today';
+                else if (d === yesterday) label = 'Yesterday';
+                else label = new Date(a.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+
+                if (!groups[label]) groups[label] = [];
+                groups[label].push(a);
+            });
+            return groups;
+        }
+
+        function renderActivityCard(activity) {
+            const config = activityConfig[activity.activityType];
+            let title, preview;
+
+            if (activity.activityType === 'journal') {
+                const log = activity.log;
+                const tasks = log?.morning?.tasks || [];
+                const completed = tasks.filter(t => t.status === 'completed').length;
+                title = log?.morning?.sessionName || 'Daily Entry';
+                preview = tasks.length > 0 ? `${completed}/${tasks.length} tasks completed` : 'Morning reflection';
+            } else if (activity.activityType === 'idea') {
+                title = activity.title;
+                preview = activity.content?.substring(0, 80) || '';
+            } else if (activity.activityType === 'good') {
+                title = 'Gratitude Entry';
+                preview = activity.content?.substring(0, 80) || '';
+            } else if (activity.activityType === 'lesson') {
+                title = activity.title;
+                preview = activity.source ? `From: ${activity.source}` : '';
+            }
+
+            return `
+                <div class="chronicle-card" onclick="viewActivity('${activity.id}', '${activity.activityType}')">
+                    <div class="chronicle-card-icon" style="background: ${config.color}20;">
+                        <i class="ph-bold ${config.icon}" style="color: ${config.color};"></i>
+                    </div>
+                    <div class="chronicle-card-content">
+                        <div class="chronicle-card-header">
+                            <span>${config.label}</span>
+                            <span>${Utils.formatTimeAgo(activity.date)}</span>
+                        </div>
+                        <p class="chronicle-card-title">${Utils.sanitize(title)}</p>
+                        ${preview ? `<p class="chronicle-card-preview">${Utils.sanitize(preview)}...</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function viewActivity(id, type) {
+            const activity = allActivities.find(a => a.id === id);
+            if (!activity) return;
+
+            const config = activityConfig[type];
+            let bodyContent = '';
+
+            if (type === 'journal') {
+                const log = activity.log;
+                const tasks = log?.morning?.tasks || [];
+                bodyContent = `
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Session:</strong> ${log?.morning?.sessionName || 'Daily Entry'}
+                    </div>
+                    ${tasks.length > 0 ? `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Tasks (${tasks.filter(t => t.status === 'completed').length}/${tasks.length}):</strong>
+                            <ul style="margin-top: 0.5rem; padding-left: 1.5rem; color: var(--text-secondary);">
+                                ${tasks.map(t => `<li style="${t.status === 'completed' ? 'text-decoration: line-through; color: var(--text-muted);' : ''}">${Utils.sanitize(t.title)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    ${log?.evening ? `
+                        <div>
+                            <strong>Evening Reflection:</strong>
+                            <p style="color: var(--text-secondary); margin-top: 0.5rem;">Mood: ${log.evening.mood}/5 | Energy: ${log.evening.energyLevel}/5</p>
+                            ${log.evening.success ? `<p style="color: #10b981; margin-top: 0.5rem;"><strong>Successes:</strong> ${Utils.sanitize(log.evening.success)}</p>` : ''}
+                        </div>
+                    ` : '<p style="color: var(--text-muted); font-style: italic;">No evening reflection recorded.</p>'}
+                `;
+            } else if (type === 'idea') {
+                bodyContent = `
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge badge-gold">${activity.category || 'General'}</span>
+                        ${activity.starred ? '<i class="ph-fill ph-star" style="color: #f59e0b; margin-left: 0.5rem;"></i>' : ''}
+                    </div>
+                    <p style="color: white; line-height: 1.6;">${activity.content ? Utils.sanitize(activity.content) : '<em style="color: var(--text-muted);">No details added.</em>'}</p>
+                `;
+            } else if (type === 'good') {
+                bodyContent = `
+                    <div class="glass-card p-4" style="background: rgba(239, 68, 68, 0.1);">
+                        <p style="color: white; font-size: 1.125rem; line-height: 1.6; font-style: italic;">"${Utils.sanitize(activity.content)}"</p>
+                    </div>
+                `;
+            } else if (type === 'lesson') {
+                bodyContent = `
+                    <div style="margin-bottom: 1rem;">
+                        <span class="badge badge-info">${activity.source || 'Unknown'}</span>
+                    </div>
+                    <p style="color: white; line-height: 1.6;">${activity.content ? Utils.sanitize(activity.content) : '<em style="color: var(--text-muted);">No details added.</em>'}</p>
+                `;
+            }
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ${config.icon}" style="color: ${config.color};"></i>
+                        ${type === 'journal' ? activity.log?.morning?.sessionName || 'Daily Entry' : type === 'good' ? 'Gratitude Entry' : Utils.sanitize(activity.title || config.label)}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    ${bodyContent}
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1.5rem; text-align: center;">
+                        ${Utils.formatDate(activity.date)}
+                    </p>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>

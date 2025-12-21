@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Royal Calendar - Plan important events and dates">
+    <title>Royal Calendar | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/events.html">
+    <meta property="og:title" content="Royal Calendar | REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .event-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .event-card.past {
+            opacity: 0.6;
+        }
+
+        .event-date-box {
+            min-width: 3.5rem;
+            text-align: center;
+            padding: 0.5rem;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.05));
+            border-radius: 0.75rem;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .event-date-day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #06b6d4;
+        }
+
+        .event-date-month {
+            font-size: 0.625rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .event-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .event-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .event-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.6875rem;
+            border-radius: 9999px;
+        }
+
+        .event-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .event-section {
+            margin-bottom: 2rem;
+        }
+
+        .event-section-title {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <div class="page-hero">
+                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                        <i class="ph-fill ph-calendar-check"></i>
+                    </div>
+                    <h1 class="page-hero-title">Royal Calendar</h1>
+                    <p class="page-hero-subtitle">Plan your conquests. Never miss an important moment.</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="stat-card">
+                        <i class="ph-fill ph-calendar stat-card-icon" style="color: #06b6d4;"></i>
+                        <p class="stat-card-label">Total Events</p>
+                        <span class="stat-card-value" id="stat-total">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-clock stat-card-icon" style="color: #f59e0b;"></i>
+                        <p class="stat-card-label">Upcoming</p>
+                        <span class="stat-card-value" id="stat-upcoming">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-calendar-x stat-card-icon" style="color: #64748b;"></i>
+                        <p class="stat-card-label">Past</p>
+                        <span class="stat-card-value" id="stat-past">0</span>
+                    </div>
+                </div>
+
+                <!-- Add Event Button -->
+                <div style="margin-bottom: 1.5rem;">
+                    <button class="btn btn-primary" onclick="openEventModal()"
+                        style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                        <i class="ph-bold ph-plus"></i> Add Event
+                    </button>
+                </div>
+
+                <!-- Events List -->
+                <div id="events-list">
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading events...</p>
+                    </div>
+                </div>
+
+                <button class="fab" onclick="openEventModal()"
+                    style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                    <i class="ph-bold ph-plus"></i>
+                </button>
+            </main>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content" id="modal-content"></div>
+            </div>
+        </div>
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        let events = [];
+        let editingId = null;
+
+        const eventTypes = [
+            { value: 'meeting', label: 'Meeting', color: '#3b82f6' },
+            { value: 'birthday', label: 'Birthday', color: '#ec4899' },
+            { value: 'deadline', label: 'Deadline', color: '#ef4444' },
+            { value: 'appointment', label: 'Appointment', color: '#8b5cf6' },
+            { value: 'reminder', label: 'Reminder', color: '#f59e0b' },
+            { value: 'travel', label: 'Travel', color: '#10b981' },
+            { value: 'other', label: 'Other', color: '#64748b' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Royal Calendar',
+                pageIcon: 'ph-calendar-check'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+            loadEvents();
+        });
+
+        function loadEvents() {
+            const data = Storage.getData();
+            events = data.events || [];
+            updateStats();
+            renderEvents();
+        }
+
+        function updateStats() {
+            const now = new Date();
+            const upcoming = events.filter(e => new Date(e.date) >= now);
+            const past = events.filter(e => new Date(e.date) < now);
+
+            document.getElementById('stat-total').textContent = events.length;
+            document.getElementById('stat-upcoming').textContent = upcoming.length;
+            document.getElementById('stat-past').textContent = past.length;
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('events-list');
+
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state glass-card">
+                        <i class="ph-duotone ph-calendar-check"></i>
+                        <h3>No Events Yet</h3>
+                        <p>Plan your upcoming events and never miss a moment.</p>
+                        <button class="btn btn-primary" onclick="openEventModal()" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                            <i class="ph-bold ph-plus"></i> Add First Event
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const now = new Date();
+            const upcoming = events.filter(e => new Date(e.date) >= now).sort((a, b) => new Date(a.date) - new Date(b.date));
+            const past = events.filter(e => new Date(e.date) < now).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = `
+                ${upcoming.length > 0 ? `
+                    <div class="event-section">
+                        <h4 class="event-section-title"><i class="ph-bold ph-clock"></i> Upcoming Events</h4>
+                        ${upcoming.map(event => renderEventCard(event, false)).join('')}
+                    </div>
+                ` : ''}
+                ${past.length > 0 ? `
+                    <div class="event-section">
+                        <h4 class="event-section-title"><i class="ph-bold ph-hourglass"></i> Past Events</h4>
+                        ${past.slice(0, 10).map(event => renderEventCard(event, true)).join('')}
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function renderEventCard(event, isPast) {
+            const date = new Date(event.date);
+            const typeConfig = eventTypes.find(t => t.value === event.type) || eventTypes[6];
+
+            return `
+                <div class="event-card ${isPast ? 'past' : ''}" onclick="viewEvent('${event.id}')">
+                    <div class="event-date-box">
+                        <div class="event-date-day">${date.getDate()}</div>
+                        <div class="event-date-month">${date.toLocaleString('en-US', { month: 'short' })}</div>
+                    </div>
+                    <div class="event-content">
+                        <h4 class="event-title">${Utils.sanitize(event.title)}</h4>
+                        <span class="event-type" style="background: ${typeConfig.color}20; color: ${typeConfig.color};">
+                            ${typeConfig.label}
+                        </span>
+                        ${event.time ? `<p class="event-time"><i class="ph-bold ph-clock"></i> ${event.time}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openEventModal(eventId = null) {
+            editingId = eventId;
+            const event = eventId ? events.find(e => e.id === eventId) : null;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-calendar-plus" style="color: #06b6d4;"></i>
+                        ${event ? 'Edit Event' : 'Add New Event'}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveEvent(event)">
+                        <div class="form-group">
+                            <label class="form-label">Event Title *</label>
+                            <input type="text" id="event-title" class="form-input" required
+                                   placeholder="What's happening?" value="${event ? Utils.sanitize(event.title) : ''}">
+                        </div>
+                        <div class="grid grid-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Date *</label>
+                                <input type="date" id="event-date" class="form-input" required
+                                       value="${event ? event.date.split('T')[0] : ''}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Time (Optional)</label>
+                                <input type="time" id="event-time" class="form-input"
+                                       value="${event?.time || ''}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Event Type</label>
+                            <select id="event-type" class="form-select">
+                                ${eventTypes.map(t => `<option value="${t.value}" ${event?.type === t.value ? 'selected' : ''}>${t.label}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notes (Optional)</label>
+                            <textarea id="event-notes" class="form-textarea" rows="3" 
+                                      placeholder="Additional details...">${event?.notes ? Utils.sanitize(event.notes) : ''}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                            <i class="ph-bold ph-${event ? 'floppy-disk' : 'calendar-plus'}"></i>
+                            ${event ? 'Update Event' : 'Add Event'}
+                        </button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function saveEvent(e) {
+            e.preventDefault();
+
+            const eventData = {
+                title: document.getElementById('event-title').value.trim(),
+                date: document.getElementById('event-date').value,
+                time: document.getElementById('event-time').value,
+                type: document.getElementById('event-type').value,
+                notes: document.getElementById('event-notes').value.trim()
+            };
+
+            if (!eventData.title || !eventData.date) {
+                Utils.showToast('Please fill in required fields', 'danger');
+                return;
+            }
+
+            const data = Storage.getData();
+            if (!data.events) data.events = [];
+
+            if (editingId) {
+                const index = data.events.findIndex(ev => ev.id === editingId);
+                if (index !== -1) {
+                    data.events[index] = { ...data.events[index], ...eventData };
+                }
+                Utils.showToast('Event updated!', 'info');
+            } else {
+                data.events.push({
+                    id: Utils.generateId(),
+                    ...eventData,
+                    createdAt: new Date().toISOString()
+                });
+                Utils.showToast('Event added! 📅', 'success');
+            }
+
+            Storage.saveData(data);
+            closeModal();
+            loadEvents();
+        }
+
+        function viewEvent(id) {
+            const event = events.find(e => e.id === id);
+            if (!event) return;
+
+            const date = new Date(event.date);
+            const typeConfig = eventTypes.find(t => t.value === event.type) || eventTypes[6];
+            const isPast = date < new Date();
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-calendar-check" style="color: #06b6d4;"></i>
+                        ${Utils.sanitize(event.title)}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <div class="event-date-box" style="display: inline-block; padding: 1rem 1.5rem;">
+                            <div class="event-date-day" style="font-size: 2rem;">${date.getDate()}</div>
+                            <div class="event-date-month">${date.toLocaleString('en-US', { month: 'long', year: 'numeric' })}</div>
+                        </div>
+                        ${event.time ? `<p style="color: var(--text-muted); margin-top: 0.5rem;"><i class="ph-bold ph-clock"></i> ${event.time}</p>` : ''}
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="event-type" style="background: ${typeConfig.color}20; color: ${typeConfig.color};">
+                            ${typeConfig.label}
+                        </span>
+                        ${isPast ? '<span class="badge" style="margin-left: 0.5rem; background: rgba(100,116,139,0.2); color: #64748b;">Past</span>' : ''}
+                    </div>
+                    ${event.notes ? `<p style="color: white; line-height: 1.6; margin-bottom: 1.5rem;">${Utils.sanitize(event.notes)}</p>` : ''}
+                    <div class="grid grid-2 gap-4">
+                        <button class="btn btn-outline btn-block" onclick="openEventModal('${event.id}')">
+                            <i class="ph-bold ph-pencil-simple"></i> Edit
+                        </button>
+                        <button class="btn btn-outline btn-block danger" onclick="deleteEvent('${event.id}')">
+                            <i class="ph-bold ph-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function deleteEvent(id) {
+            if (!confirm('Delete this event?')) return;
+            const data = Storage.getData();
+            data.events = data.events.filter(e => e.id !== id);
+            Storage.saveData(data);
+            Utils.showToast('Event deleted', 'info');
+            closeModal();
+            loadEvents();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            editingId = null;
+        }
+    </script>
+</body>
+
+</html>

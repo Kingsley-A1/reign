@@ -117,128 +117,437 @@ const corsOptions = process.env.NODE_ENV === 'development'
 
 ## Database Implementation Plan
 
-### Option A: PostgreSQL (Recommended)
+### CockroachDB Serverless (Selected Choice)
 
-**Pros:** Relational, ACID compliant, great for structured data, free tiers available
+**Why CockroachDB Serverless?**
+- ✅ PostgreSQL-compatible (uses standard `pg` driver)
+- ✅ 10GB free storage (vs 500MB on most alternatives)
+- ✅ 50M Request Units/month free
+- ✅ Scales to zero when idle (no cost)
+- ✅ Built-in high availability (3x replication)
+- ✅ JSONB fully supported for app data storage
 
-#### Step 1: Install Dependencies
+---
+
+### 🔐 What You Need from CockroachDB Dashboard
+
+Before implementation, get these from [cockroachlabs.cloud](https://cockroachlabs.cloud):
+
+| Item | Where to Find | Example |
+|------|---------------|---------|
+| **Connection String** | Cluster → Connect → Connection String | `postgresql://username:password@host:26257/defaultdb?sslmode=verify-full` |
+| **Database Name** | Usually `defaultdb` or create custom | `reign_db` |
+| **CA Certificate** | Cluster → Connect → Download CA Cert | `cc-ca.crt` file |
+| **Cluster ID** | Shown in dashboard URL | `free-tier14.aws-us-east-1` |
+
+---
+
+### Step 1: Install Dependencies
 
 ```bash
 cd api
-npm install pg knex
+npm install pg
 ```
 
-#### Step 2: Create Database Schema
+> Note: CockroachDB uses the standard PostgreSQL `pg` driver. No special packages needed!
+
+---
+
+### Step 2: Create Database Schema
+
+Run this SQL in the CockroachDB SQL shell (Console → SQL):
 
 ```sql
+-- =============================================
+-- REIGN DATABASE SCHEMA FOR COCKROACHDB
+-- =============================================
+
 -- Users table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    avatar_url TEXT,
-    initials VARCHAR(2),
-    role VARCHAR(50) DEFAULT 'user',
-    status VARCHAR(50) DEFAULT 'active',
-    streak INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    email STRING(255) UNIQUE NOT NULL,
+    password_hash STRING(255) NOT NULL,
+    name STRING(255) NOT NULL,
+    avatar_url STRING,
+    initials STRING(2),
+    role STRING(50) DEFAULT 'user',
+    status STRING(50) DEFAULT 'active',
+    streak INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- User data (JSON blob for app data)
-CREATE TABLE user_data (
+-- User app data (JSONB blob for sync)
+CREATE TABLE IF NOT EXISTS user_data (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    data JSONB NOT NULL,
-    last_sync TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    data JSONB NOT NULL DEFAULT '{}',
+    last_sync TIMESTAMPTZ DEFAULT now(),
     UNIQUE(user_id)
 );
 
 -- Sessions table (for refresh tokens)
-CREATE TABLE sessions (
+CREATE TABLE IF NOT EXISTS sessions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    refresh_token VARCHAR(255) NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    refresh_token STRING(255) NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    INDEX idx_sessions_user (user_id),
+    INDEX idx_sessions_token (refresh_token)
 );
 
--- Audit log (for admin)
-CREATE TABLE audit_log (
+-- Audit log (for admin tracking)
+CREATE TABLE IF NOT EXISTS audit_log (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id),
-    action VARCHAR(100) NOT NULL,
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    action STRING(100) NOT NULL,
     details JSONB,
-    ip_address INET,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ip_address STRING(45),  -- Supports IPv6
+    created_at TIMESTAMPTZ DEFAULT now(),
+    INDEX idx_audit_user (user_id),
+    INDEX idx_audit_created (created_at DESC)
 );
 
--- Announcements
-CREATE TABLE announcements (
+-- Announcements (admin broadcasts)
+CREATE TABLE IF NOT EXISTS announcements (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    message TEXT NOT NULL,
-    target VARCHAR(50) DEFAULT 'all',
-    created_by UUID REFERENCES users(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    title STRING(255) NOT NULL,
+    message STRING NOT NULL,
+    target STRING(50) DEFAULT 'all',
+    is_active BOOL DEFAULT true,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    INDEX idx_announcements_active (is_active, created_at DESC)
 );
 
--- Indexes
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_user_data_user_id ON user_data(user_id);
-CREATE INDEX idx_sessions_user_id ON sessions(user_id);
-CREATE INDEX idx_audit_log_user_id ON audit_log(user_id);
+-- Primary indexes (CockroachDB creates these automatically for PRIMARY KEY)
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_user_data_user ON user_data(user_id);
 ```
 
-#### Step 3: Update auth.js
+---
 
-Replace in-memory Map with database calls:
+### Step 3: Environment Configuration
+
+Add to `api/.env`:
+
+```env
+# ===========================================
+# COCKROACHDB SERVERLESS CONFIGURATION
+# ===========================================
+
+# Connection string from CockroachDB dashboard
+# Format: postgresql://USER:PASSWORD@HOST:26257/DATABASE?sslmode=verify-full
+DATABASE_URL=postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_CLUSTER.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full
+
+# For production, always use verify-full SSL mode
+DATABASE_SSL_MODE=verify-full
+
+# Connection pool settings (optimized for serverless)
+DATABASE_POOL_MAX=10
+DATABASE_POOL_IDLE_TIMEOUT=30000
+DATABASE_CONNECTION_TIMEOUT=10000
+```
+
+---
+
+### Step 4: Create Database Connection Module
+
+Create new file `api/lib/database.js`:
 
 ```javascript
+/**
+ * CockroachDB Serverless Connection Module
+ * Handles connection pooling and query execution
+ */
+
 const { Pool } = require('pg');
 
+// Connection pool configuration for CockroachDB Serverless
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    ssl: {
+        rejectUnauthorized: true  // CockroachDB requires SSL
+    },
+    max: parseInt(process.env.DATABASE_POOL_MAX) || 10,
+    idleTimeoutMillis: parseInt(process.env.DATABASE_POOL_IDLE_TIMEOUT) || 30000,
+    connectionTimeoutMillis: parseInt(process.env.DATABASE_CONNECTION_TIMEOUT) || 10000
 });
 
+// Log connection status
+pool.on('connect', () => {
+    console.log('✅ Connected to CockroachDB');
+});
+
+pool.on('error', (err) => {
+    console.error('❌ CockroachDB connection error:', err.message);
+});
+
+/**
+ * Execute a query with parameters
+ * @param {string} text - SQL query
+ * @param {Array} params - Query parameters
+ * @returns {Promise<Object>} Query result
+ */
+async function query(text, params) {
+    const start = Date.now();
+    try {
+        const result = await pool.query(text, params);
+        const duration = Date.now() - start;
+        
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`📊 Query executed in ${duration}ms`);
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('Query error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Get a client from the pool for transactions
+ * @returns {Promise<PoolClient>}
+ */
+async function getClient() {
+    return pool.connect();
+}
+
+/**
+ * Test database connection
+ * @returns {Promise<boolean>}
+ */
+async function testConnection() {
+    try {
+        const result = await query('SELECT now() as current_time');
+        console.log('✅ Database connection test passed:', result.rows[0].current_time);
+        return true;
+    } catch (error) {
+        console.error('❌ Database connection test failed:', error.message);
+        return false;
+    }
+}
+
+/**
+ * Close all connections (for graceful shutdown)
+ */
+async function close() {
+    await pool.end();
+    console.log('Database pool closed');
+}
+
+module.exports = {
+    query,
+    getClient,
+    testConnection,
+    close,
+    pool
+};
+```
+
+---
+
+### Step 5: Update auth.js for Database
+
+Replace in-memory Map with database calls in `api/lib/auth.js`:
+
+```javascript
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const db = require('./database');
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const SALT_ROUNDS = 12;
+
+// Validate JWT_SECRET is set
+if (!JWT_SECRET || JWT_SECRET.includes('fallback')) {
+    console.error('⚠️  WARNING: JWT_SECRET not properly configured!');
+}
+
+/**
+ * Create a new user
+ */
 async function createUser(userData) {
     const { name, email, password } = userData;
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
-    const result = await pool.query(
+    const result = await db.query(
         `INSERT INTO users (email, password_hash, name, initials) 
          VALUES ($1, $2, $3, $4) 
-         RETURNING id, email, name, avatar_url, initials, role, created_at`,
-        [email.toLowerCase(), hashedPassword, name, initials]
+         RETURNING id, email, name, avatar_url, initials, role, status, streak, created_at`,
+        [email.toLowerCase().trim(), hashedPassword, name.trim(), initials]
     );
 
     return result.rows[0];
 }
 
+/**
+ * Find user by email
+ */
 async function findUserByEmail(email) {
-    const result = await pool.query(
+    const result = await db.query(
         'SELECT * FROM users WHERE email = $1',
-        [email.toLowerCase()]
+        [email.toLowerCase().trim()]
     );
     return result.rows[0] || null;
 }
+
+/**
+ * Find user by ID
+ */
+async function findUserById(id) {
+    const result = await db.query(
+        'SELECT id, email, name, avatar_url, initials, role, status, streak, created_at FROM users WHERE id = $1',
+        [id]
+    );
+    return result.rows[0] || null;
+}
+
+/**
+ * Update user profile
+ */
+async function updateUser(id, updates) {
+    const { name, avatar_url } = updates;
+    const initials = name ? name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : undefined;
+    
+    const result = await db.query(
+        `UPDATE users 
+         SET name = COALESCE($1, name), 
+             avatar_url = COALESCE($2, avatar_url),
+             initials = COALESCE($3, initials),
+             updated_at = now()
+         WHERE id = $4
+         RETURNING id, email, name, avatar_url, initials, role, status, streak, created_at`,
+        [name, avatar_url, initials, id]
+    );
+    
+    return result.rows[0];
+}
+
+/**
+ * Verify password
+ */
+async function verifyPassword(password, hash) {
+    return bcrypt.compare(password, hash);
+}
+
+/**
+ * Generate JWT token
+ */
+function generateToken(user) {
+    return jwt.sign(
+        { 
+            id: user.id, 
+            email: user.email,
+            role: user.role 
+        },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+    );
+}
+
+/**
+ * Verify JWT token
+ */
+function verifyToken(token) {
+    try {
+        return jwt.verify(token, JWT_SECRET);
+    } catch (error) {
+        return null;
+    }
+}
+
+/**
+ * Get all users (admin)
+ */
+async function getAllUsers() {
+    const result = await db.query(
+        `SELECT id, email, name, avatar_url, initials, role, status, streak, created_at, updated_at 
+         FROM users 
+         ORDER BY created_at DESC`
+    );
+    return result.rows;
+}
+
+/**
+ * Log audit event
+ */
+async function logAudit(userId, action, details, ipAddress) {
+    await db.query(
+        `INSERT INTO audit_log (user_id, action, details, ip_address) 
+         VALUES ($1, $2, $3, $4)`,
+        [userId, action, JSON.stringify(details), ipAddress]
+    );
+}
+
+module.exports = {
+    createUser,
+    findUserByEmail,
+    findUserById,
+    updateUser,
+    verifyPassword,
+    generateToken,
+    verifyToken,
+    getAllUsers,
+    logAudit
+};
 ```
-
-#### Step 4: Database Providers (Free Tiers)
-
-| Provider | Free Tier | Best For |
-|----------|-----------|----------|
-| **Supabase** | 500MB, 2 projects | Best overall |
-| **Neon** | 512MB, 1 project | Serverless PostgreSQL |
-| **Railway** | $5 credit/month | Easy deployment |
-| **PlanetScale** | 1 billion rows | MySQL alternative |
 
 ---
 
-### Option B: MongoDB (Alternative)
+### Step 6: Update Sync Module for Database
+
+Update `api/routes/sync.js` to use database:
+
+```javascript
+const db = require('../lib/database');
+
+/**
+ * Get user data from database
+ */
+async function getUserData(userId) {
+    const result = await db.query(
+        'SELECT data, last_sync FROM user_data WHERE user_id = $1',
+        [userId]
+    );
+    return result.rows[0] || null;
+}
+
+/**
+ * Save user data to database
+ */
+async function saveUserData(userId, data) {
+    const result = await db.query(
+        `INSERT INTO user_data (user_id, data, last_sync) 
+         VALUES ($1, $2, now())
+         ON CONFLICT (user_id) 
+         DO UPDATE SET data = $2, last_sync = now()
+         RETURNING id, last_sync`,
+        [userId, JSON.stringify(data)]
+    );
+    return result.rows[0];
+}
+```
+
+---
+
+### CockroachDB Free Tier Limits
+
+| Resource | Free Allowance | REIGN Usage Estimate |
+|----------|---------------|----------------------|
+| Storage | **10 GB** | ~50MB for 1000 users |
+| Request Units | **50M RUs/month** | ~3K RUs/user/month |
+| Connections | Unlimited | ~10 concurrent max |
+| Regions | 1 | Sufficient |
+
+**Estimated capacity: 16,000+ active users on free tier!**
+
+---
+
+### Alternative: MongoDB (If Needed)
 
 **Pros:** Flexible schema, JSON-like documents, easy to start
 

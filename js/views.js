@@ -1993,6 +1993,469 @@ const Views = {
     },
 
     // ==========================================
+    // RELATIONSHIPS VIEW
+    // "People who hold your hand on rainy days"
+    // ==========================================
+
+    renderRelationships(container, data) {
+        const isLoggedIn = Auth.getUser() !== null;
+
+        if (!isLoggedIn) {
+            container.innerHTML = `
+                <div class="view-header">
+                    <div>
+                        <h2 class="view-title">
+                            <i class="ph-duotone ph-heart-half" style="color: #ec4899;"></i>
+                            Rainy Day People
+                        </h2>
+                        <p class="view-subtitle">People who hold your hand on rainy days</p>
+                    </div>
+                </div>
+                <div class="glass-card empty-state" style="border-style: dashed;">
+                    <i class="ph-duotone ph-users-three"></i>
+                    <h3>Sign In Required</h3>
+                    <p>Sign in to manage your relationships and keep track of the people who matter most.</p>
+                    <a href="auth.html" class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="ph-bold ph-sign-in"></i> Sign In
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        // Load relationships state
+        const relationshipsState = window.relationshipsData || {
+            relationships: [],
+            grouped: {},
+            loading: true,
+            filter: 'all'
+        };
+
+        container.innerHTML = `
+            <div class="view-header">
+                <div>
+                    <h2 class="view-title">
+                        <i class="ph-duotone ph-heart-half" style="color: #ec4899;"></i>
+                        Rainy Day People
+                    </h2>
+                    <p class="view-subtitle">People who hold your hand on rainy days</p>
+                </div>
+                <button class="btn btn-primary" onclick="app.openRelationshipModal()">
+                    <i class="ph-bold ph-user-plus"></i> Add Person
+                </button>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="relationships-stats">
+                <div class="rel-stat-card glass-card" onclick="app.filterRelationships('all')">
+                    <i class="ph-duotone ph-users" style="color: var(--royal-gold);"></i>
+                    <div class="rel-stat-value" id="rel-total">-</div>
+                    <div class="rel-stat-label">Total</div>
+                </div>
+                <div class="rel-stat-card glass-card" onclick="app.filterRelationships('partner')">
+                    <i class="ph-duotone ph-heart" style="color: #ef4444;"></i>
+                    <div class="rel-stat-value" id="rel-partners">-</div>
+                    <div class="rel-stat-label">Partners</div>
+                </div>
+                <div class="rel-stat-card glass-card" onclick="app.filterRelationships('friend')">
+                    <i class="ph-duotone ph-hand-heart" style="color: #8b5cf6;"></i>
+                    <div class="rel-stat-value" id="rel-friends">-</div>
+                    <div class="rel-stat-label">Friends</div>
+                </div>
+                <div class="rel-stat-card glass-card" onclick="app.filterRelationships('favorite')">
+                    <i class="ph-fill ph-star" style="color: #f59e0b;"></i>
+                    <div class="rel-stat-value" id="rel-favorites">-</div>
+                    <div class="rel-stat-label">Favorites</div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="relationships-filter">
+                <button class="rel-filter-btn active" data-filter="all" onclick="app.filterRelationships('all')">All</button>
+                <button class="rel-filter-btn" data-filter="partner" onclick="app.filterRelationships('partner')">
+                    <i class="ph-bold ph-heart"></i> Partners
+                </button>
+                <button class="rel-filter-btn" data-filter="child" onclick="app.filterRelationships('child')">
+                    <i class="ph-bold ph-baby"></i> Children
+                </button>
+                <button class="rel-filter-btn" data-filter="parent" onclick="app.filterRelationships('parent')">
+                    <i class="ph-bold ph-house"></i> Parents
+                </button>
+                <button class="rel-filter-btn" data-filter="colleague" onclick="app.filterRelationships('colleague')">
+                    <i class="ph-bold ph-briefcase"></i> Colleagues
+                </button>
+                <button class="rel-filter-btn" data-filter="business_partner" onclick="app.filterRelationships('business_partner')">
+                    <i class="ph-bold ph-handshake"></i> Business
+                </button>
+                <button class="rel-filter-btn" data-filter="mentor" onclick="app.filterRelationships('mentor')">
+                    <i class="ph-bold ph-lightbulb"></i> Mentors
+                </button>
+                <button class="rel-filter-btn" data-filter="friend" onclick="app.filterRelationships('friend')">
+                    <i class="ph-bold ph-hand-heart"></i> Friends
+                </button>
+            </div>
+            
+            <!-- Classification Filters -->
+            <div class="relationships-filter" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+                <span style="font-size: 0.75rem; color: #64748b; padding: 0.5rem 0;">By Impact:</span>
+                <button class="rel-filter-btn" data-filter="burden_bearer" onclick="app.filterRelationships('burden_bearer', 'classification')" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">
+                    🤝 Burden Bearers
+                </button>
+                <button class="rel-filter-btn" data-filter="divine_connector" onclick="app.filterRelationships('divine_connector', 'classification')" style="background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.3);">
+                    ✨ Divine Connectors
+                </button>
+                <button class="rel-filter-btn" data-filter="influential" onclick="app.filterRelationships('influential', 'classification')" style="background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3);">
+                    👑 Influential
+                </button>
+                <button class="rel-filter-btn" data-filter="talented" onclick="app.filterRelationships('talented', 'classification')" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3);">
+                    🎯 Talented
+                </button>
+            </div>
+
+            <!-- Relationships List -->
+            <div class="relationships-list" id="relationships-list">
+                <div class="loading-spinner">
+                    <i class="ph-duotone ph-spinner-gap"></i>
+                    <p>Loading your people...</p>
+                </div>
+            </div>
+        `;
+
+        // Load relationships from API
+        app.loadRelationships();
+    },
+
+    renderRelationshipsList(relationships, filter = 'all') {
+        const listEl = document.getElementById('relationships-list');
+        if (!listEl) return;
+
+        // If 'filtered' is passed, data is already filtered
+        let filtered = relationships;
+        if (filter !== 'all' && filter !== 'filtered' && filter !== 'favorite') {
+            filtered = relationships.filter(r => r.purpose === filter);
+        } else if (filter === 'favorite') {
+            filtered = relationships.filter(r => r.isFavorite);
+        }
+        // When filter === 'filtered', use relationships as-is (already filtered)
+
+        if (filtered.length === 0) {
+            listEl.innerHTML = `
+                <div class="empty-state glass-card" style="border-style: dashed; text-align: center; padding: 3rem;">
+                    <i class="ph-duotone ph-users-three" style="font-size: 4rem; color: #64748b; margin-bottom: 1rem;"></i>
+                    <h3 style="color: white; margin-bottom: 0.5rem;">No People Yet</h3>
+                    <p style="color: #94a3b8; margin-bottom: 1.5rem;">Add the special people in your life who support you on rainy days.</p>
+                    <button class="btn btn-primary" onclick="app.openRelationshipModal()">
+                        <i class="ph-bold ph-user-plus"></i> Add First Person
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        // Group by purpose for display
+        const grouped = {};
+        filtered.forEach(rel => {
+            const key = rel.purpose;
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(rel);
+        });
+
+        const purposeLabels = {
+            partner: { label: '❤️ Life Partners', color: '#ef4444' },
+            child: { label: '👶 Children', color: '#f59e0b' },
+            parent: { label: '🏠 Parents', color: '#10b981' },
+            sibling: { label: '👫 Siblings', color: '#06b6d4' },
+            colleague: { label: '💼 Colleagues', color: '#6366f1' },
+            business_partner: { label: '🤝 Business Partners', color: '#8b5cf6' },
+            mentor: { label: '💡 Mentors', color: '#d946ef' },
+            friend: { label: '🫂 Friends', color: '#ec4899' },
+            other: { label: '✨ Others', color: '#64748b' }
+        };
+
+        let html = '';
+
+        // If showing all, group by purpose
+        if (filter === 'all' || filter === 'favorite') {
+            Object.keys(grouped).forEach(purpose => {
+                const info = purposeLabels[purpose] || { label: purpose, color: '#64748b' };
+                html += `
+                    <div class="rel-group">
+                        <h3 class="rel-group-title" style="border-left-color: ${info.color};">${info.label}</h3>
+                        <div class="rel-group-cards">
+                            ${grouped[purpose].map(rel => this.renderRelationshipCard(rel)).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            // Single purpose view
+            html = `<div class="rel-group-cards">${filtered.map(rel => this.renderRelationshipCard(rel)).join('')}</div>`;
+        }
+
+        listEl.innerHTML = html;
+    },
+
+    renderRelationshipCard(rel) {
+        const genderIcon = rel.gender === 'male' ? 'ph-gender-male' : rel.gender === 'female' ? 'ph-gender-female' : 'ph-gender-neuter';
+        const genderColor = rel.gender === 'male' ? '#3b82f6' : rel.gender === 'female' ? '#ec4899' : '#8b5cf6';
+
+        // Classification badges
+        const classificationBadges = {
+            burden_bearer: { icon: '🤝', label: 'Burden Bearer', color: '#10b981' },
+            divine_connector: { icon: '✨', label: 'Divine Connector', color: '#8b5cf6' },
+            influential: { icon: '👑', label: 'Influential', color: '#f59e0b' },
+            talented: { icon: '🎯', label: 'Talented', color: '#3b82f6' }
+        };
+        const classInfo = rel.classification ? classificationBadges[rel.classification] : null;
+
+        return `
+            <div class="rel-card glass-card" onclick="app.viewRelationship('${rel.id}')">
+                <div class="rel-card-header">
+                    <div class="rel-avatar" style="background: linear-gradient(135deg, ${genderColor}33, ${genderColor}11);">
+                        ${rel.photoUrl
+                ? `<img src="${rel.photoUrl}" alt="${Utils.sanitize(rel.name)}">`
+                : `<span style="color: ${genderColor};">${rel.name.charAt(0).toUpperCase()}</span>`
+            }
+                    </div>
+                    <div class="rel-info">
+                        <h4 class="rel-name">
+                            ${Utils.sanitize(rel.name)}
+                            ${rel.isFavorite ? '<i class="ph-fill ph-star" style="color: #f59e0b; font-size: 0.875rem;"></i>' : ''}
+                        </h4>
+                        <p class="rel-purpose">
+                            <i class="${genderIcon}" style="color: ${genderColor};"></i>
+                            ${rel.purpose === 'other' ? rel.customPurpose : rel.purpose.replace('_', ' ')}
+                        </p>
+                    </div>
+                    <button class="rel-favorite-btn" onclick="event.stopPropagation(); app.toggleRelationshipFavorite('${rel.id}')" title="${rel.isFavorite ? 'Remove from favorites' : 'Add to favorites'}">
+                        <i class="ph-${rel.isFavorite ? 'fill' : 'bold'} ph-star"></i>
+                    </button>
+                </div>
+                ${classInfo ? `
+                    <div style="margin-top: 0.5rem;">
+                        <span style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem; background: ${classInfo.color}20; border: 1px solid ${classInfo.color}40; border-radius: 9999px; font-size: 0.6875rem; color: ${classInfo.color}; font-weight: 600;">
+                            ${classInfo.icon} ${classInfo.label}
+                        </span>
+                    </div>
+                ` : ''}
+                ${rel.whatTheyDid ? `
+                    <div class="rel-card-body">
+                        <p class="rel-what-they-did">
+                            <i class="ph-bold ph-quotes"></i>
+                            ${Utils.sanitize(rel.whatTheyDid.substring(0, 100))}${rel.whatTheyDid.length > 100 ? '...' : ''}
+                        </p>
+                    </div>
+                ` : ''}
+                <div class="rel-card-footer">
+                    <span class="rel-added">Added ${Utils.formatTimeAgo(rel.createdAt)}</span>
+                    <div class="rel-actions">
+                        <button onclick="event.stopPropagation(); app.editRelationship('${rel.id}')" title="Edit">
+                            <i class="ph-bold ph-pencil-simple"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); app.deleteRelationship('${rel.id}')" title="Delete" class="danger">
+                            <i class="ph-bold ph-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    getRelationshipModalHTML(relationship = null) {
+        const isEdit = relationship !== null;
+        const purposes = [
+            { value: 'partner', label: 'Partner', icon: 'ph-heart' },
+            { value: 'child', label: 'Child', icon: 'ph-baby' },
+            { value: 'parent', label: 'Parent', icon: 'ph-house' },
+            { value: 'sibling', label: 'Sibling', icon: 'ph-users' },
+            { value: 'colleague', label: 'Colleague', icon: 'ph-briefcase' },
+            { value: 'business_partner', label: 'Business Partner', icon: 'ph-handshake' },
+            { value: 'mentor', label: 'Mentor', icon: 'ph-lightbulb' },
+            { value: 'friend', label: 'Friend', icon: 'ph-hand-heart' },
+            { value: 'other', label: 'Other', icon: 'ph-dots-three' }
+        ];
+
+        return `
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i class="ph-duotone ph-${isEdit ? 'pencil-simple' : 'user-plus'}" style="color: #ec4899;"></i>
+                    ${isEdit ? 'Edit Person' : 'Add a Rainy Day Person'}
+                </h2>
+                <button class="modal-close" onclick="app.closeModal()">
+                    <i class="ph-bold ph-x" style="font-size: 1.25rem;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="app.saveRelationship(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+                    ${isEdit ? `<input type="hidden" name="relationshipId" value="${relationship.id}">` : ''}
+                    
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Name *</label>
+                        <input type="text" name="name" class="form-input" required
+                            placeholder="Their name" value="${isEdit ? Utils.sanitize(relationship.name) : ''}">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Gender *</label>
+                            <select name="gender" class="form-select" required>
+                                <option value="">Select...</option>
+                                <option value="male" ${isEdit && relationship.gender === 'male' ? 'selected' : ''}>Male</option>
+                                <option value="female" ${isEdit && relationship.gender === 'female' ? 'selected' : ''}>Female</option>
+                                <option value="other" ${isEdit && relationship.gender === 'other' ? 'selected' : ''}>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Relationship *</label>
+                            <select name="purpose" class="form-select" required onchange="document.getElementById('custom-purpose-group').style.display = this.value === 'other' ? 'block' : 'none'">
+                                <option value="">Select...</option>
+                                ${purposes.map(p => `
+                                    <option value="${p.value}" ${isEdit && relationship.purpose === p.value ? 'selected' : ''}>${p.label}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0; display: ${isEdit && relationship.purpose === 'other' ? 'block' : 'none'};" id="custom-purpose-group">
+                        <label class="form-label">Custom Relationship Type</label>
+                        <input type="text" name="customPurpose" class="form-input" placeholder="e.g., Godparent, Coach..."
+                            value="${isEdit && relationship.customPurpose ? Utils.sanitize(relationship.customPurpose) : ''}">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">
+                            <i class="ph-bold ph-sparkle" style="color: #d946ef;"></i>
+                            Classification (How they impact your life)
+                        </label>
+                        <select name="classification" class="form-select">
+                            <option value="">None selected...</option>
+                            <option value="burden_bearer" ${isEdit && relationship.classification === 'burden_bearer' ? 'selected' : ''}>
+                                🤝 Burden Bearer - Carries your load when life gets heavy
+                            </option>
+                            <option value="divine_connector" ${isEdit && relationship.classification === 'divine_connector' ? 'selected' : ''}>
+                                ✨ Divine Connector - Connects you to purpose, faith, or destiny
+                            </option>
+                            <option value="influential" ${isEdit && relationship.classification === 'influential' ? 'selected' : ''}>
+                                👑 Influential - Shapes your decisions and growth
+                            </option>
+                            <option value="talented" ${isEdit && relationship.classification === 'talented' ? 'selected' : ''}>
+                                🎯 Talented - Brings unique gifts and abilities to your life
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">
+                            <i class="ph-bold ph-heart" style="color: #ec4899;"></i>
+                            What has this person done for you?
+                        </label>
+                        <textarea name="whatTheyDid" class="form-textarea" rows="3"
+                            placeholder="Describe how they've supported you, memorable moments, or why they matter...">${isEdit && relationship.whatTheyDid ? Utils.sanitize(relationship.whatTheyDid) : ''}</textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Contact (Optional)</label>
+                            <input type="text" name="contactInfo" class="form-input" placeholder="Phone or email"
+                                value="${isEdit && relationship.contactInfo ? Utils.sanitize(relationship.contactInfo) : ''}">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Birthday (Optional)</label>
+                            <input type="date" name="birthday" class="form-input"
+                                value="${isEdit && relationship.birthday ? relationship.birthday.split('T')[0] : ''}">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Notes (Optional)</label>
+                        <textarea name="notes" class="form-textarea" rows="2"
+                            placeholder="Any additional notes...">${isEdit && relationship.notes ? Utils.sanitize(relationship.notes) : ''}</textarea>
+                    </div>
+
+                    <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="isFavorite" style="width: 1.25rem; height: 1.25rem;" ${isEdit && relationship.isFavorite ? 'checked' : ''}>
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="ph-fill ph-star" style="color: #f59e0b;"></i>
+                            Mark as Favorite
+                        </span>
+                    </label>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top: 0.5rem; background: linear-gradient(135deg, #ec4899, #d946ef);">
+                        <i class="ph-bold ph-${isEdit ? 'floppy-disk' : 'user-plus'}"></i>
+                        ${isEdit ? 'Update Person' : 'Add to My People'}
+                    </button>
+                </form>
+            </div>
+        `;
+    },
+
+    getRelationshipDetailModalHTML(relationship) {
+        const genderIcon = relationship.gender === 'male' ? 'ph-gender-male' : relationship.gender === 'female' ? 'ph-gender-female' : 'ph-gender-neuter';
+        const genderColor = relationship.gender === 'male' ? '#3b82f6' : relationship.gender === 'female' ? '#ec4899' : '#8b5cf6';
+
+        return `
+            <div class="modal-header" style="text-align: center; display: block;">
+                <div class="rel-detail-avatar" style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, ${genderColor}33, ${genderColor}11); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; font-weight: 700; color: ${genderColor};">
+                    ${relationship.photoUrl
+                ? `<img src="${relationship.photoUrl}" alt="${Utils.sanitize(relationship.name)}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`
+                : relationship.name.charAt(0).toUpperCase()
+            }
+                </div>
+                <h2 class="modal-title" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    ${Utils.sanitize(relationship.name)}
+                    ${relationship.isFavorite ? '<i class="ph-fill ph-star" style="color: #f59e0b;"></i>' : ''}
+                </h2>
+                <p style="color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <i class="${genderIcon}" style="color: ${genderColor};"></i>
+                    ${relationship.purpose === 'other' ? relationship.customPurpose : relationship.purpose.replace('_', ' ')}
+                </p>
+                <button class="modal-close" onclick="app.closeModal()" style="position: absolute; top: 1rem; right: 1rem;">
+                    <i class="ph-bold ph-x" style="font-size: 1.25rem;"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                ${relationship.whatTheyDid ? `
+                    <div class="rel-detail-section">
+                        <h4><i class="ph-bold ph-heart" style="color: #ec4899;"></i> What They've Done</h4>
+                        <p style="color: #e2e8f0; line-height: 1.7; font-style: italic;">"${Utils.sanitize(relationship.whatTheyDid)}"</p>
+                    </div>
+                ` : ''}
+                
+                <div class="rel-detail-info">
+                    ${relationship.contactInfo ? `
+                        <div class="rel-detail-item">
+                            <i class="ph-bold ph-phone"></i>
+                            <span>${Utils.sanitize(relationship.contactInfo)}</span>
+                        </div>
+                    ` : ''}
+                    ${relationship.birthday ? `
+                        <div class="rel-detail-item">
+                            <i class="ph-bold ph-cake"></i>
+                            <span>${new Date(relationship.birthday).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</span>
+                        </div>
+                    ` : ''}
+                    ${relationship.notes ? `
+                        <div class="rel-detail-item" style="flex-direction: column; align-items: flex-start;">
+                            <span style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Notes</span>
+                            <p style="color: #cbd5e1; margin-top: 0.25rem;">${Utils.sanitize(relationship.notes)}</p>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="app.editRelationship('${relationship.id}')">
+                        <i class="ph-bold ph-pencil-simple"></i> Edit
+                    </button>
+                    <button class="btn" style="flex: 1; background: rgba(245, 158, 11, 0.15); color: #f59e0b;" onclick="app.toggleRelationshipFavorite('${relationship.id}')">
+                        <i class="ph-${relationship.isFavorite ? 'fill' : 'bold'} ph-star"></i>
+                        ${relationship.isFavorite ? 'Unfavorite' : 'Favorite'}
+                    </button>
+                </div>
+            </div>
+        `;
+    },
+
+    // ==========================================
     // DAILY SAVINGS VIEW (COMING SOON)
     // ==========================================
 

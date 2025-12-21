@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Learning Forge - Track your learning journey and build mastery">
+    <title>Learning Forge | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/learning.html">
+    <meta property="og:title" content="Learning Forge | REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        /* Enhanced Hero */
+        .learning-hero {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.02));
+            border: 2px solid rgba(139, 92, 246, 0.25);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .learning-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+
+        .learning-hero-content {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 640px) {
+            .learning-hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .learning-hero-icon {
+            width: 5rem;
+            height: 5rem;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-radius: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            flex-shrink: 0;
+        }
+
+        .learning-hero-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .learning-hero-text h1 {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.375rem;
+        }
+
+        .learning-hero-text p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        /* Streak Card */
+        .streak-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.03));
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .streak-flame {
+            width: 4.5rem;
+            height: 4.5rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: flame-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes flame-pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .streak-flame i {
+            font-size: 2.25rem;
+            color: #f59e0b;
+        }
+
+        .streak-info {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .streak-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f59e0b;
+            line-height: 1;
+        }
+
+        .streak-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .streak-action {
+            margin-left: auto;
+        }
+
+        @media (max-width: 500px) {
+            .streak-action {
+                width: 100%;
+            }
+
+            .streak-action .btn {
+                width: 100%;
+            }
+        }
+
+        /* Stats Grid */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-box {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .stat-box-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+        }
+
+        .stat-box-icon i {
+            font-size: 1.5rem;
+        }
+
+        .stat-box-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-box-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Section Title */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Course Cards */
+        .courses-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .course-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #8b5cf6, #a78bfa);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-card:hover::before {
+            opacity: 1;
+        }
+
+        .course-card.completed {
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .course-card.completed::before {
+            background: linear-gradient(180deg, #10b981, #34d399);
+            opacity: 1;
+        }
+
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-title {
+            font-weight: 700;
+            color: white;
+            font-size: 1.0625rem;
+            line-height: 1.4;
+        }
+
+        .course-platform {
+            font-size: 0.6875rem;
+            padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.05));
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .course-progress-section {
+            margin-bottom: 0.75rem;
+        }
+
+        .course-progress-bar {
+            height: 0.625rem;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .course-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+
+        .course-card.completed .course-progress-fill {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-percent {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #a78bfa;
+        }
+
+        .course-card.completed .course-percent {
+            color: #10b981;
+        }
+
+        .course-hours {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .course-badge-complete {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Empty State */
+        .empty-courses {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--glass-bg);
+            border: 2px dashed var(--glass-border);
+            border-radius: 1.25rem;
+        }
+
+        .empty-courses i {
+            font-size: 4rem;
+            color: #64748b;
+            margin-bottom: 1.25rem;
+        }
+
+        .empty-courses h3 {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-courses p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Light Mode - Clean & Premium */
+        [data-theme="light"] .learning-hero {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        [data-theme="light"] .learning-hero-text h1 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .learning-hero-text p {
+            color: #475569;
+        }
+
+        [data-theme="light"] .streak-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        [data-theme="light"] .streak-label {
+            color: #64748b;
+        }
+
+        [data-theme="light"] .stat-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        [data-theme="light"] .stat-box-value {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .stat-box-label {
+            color: #64748b;
+        }
+
+        [data-theme="light"] .section-header h2 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .course-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        [data-theme="light"] .course-card:hover {
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        [data-theme="light"] .course-title {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .course-hours {
+            color: #64748b;
+        }
+
+        [data-theme="light"] .empty-courses {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        [data-theme="light"] .empty-courses h3 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .empty-courses p {
+            color: #64748b;
+        }
+
+        [data-theme="light"] .course-progress-bar {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <!-- Hero -->
+                <div class="learning-hero">
+                    <div class="learning-hero-content">
+                        <div class="learning-hero-icon">
+                            <i class="ph-fill ph-graduation-cap"></i>
+                        </div>
+                        <div class="learning-hero-text">
+                            <h1>Learning Forge</h1>
+                            <p>Sharpen your skills, expand your kingdom. Knowledge is the ultimate power.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Streak Card -->
+                <div class="streak-card">
+                    <div class="streak-flame">
+                        <i class="ph-fill ph-fire"></i>
+                    </div>
+                    <div class="streak-info">
+                        <p class="streak-number" id="streak-count">0</p>
+                        <p class="streak-label">Day Learning Streak</p>
+                    </div>
+                    <div class="streak-action">
+                        <button class="btn btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706);"
+                            onclick="logLearning()">
+                            <i class="ph-bold ph-check-fat"></i> Log Today
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-box-icon" style="background: rgba(139, 92, 246, 0.15);">
+                            <i class="ph-duotone ph-books" style="color: #8b5cf6;"></i>
+                        </div>
+                        <p class="stat-box-value" id="stat-active">0</p>
+                        <p class="stat-box-label">Active Courses</p>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon" style="background: rgba(16, 185, 129, 0.15);">
+                            <i class="ph-duotone ph-trophy" style="color: #10b981;"></i>
+                        </div>
+                        <p class="stat-box-value" id="stat-completed">0</p>
+                        <p class="stat-box-label">Completed</p>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon" style="background: rgba(59, 130, 246, 0.15);">
+                            <i class="ph-duotone ph-clock" style="color: #3b82f6;"></i>
+                        </div>
+                        <p class="stat-box-value" id="stat-hours">0</p>
+                        <p class="stat-box-label">Hours Logged</p>
+                    </div>
+                </div>
+
+                <!-- Courses Section -->
+                <div class="section-header">
+                    <h2><i class="ph-fill ph-book-open" style="color: #a78bfa;"></i> My Courses</h2>
+                    <button class="btn btn-primary" onclick="openCourseModal()"
+                        style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="ph-bold ph-plus"></i> Add Course
+                    </button>
+                </div>
+
+                <div id="courses-list" class="courses-grid">
+                    <div class="empty-courses">
+                        <i class="ph-duotone ph-graduation-cap"></i>
+                        <h3>No Courses Yet</h3>
+                        <p>Add a course to start tracking your learning journey.</p>
+                        <button class="btn btn-primary" onclick="openCourseModal()"
+                            style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="ph-bold ph-plus"></i> Add First Course
+                        </button>
+                    </div>
+                </div>
+
+                <button class="fab" onclick="openCourseModal()"
+                    style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                    <i class="ph-bold ph-plus"></i>
+                </button>
+            </main>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content" id="modal-content"></div>
+            </div>
+        </div>
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        let courses = [];
+        let learningData = {};
+        let editingId = null;
+
+        const platforms = ['Udemy', 'Coursera', 'YouTube', 'LinkedIn Learning', 'Pluralsight', 'Skillshare', 'Books', 'Other'];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Learning Forge',
+                pageIcon: 'ph-graduation-cap'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+            loadLearning();
+        });
+
+        function loadLearning() {
+            const data = Storage.getData();
+            learningData = data.learning || { courses: [], streak: 0, lastLogged: null, totalHours: 0 };
+            courses = learningData.courses || [];
+
+            updateStreak();
+            updateStats();
+            renderCourses();
+        }
+
+        function updateStreak() {
+            const today = Storage.getToday();
+            const lastLogged = learningData.lastLogged;
+
+            if (lastLogged) {
+                const diff = Math.floor((new Date(today) - new Date(lastLogged)) / (1000 * 60 * 60 * 24));
+                if (diff > 1) {
+                    learningData.streak = 0;
+                }
+            }
+
+            document.getElementById('streak-count').textContent = learningData.streak || 0;
+        }
+
+        function updateStats() {
+            document.getElementById('stat-active').textContent = courses.filter(c => c.progress < 100).length;
+            document.getElementById('stat-completed').textContent = courses.filter(c => c.progress >= 100).length;
+            document.getElementById('stat-hours').textContent = learningData.totalHours || 0;
+        }
+
+        function logLearning() {
+            const today = Storage.getToday();
+            const data = Storage.getData();
+
+            if (learningData.lastLogged === today) {
+                Utils.showToast("You've already logged today!", 'info');
+                return;
+            }
+
+            const lastLogged = learningData.lastLogged;
+            if (lastLogged) {
+                const diff = Math.floor((new Date(today) - new Date(lastLogged)) / (1000 * 60 * 60 * 24));
+                if (diff === 1) {
+                    learningData.streak = (learningData.streak || 0) + 1;
+                } else if (diff > 1) {
+                    learningData.streak = 1;
+                }
+            } else {
+                learningData.streak = 1;
+            }
+
+            learningData.lastLogged = today;
+            data.learning = learningData;
+            Storage.saveData(data);
+
+            Utils.showToast(`🔥 ${learningData.streak} day streak!`, 'gold');
+            updateStreak();
+        }
+
+        function renderCourses() {
+            const container = document.getElementById('courses-list');
+
+            if (courses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-courses">
+                        <i class="ph-duotone ph-graduation-cap"></i>
+                        <h3>No Courses Yet</h3>
+                        <p>Add a course to start tracking your learning journey.</p>
+                        <button class="btn btn-primary" onclick="openCourseModal()" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="ph-bold ph-plus"></i> Add First Course
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...courses].sort((a, b) => {
+                if (a.progress >= 100 && b.progress < 100) return 1;
+                if (b.progress >= 100 && a.progress < 100) return -1;
+                return b.progress - a.progress;
+            });
+
+            container.innerHTML = sorted.map(course => `
+                <div class="course-card ${course.progress >= 100 ? 'completed' : ''}" onclick="viewCourse('${course.id}')">
+                    <div class="course-header">
+                        <h4 class="course-title">${Utils.sanitize(course.title)}</h4>
+                        <span class="course-platform">${course.platform}</span>
+                    </div>
+                    <div class="course-progress-section">
+                        <div class="course-progress-bar">
+                            <div class="course-progress-fill" style="width: ${course.progress}%;"></div>
+                        </div>
+                    </div>
+                    <div class="course-footer">
+                        ${course.progress >= 100
+                    ? '<span class="course-badge-complete"><i class="ph-bold ph-check"></i> Completed</span>'
+                    : `<span class="course-percent">${course.progress}% complete</span>`
+                }
+                        <span class="course-hours">
+                            <i class="ph-bold ph-clock"></i> ${course.hoursLogged || 0}h
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openCourseModal(courseId = null) {
+            editingId = courseId;
+            const course = courseId ? courses.find(c => c.id === courseId) : null;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-graduation-cap" style="color: #8b5cf6;"></i>
+                        ${course ? 'Edit Course' : 'Add New Course'}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveCourse(event)">
+                        <div class="form-group">
+                            <label class="form-label">Course Title *</label>
+                            <input type="text" id="course-title" class="form-input" required
+                                   placeholder="What are you learning?" value="${course ? Utils.sanitize(course.title) : ''}">
+                        </div>
+                        <div class="grid grid-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Platform</label>
+                                <select id="course-platform" class="form-select">
+                                    ${platforms.map(p => `<option value="${p}" ${course?.platform === p ? 'selected' : ''}>${p}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Progress (%)</label>
+                                <input type="number" id="course-progress" class="form-input" min="0" max="100"
+                                       placeholder="0" value="${course?.progress || 0}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">URL (Optional)</label>
+                            <input type="url" id="course-url" class="form-input" placeholder="https://..."
+                                   value="${course?.url ? Utils.sanitize(course.url) : ''}">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="ph-bold ph-${course ? 'floppy-disk' : 'plus'}"></i>
+                            ${course ? 'Update Course' : 'Add Course'}
+                        </button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function saveCourse(event) {
+            event.preventDefault();
+
+            const courseData = {
+                title: document.getElementById('course-title').value.trim(),
+                platform: document.getElementById('course-platform').value,
+                progress: parseInt(document.getElementById('course-progress').value) || 0,
+                url: document.getElementById('course-url').value.trim()
+            };
+
+            if (!courseData.title) {
+                Utils.showToast('Please enter a course title', 'danger');
+                return;
+            }
+
+            const data = Storage.getData();
+            if (!data.learning) data.learning = { courses: [], streak: 0 };
+            if (!data.learning.courses) data.learning.courses = [];
+
+            if (editingId) {
+                const index = data.learning.courses.findIndex(c => c.id === editingId);
+                if (index !== -1) {
+                    data.learning.courses[index] = { ...data.learning.courses[index], ...courseData };
+                }
+                Utils.showToast('Course updated!', 'info');
+            } else {
+                data.learning.courses.push({
+                    id: Utils.generateId(),
+                    ...courseData,
+                    hoursLogged: 0,
+                    createdAt: new Date().toISOString()
+                });
+                Utils.showToast('Course added! 📚', 'success');
+            }
+
+            Storage.saveData(data);
+            closeModal();
+            loadLearning();
+        }
+
+        function viewCourse(id) {
+            const course = courses.find(c => c.id === id);
+            if (!course) return;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-graduation-cap" style="color: #8b5cf6;"></i>
+                        ${Utils.sanitize(course.title)}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 1.5rem;">
+                        <span class="course-platform" style="font-size: 0.8125rem;">${course.platform}</span>
+                        ${course.progress >= 100 ? '<span class="course-badge-complete" style="margin-left: 0.5rem;"><i class="ph-bold ph-check"></i> Completed</span>' : ''}
+                    </div>
+                    <div class="course-progress-section" style="margin-bottom: 1rem;">
+                        <div class="course-progress-bar" style="height: 1rem;">
+                            <div class="course-progress-fill" style="width: ${course.progress}%; ${course.progress >= 100 ? 'background: linear-gradient(90deg, #10b981, #34d399);' : ''}"></div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: var(--text-muted); margin-bottom: 1.5rem; font-size: 1.125rem; font-weight: 600;">${course.progress}% complete</p>
+                    ${course.url ? `<a href="${course.url}" target="_blank" class="btn btn-outline btn-block" style="margin-bottom: 1rem;"><i class="ph-bold ph-arrow-square-out"></i> Open Course</a>` : ''}
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+                        <button class="btn btn-outline btn-block" onclick="updateProgress('${course.id}', ${Math.min(course.progress + 10, 100)})">
+                            <i class="ph-bold ph-plus"></i> +10%
+                        </button>
+                        <button class="btn btn-primary btn-block" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="updateProgress('${course.id}', 100)">
+                            <i class="ph-bold ph-check"></i> Complete
+                        </button>
+                    </div>
+                    <div class="grid grid-2 gap-4">
+                        <button class="btn btn-outline btn-block" onclick="openCourseModal('${course.id}')">
+                            <i class="ph-bold ph-pencil-simple"></i> Edit
+                        </button>
+                        <button class="btn btn-outline btn-block danger" onclick="deleteCourse('${course.id}')">
+                            <i class="ph-bold ph-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function updateProgress(id, newProgress) {
+            const data = Storage.getData();
+            const index = data.learning.courses.findIndex(c => c.id === id);
+            if (index !== -1) {
+                data.learning.courses[index].progress = newProgress;
+                Storage.saveData(data);
+                if (newProgress >= 100) {
+                    Utils.showToast('🎉 Course completed! Amazing work!', 'success');
+                } else {
+                    Utils.showToast('Progress updated!', 'gold');
+                }
+                closeModal();
+                loadLearning();
+            }
+        }
+
+        function deleteCourse(id) {
+            if (!confirm('Delete this course?')) return;
+            const data = Storage.getData();
+            data.learning.courses = data.learning.courses.filter(c => c.id !== id);
+            Storage.saveData(data);
+            Utils.showToast('Course deleted', 'info');
+            closeModal();
+            loadLearning();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            editingId = null;
+        }
+    </script>
+</body>
+
+</html>

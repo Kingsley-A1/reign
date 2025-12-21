@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Today's Idea - Capture brilliant thoughts as they come">
+    <title>Today's Idea | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/idea.html">
+    <meta property="og:title" content="Today's Idea | REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .idea-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .idea-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .idea-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .idea-preview {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .idea-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .idea-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <div class="page-hero">
+                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="ph-fill ph-lightbulb"></i>
+                    </div>
+                    <h1 class="page-hero-title">Today's Idea</h1>
+                    <p class="page-hero-subtitle">Capture brilliance before it fades. Every great empire started with a
+                        single idea.</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="stat-card">
+                        <i class="ph-fill ph-lightbulb stat-card-icon" style="color: #f59e0b;"></i>
+                        <p class="stat-card-label">Total Ideas</p>
+                        <span class="stat-card-value" id="stat-total">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-calendar stat-card-icon" style="color: #3b82f6;"></i>
+                        <p class="stat-card-label">This Week</p>
+                        <span class="stat-card-value" id="stat-week">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-star stat-card-icon" style="color: #8b5cf6;"></i>
+                        <p class="stat-card-label">Starred</p>
+                        <span class="stat-card-value" id="stat-starred">0</span>
+                    </div>
+                </div>
+
+                <!-- Add Button -->
+                <div style="margin-bottom: 1.5rem;">
+                    <button class="btn btn-primary" onclick="openIdeaModal()">
+                        <i class="ph-bold ph-plus"></i> New Idea
+                    </button>
+                </div>
+
+                <!-- Ideas List -->
+                <div id="ideas-list">
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading ideas...</p>
+                    </div>
+                </div>
+
+                <button class="fab" onclick="openIdeaModal()"
+                    style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <i class="ph-bold ph-plus"></i>
+                </button>
+            </main>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content" id="modal-content"></div>
+            </div>
+        </div>
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        let ideas = [];
+        let editingId = null;
+
+        const categories = [
+            { value: 'business', label: 'Business', color: '#3b82f6' },
+            { value: 'personal', label: 'Personal', color: '#10b981' },
+            { value: 'creative', label: 'Creative', color: '#8b5cf6' },
+            { value: 'tech', label: 'Tech', color: '#06b6d4' },
+            { value: 'other', label: 'Other', color: '#64748b' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: "Today's Idea",
+                pageIcon: 'ph-lightbulb'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+            loadIdeas();
+        });
+
+        function loadIdeas() {
+            const data = Storage.getData();
+            ideas = data.ideas || [];
+            updateStats();
+            renderIdeas();
+        }
+
+        function updateStats() {
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            document.getElementById('stat-total').textContent = ideas.length;
+            document.getElementById('stat-week').textContent = ideas.filter(i => new Date(i.createdAt) > weekAgo).length;
+            document.getElementById('stat-starred').textContent = ideas.filter(i => i.starred).length;
+        }
+
+        function renderIdeas() {
+            const container = document.getElementById('ideas-list');
+
+            if (ideas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state glass-card">
+                        <i class="ph-duotone ph-lightbulb"></i>
+                        <h3>No Ideas Yet</h3>
+                        <p>Capture your first brilliant thought.</p>
+                        <button class="btn btn-primary" onclick="openIdeaModal()">
+                            <i class="ph-bold ph-plus"></i> Add First Idea
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...ideas].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            container.innerHTML = sorted.map(idea => {
+                const cat = categories.find(c => c.value === idea.category) || categories[4];
+                return `
+                    <div class="idea-card" onclick="viewIdea('${idea.id}')">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <h4 class="idea-title">${Utils.sanitize(idea.title)}</h4>
+                            ${idea.starred ? '<i class="ph-fill ph-star" style="color: #f59e0b;"></i>' : ''}
+                        </div>
+                        <p class="idea-preview">${Utils.sanitize(idea.content?.substring(0, 120) || '')}${idea.content?.length > 120 ? '...' : ''}</p>
+                        <div class="idea-meta">
+                            <span class="idea-category" style="background: ${cat.color}20; color: ${cat.color};">
+                                ${cat.label}
+                            </span>
+                            <span>${Utils.formatTimeAgo(idea.createdAt)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openIdeaModal(ideaId = null) {
+            editingId = ideaId;
+            const idea = ideaId ? ideas.find(i => i.id === ideaId) : null;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-lightbulb" style="color: #f59e0b;"></i>
+                        ${idea ? 'Edit Idea' : 'New Idea'}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveIdea(event)">
+                        <div class="form-group">
+                            <label class="form-label">Title *</label>
+                            <input type="text" id="idea-title" class="form-input" required
+                                   placeholder="What's the big idea?" value="${idea ? Utils.sanitize(idea.title) : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select id="idea-category" class="form-select">
+                                ${categories.map(c => `<option value="${c.value}" ${idea?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Details</label>
+                            <textarea id="idea-content" class="form-textarea" rows="5" 
+                                      placeholder="Expand on your idea...">${idea?.content ? Utils.sanitize(idea.content) : ''}</textarea>
+                        </div>
+                        <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 0.5rem; cursor: pointer; margin-bottom: 1rem;">
+                            <input type="checkbox" id="idea-starred" style="width: 1.25rem; height: 1.25rem;" ${idea?.starred ? 'checked' : ''}>
+                            <span><i class="ph-fill ph-star" style="color: #f59e0b;"></i> Star this idea</span>
+                        </label>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="ph-bold ph-${idea ? 'floppy-disk' : 'lightbulb'}"></i>
+                            ${idea ? 'Update Idea' : 'Save Idea'}
+                        </button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function saveIdea(event) {
+            event.preventDefault();
+
+            const ideaData = {
+                title: document.getElementById('idea-title').value.trim(),
+                category: document.getElementById('idea-category').value,
+                content: document.getElementById('idea-content').value.trim(),
+                starred: document.getElementById('idea-starred').checked
+            };
+
+            if (!ideaData.title) {
+                Utils.showToast('Please enter a title', 'danger');
+                return;
+            }
+
+            const data = Storage.getData();
+            if (!data.ideas) data.ideas = [];
+
+            if (editingId) {
+                const index = data.ideas.findIndex(i => i.id === editingId);
+                if (index !== -1) {
+                    data.ideas[index] = { ...data.ideas[index], ...ideaData, updatedAt: new Date().toISOString() };
+                }
+                Utils.showToast('Idea updated!', 'gold');
+            } else {
+                data.ideas.push({
+                    id: Utils.generateId(),
+                    ...ideaData,
+                    createdAt: new Date().toISOString()
+                });
+                Utils.showToast('Brilliant idea captured! 💡', 'gold');
+            }
+
+            Storage.saveData(data);
+            closeModal();
+            loadIdeas();
+        }
+
+        function viewIdea(id) {
+            const idea = ideas.find(i => i.id === id);
+            if (!idea) return;
+            const cat = categories.find(c => c.value === idea.category) || categories[4];
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-lightbulb" style="color: #f59e0b;"></i>
+                        ${Utils.sanitize(idea.title)}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 1rem;">
+                        <span class="idea-category" style="background: ${cat.color}20; color: ${cat.color};">
+                            ${cat.label}
+                        </span>
+                        ${idea.starred ? '<i class="ph-fill ph-star" style="color: #f59e0b; margin-left: 0.5rem;"></i>' : ''}
+                    </div>
+                    ${idea.content ? `<p style="color: white; line-height: 1.6; margin-bottom: 1.5rem;">${Utils.sanitize(idea.content)}</p>` : '<p style="color: var(--text-muted); font-style: italic;">No details added.</p>'}
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Created ${Utils.formatDate(idea.createdAt)}</p>
+                    <div class="grid grid-2 gap-4" style="margin-top: 1.5rem;">
+                        <button class="btn btn-outline btn-block" onclick="openIdeaModal('${idea.id}')">
+                            <i class="ph-bold ph-pencil-simple"></i> Edit
+                        </button>
+                        <button class="btn btn-outline btn-block danger" onclick="deleteIdea('${idea.id}')">
+                            <i class="ph-bold ph-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function deleteIdea(id) {
+            if (!confirm('Delete this idea?')) return;
+            const data = Storage.getData();
+            data.ideas = data.ideas.filter(i => i.id !== id);
+            Storage.saveData(data);
+            Utils.showToast('Idea deleted', 'info');
+            closeModal();
+            loadIdeas();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            editingId = null;
+        }
+    </script>
+</body>
+
+</html>

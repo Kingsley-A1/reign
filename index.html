@@ -28,12 +28,32 @@
 
     <!-- App Styles -->
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/components.css">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-192.png">
     <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-192.png">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/">
+    <meta property="og:title" content="Reign | The King's Journal">
+    <meta property="og:description"
+        content="Rule Your Day - Plan your daily activities, track learning progress, and reign over your life with royal precision.">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Reign">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://kingsley-a1.github.io/reign/">
+    <meta name="twitter:title" content="Reign | The King's Journal">
+    <meta name="twitter:description"
+        content="Rule Your Day - Plan your daily activities, track learning progress, and reign over your life with royal precision.">
+    <meta name="twitter:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
 
     <!-- PWA Install Prompt Logic -->
     <script>
@@ -173,18 +193,18 @@
                 </div>
 
                 <!-- Notifications (shown when logged in) -->
-                <button id="notifications-btn" class="icon-btn notification-btn hidden"
-                    onclick="app.navigate('notifications')" title="Notifications">
+                <a href="pages/notifications.html" id="notifications-btn" class="icon-btn notification-btn hidden"
+                    title="Notifications">
                     <i class="ph-bold ph-bell"></i>
                     <span id="notification-badge" class="notification-dot hidden"></span>
-                </button>
+                </a>
 
                 <!-- User Profile (shown when logged in) -->
                 <div id="user-profile" class="user-profile hidden">
-                    <div class="user-avatar" onclick="app.openSettings()" title="Settings">
+                    <a href="pages/settings.html" class="user-avatar" title="Settings">
                         <span id="user-initials">KD</span>
                         <img id="user-avatar-img" src="" alt="" style="display: none;">
-                    </div>
+                    </a>
                     <span id="sync-status" class="sync-status" title="Sync Status"></span>
                 </div>
 
@@ -222,74 +242,78 @@
             <!-- Sidebar (Desktop) -->
             <aside class="sidebar">
                 <nav class="sidebar-nav">
-                    <button onclick="app.navigate('dashboard')" class="nav-btn active" data-target="dashboard">
+                    <a href="index.html" class="nav-btn active" data-target="dashboard">
                         <i class="ph-duotone ph-throne"></i>
                         <span>The Throne</span>
-                    </button>
-                    <button onclick="app.navigate('morning')" class="nav-btn" data-target="morning">
+                    </a>
+                    <a href="pages/morning.html" class="nav-btn" data-target="morning">
                         <i class="ph-duotone ph-sun-horizon"></i>
                         <span>Morning Protocol</span>
-                    </button>
-                    <button onclick="app.navigate('evening')" class="nav-btn" data-target="evening">
+                    </a>
+                    <a href="pages/evening.html" class="nav-btn" data-target="evening">
                         <i class="ph-duotone ph-moon-stars"></i>
                         <span>Evening Report</span>
-                    </button>
+                    </a>
 
                     <!-- Growth & Learning Section -->
                     <div class="nav-divider"></div>
                     <p class="nav-section-label">Growth</p>
 
-                    <button onclick="app.navigate('learning')" class="nav-btn" data-target="learning">
+                    <a href="pages/learning.html" class="nav-btn" data-target="learning">
                         <i class="ph-duotone ph-graduation-cap"></i>
                         <span>Learning Forge</span>
-                    </button>
-                    <button onclick="app.navigate('idea')" class="nav-btn" data-target="idea">
+                    </a>
+                    <a href="pages/idea.html" class="nav-btn" data-target="idea">
                         <i class="ph-duotone ph-lightbulb"></i>
                         <span>Today's Idea</span>
-                    </button>
-                    <button onclick="app.navigate('lessons')" class="nav-btn" data-target="lessons">
+                    </a>
+                    <a href="pages/lessons.html" class="nav-btn" data-target="lessons">
                         <i class="ph-duotone ph-book-open-text"></i>
                         <span>Daily Lessons</span>
-                    </button>
+                    </a>
 
                     <!-- Reflection Section -->
                     <div class="nav-divider"></div>
                     <p class="nav-section-label">Reflection</p>
 
-                    <button onclick="app.navigate('dailygood')" class="nav-btn" data-target="dailygood">
+                    <a href="pages/dailygood.html" class="nav-btn" data-target="dailygood">
                         <i class="ph-duotone ph-heart"></i>
                         <span>The Good in Today</span>
-                    </button>
-                    <button onclick="app.navigate('archive')" class="nav-btn" data-target="archive">
+                    </a>
+                    <a href="pages/archive.html" class="nav-btn" data-target="archive">
                         <i class="ph-duotone ph-book-bookmark"></i>
                         <span>Journal Archive</span>
-                    </button>
+                    </a>
+                    <a href="pages/relationships.html" class="nav-btn" data-target="relationships">
+                        <i class="ph-duotone ph-heart-half"></i>
+                        <span>Rainy Day People</span>
+                    </a>
 
                     <!-- Planning Section -->
                     <div class="nav-divider"></div>
                     <p class="nav-section-label">Planning</p>
 
-                    <button onclick="app.navigate('events')" class="nav-btn" data-target="events">
+                    <a href="pages/events.html" class="nav-btn" data-target="events">
                         <i class="ph-duotone ph-calendar-check"></i>
                         <span>Royal Calendar</span>
-                    </button>
-                    <button onclick="app.navigate('savings')" class="nav-btn" data-target="savings">
+                    </a>
+                    <a href="#" class="nav-btn disabled" data-target="savings">
                         <i class="ph-duotone ph-piggy-bank"></i>
                         <span>Daily Savings</span>
                         <span class="nav-badge coming-soon">Soon</span>
-                    </button>
+                    </a>
 
                     <!-- System Section -->
                     <div class="nav-divider"></div>
 
-                    <button onclick="app.navigate('notifications')" class="nav-btn" data-target="notifications">
+                    <a href="pages/notifications.html" class="nav-btn" data-target="notifications">
                         <i class="ph-duotone ph-bell"></i>
                         <span>Notifications</span>
-                    </button>
-                    <button onclick="app.navigate('settings')" class="nav-btn" data-target="settings">
+                    </a>
+                    <a href="pages/settings.html" class="nav-btn" data-target="settings">
                         <i class="ph-duotone ph-gear-six"></i>
                         <span>Settings</span>
-                    </button>
+                    </a>
                 </nav>
             </aside>
 
@@ -301,26 +325,26 @@
 
         <!-- Mobile Navigation -->
         <nav class="mobile-nav">
-            <button onclick="app.navigate('dashboard')" class="mobile-nav-btn active" data-target="dashboard">
+            <a href="index.html" class="mobile-nav-btn active" data-target="dashboard">
                 <i class="ph-duotone ph-throne"></i>
                 <span>Home</span>
-            </button>
-            <button onclick="app.navigate('morning')" class="mobile-nav-btn" data-target="morning">
+            </a>
+            <a href="pages/morning.html" class="mobile-nav-btn" data-target="morning">
                 <i class="ph-duotone ph-sun"></i>
                 <span>Dawn</span>
-            </button>
-            <button onclick="app.navigate('evening')" class="mobile-nav-btn" data-target="evening">
+            </a>
+            <a href="pages/evening.html" class="mobile-nav-btn" data-target="evening">
                 <i class="ph-duotone ph-moon"></i>
                 <span>Dusk</span>
-            </button>
-            <button onclick="app.navigate('archive')" class="mobile-nav-btn" data-target="archive">
+            </a>
+            <a href="pages/archive.html" class="mobile-nav-btn" data-target="archive">
                 <i class="ph-duotone ph-book-open"></i>
                 <span>Logs</span>
-            </button>
-            <button onclick="app.navigate('learning')" class="mobile-nav-btn" data-target="learning">
+            </a>
+            <a href="pages/learning.html" class="mobile-nav-btn" data-target="learning">
                 <i class="ph-duotone ph-graduation-cap"></i>
                 <span>Learn</span>
-            </button>
+            </a>
         </nav>
 
         <!-- Modal Container -->

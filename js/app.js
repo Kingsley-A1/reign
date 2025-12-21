@@ -107,6 +107,9 @@ const app = {
                 case 'savings':
                     Views.renderDailySavings(container);
                     break;
+                case 'relationships':
+                    Views.renderRelationships(container, this.data);
+                    break;
                 default:
                     // Check if it's a course detail view
                     if (view.startsWith('course-')) {
@@ -1226,6 +1229,232 @@ const app = {
                 group.style.display = hasVisibleCards ? 'block' : 'none';
             }
         });
+    },
+
+    // ==========================================
+    // RELATIONSHIPS MANAGEMENT
+    // ==========================================
+
+    /**
+     * Load relationships from API
+     */
+    async loadRelationships() {
+        const user = Auth.getUser();
+        if (!user) return;
+
+        try {
+            const response = await fetch(`${CONFIG.API_URL}/relationships`, {
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to load relationships');
+
+            const data = await response.json();
+            window.relationshipsData = {
+                relationships: data.relationships,
+                grouped: data.grouped,
+                loading: false,
+                filter: 'all'
+            };
+
+            // Update stats
+            const stats = data.relationships.reduce((acc, r) => {
+                acc.total++;
+                if (r.isFavorite) acc.favorites++;
+                if (r.purpose === 'partner') acc.partners++;
+                if (r.purpose === 'friend') acc.friends++;
+                return acc;
+            }, { total: 0, favorites: 0, partners: 0, friends: 0 });
+
+            document.getElementById('rel-total').textContent = stats.total;
+            document.getElementById('rel-partners').textContent = stats.partners;
+            document.getElementById('rel-friends').textContent = stats.friends;
+            document.getElementById('rel-favorites').textContent = stats.favorites;
+
+            Views.renderRelationshipsList(data.relationships, 'all');
+        } catch (error) {
+            console.error('Load relationships error:', error);
+            document.getElementById('relationships-list').innerHTML = `
+                <div class="empty-state glass-card" style="text-align: center; padding: 2rem;">
+                    <i class="ph-duotone ph-warning" style="font-size: 3rem; color: #f59e0b;"></i>
+                    <h3 style="color: white;">Connection Error</h3>
+                    <p style="color: #94a3b8;">Could not load relationships. Make sure you're connected and try again.</p>
+                    <button class="btn btn-primary" onclick="app.loadRelationships()" style="margin-top: 1rem;">
+                        <i class="ph-bold ph-arrow-clockwise"></i> Retry
+                    </button>
+                </div>
+            `;
+        }
+    },
+
+    /**
+     * Filter relationships by purpose or classification
+     * @param {string} filter - Purpose or classification to filter by
+     * @param {string} type - Filter type: 'purpose' or 'classification'
+     */
+    filterRelationships(filter, type = 'purpose') {
+        if (!window.relationshipsData) return;
+
+        // Update button states
+        document.querySelectorAll('.rel-filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filter === filter);
+        });
+
+        // Filter relationships based on type
+        let filtered = window.relationshipsData.relationships;
+        if (filter !== 'all') {
+            if (type === 'classification') {
+                filtered = window.relationshipsData.relationships.filter(r => r.classification === filter);
+            } else if (filter === 'favorite') {
+                filtered = window.relationshipsData.relationships.filter(r => r.isFavorite);
+            } else {
+                filtered = window.relationshipsData.relationships.filter(r => r.purpose === filter);
+            }
+        }
+
+        window.relationshipsData.filter = filter;
+        window.relationshipsData.filterType = type;
+        Views.renderRelationshipsList(filtered, filter === 'all' ? 'all' : 'filtered');
+    },
+
+    /**
+     * Open relationship modal for add/edit
+     * @param {Object} relationship - Relationship to edit (optional)
+     */
+    openRelationshipModal(relationship = null) {
+        const modal = document.getElementById('modal');
+        const modalContent = document.querySelector('.modal-content');
+        modalContent.innerHTML = Views.getRelationshipModalHTML(relationship);
+        modal.classList.add('active');
+    },
+
+    /**
+     * Save relationship from form
+     * @param {Event} e - Form submit event
+     */
+    async saveRelationship(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const relationshipId = formData.get('relationshipId');
+        const isEdit = !!relationshipId;
+
+        const data = {
+            name: formData.get('name'),
+            gender: formData.get('gender'),
+            purpose: formData.get('purpose'),
+            classification: formData.get('classification') || null,
+            customPurpose: formData.get('customPurpose'),
+            whatTheyDid: formData.get('whatTheyDid'),
+            contactInfo: formData.get('contactInfo'),
+            birthday: formData.get('birthday') || null,
+            notes: formData.get('notes'),
+            isFavorite: formData.get('isFavorite') === 'on'
+        };
+
+        try {
+            const url = isEdit
+                ? `${CONFIG.API_URL}/relationships/${relationshipId}`
+                : `${CONFIG.API_URL}/relationships`;
+            const method = isEdit ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Failed to save');
+            }
+
+            Utils.showToast(isEdit ? 'Person updated!' : 'Person added to your rainy day people! 💜', 'gold');
+            this.closeModal();
+            this.navigate('relationships');
+        } catch (error) {
+            Utils.showToast(error.message, 'danger');
+        }
+    },
+
+    /**
+     * View relationship details
+     * @param {string} id - Relationship ID
+     */
+    async viewRelationship(id) {
+        if (!window.relationshipsData) return;
+        const rel = window.relationshipsData.relationships.find(r => r.id === id);
+        if (!rel) return;
+
+        const modal = document.getElementById('modal');
+        const modalContent = document.querySelector('.modal-content');
+        modalContent.innerHTML = Views.getRelationshipDetailModalHTML(rel);
+        modal.classList.add('active');
+    },
+
+    /**
+     * Edit a relationship
+     * @param {string} id - Relationship ID
+     */
+    editRelationship(id) {
+        if (!window.relationshipsData) return;
+        const rel = window.relationshipsData.relationships.find(r => r.id === id);
+        if (!rel) return;
+        this.openRelationshipModal(rel);
+    },
+
+    /**
+     * Toggle relationship favorite status
+     * @param {string} id - Relationship ID
+     */
+    async toggleRelationshipFavorite(id) {
+        try {
+            const response = await fetch(`${CONFIG.API_URL}/relationships/${id}/favorite`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to update');
+
+            const data = await response.json();
+            Utils.showToast(data.message, 'gold');
+
+            // Reload relationships
+            this.loadRelationships();
+            this.closeModal();
+        } catch (error) {
+            Utils.showToast('Failed to update favorite status', 'danger');
+        }
+    },
+
+    /**
+     * Delete a relationship
+     * @param {string} id - Relationship ID
+     */
+    async deleteRelationship(id) {
+        if (!confirm('Remove this person from your rainy day people?')) return;
+
+        try {
+            const response = await fetch(`${CONFIG.API_URL}/relationships/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Failed to delete');
+
+            Utils.showToast('Person removed', 'indigo');
+            this.navigate('relationships');
+        } catch (error) {
+            Utils.showToast('Failed to remove person', 'danger');
+        }
     }
 };
 

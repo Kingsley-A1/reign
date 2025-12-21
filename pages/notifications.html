@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Notifications - Stay updated on important events">
+    <title>Notifications | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/notifications.html">
+    <meta property="og:title" content="Notifications | REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .notification-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .notification-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-card.unread {
+            border-left: 3px solid var(--royal-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .notification-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: white;
+            font-size: 0.9375rem;
+        }
+
+        .notification-message {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .notification-time {
+            font-size: 0.6875rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <div class="page-hero">
+                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="ph-fill ph-bell"></i>
+                    </div>
+                    <h1 class="page-hero-title">Notifications</h1>
+                    <p class="page-hero-subtitle">Stay informed about your kingdom's activities.</p>
+                </div>
+
+                <!-- Actions Bar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <span id="unread-count" style="font-size: 0.875rem; color: var(--text-muted);">-</span>
+                    <button class="btn btn-outline btn-sm" onclick="markAllAsRead()">
+                        <i class="ph-bold ph-checks"></i> Mark All Read
+                    </button>
+                </div>
+
+                <!-- Notifications List -->
+                <div id="notifications-list">
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading notifications...</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        let notifications = [];
+
+        const notificationTypes = {
+            reminder: { icon: 'ph-bell-ringing', color: '#f59e0b' },
+            achievement: { icon: 'ph-trophy', color: '#10b981' },
+            streak: { icon: 'ph-fire', color: '#ef4444' },
+            birthday: { icon: 'ph-cake', color: '#ec4899' },
+            event: { icon: 'ph-calendar-check', color: '#06b6d4' },
+            task: { icon: 'ph-check-circle', color: '#8b5cf6' },
+            system: { icon: 'ph-info', color: '#3b82f6' }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Notifications',
+                pageIcon: 'ph-bell'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+            generateNotifications();
+            renderNotifications();
+        });
+
+        function generateNotifications() {
+            // Generate contextual notifications based on user data
+            const data = Storage.getData();
+            notifications = [];
+
+            const today = Storage.getToday();
+            const log = data.logs?.[today];
+
+            // Check morning protocol
+            if (!log?.morning) {
+                notifications.push({
+                    id: 'morning-reminder',
+                    type: 'reminder',
+                    title: 'Morning Protocol Awaits',
+                    message: "Start your day right! Set your tasks for today.",
+                    time: new Date().toISOString(),
+                    read: false,
+                    action: 'morning.html'
+                });
+            }
+
+            // Check evening report
+            const hour = new Date().getHours();
+            if (hour >= 18 && log?.morning && !log?.evening) {
+                notifications.push({
+                    id: 'evening-reminder',
+                    type: 'reminder',
+                    title: 'Time for Evening Report',
+                    message: "Reflect on your day's conquests and challenges.",
+                    time: new Date().toISOString(),
+                    read: false,
+                    action: 'evening.html'
+                });
+            }
+
+            // Learning streak
+            const streak = data.learning?.streak || 0;
+            if (streak > 0) {
+                notifications.push({
+                    id: 'streak-' + streak,
+                    type: 'streak',
+                    title: `🔥 ${streak} Day Learning Streak!`,
+                    message: "Keep the momentum going. Every day counts.",
+                    time: new Date().toISOString(),
+                    read: true
+                });
+            }
+
+            // Check for upcoming events (today)
+            const todayEvents = (data.events || []).filter(e => e.date.split('T')[0] === today);
+            todayEvents.forEach(event => {
+                notifications.push({
+                    id: 'event-' + event.id,
+                    type: 'event',
+                    title: 'Event Today: ' + event.title,
+                    message: event.time ? `Scheduled for ${event.time}` : 'No specific time set',
+                    time: event.date,
+                    read: false,
+                    action: 'events.html'
+                });
+            });
+
+            // Check for birthdays (from relationships)
+            const relationships = data.relationships || [];
+            relationships.forEach(rel => {
+                if (rel.birthday) {
+                    const bday = new Date(rel.birthday);
+                    const todayDate = new Date();
+                    if (bday.getMonth() === todayDate.getMonth() && bday.getDate() === todayDate.getDate()) {
+                        notifications.push({
+                            id: 'birthday-' + rel.id,
+                            type: 'birthday',
+                            title: `🎂 ${rel.name}'s Birthday!`,
+                            message: "Don't forget to wish them a happy birthday.",
+                            time: new Date().toISOString(),
+                            read: false,
+                            action: 'relationships.html'
+                        });
+                    }
+                }
+            });
+
+            // Task completion achievements
+            const tasks = log?.morning?.tasks || [];
+            const completedCount = tasks.filter(t => t.status === 'completed').length;
+            if (tasks.length > 0 && completedCount === tasks.length) {
+                notifications.push({
+                    id: 'achievement-all-tasks',
+                    type: 'achievement',
+                    title: '🏆 All Tasks Completed!',
+                    message: "You've conquered every battle today. Magnificent!",
+                    time: new Date().toISOString(),
+                    read: true
+                });
+            }
+
+            // Welcome notification (always last)
+            notifications.push({
+                id: 'welcome',
+                type: 'system',
+                title: 'Welcome to REIGN',
+                message: 'Rule your day with purpose and intention.',
+                time: data.lastUpdated || new Date().toISOString(),
+                read: true
+            });
+        }
+
+        function renderNotifications() {
+            const container = document.getElementById('notifications-list');
+            const unreadCount = notifications.filter(n => !n.read).length;
+
+            document.getElementById('unread-count').textContent =
+                unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!';
+
+            if (notifications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state glass-card">
+                        <i class="ph-duotone ph-bell-slash"></i>
+                        <h3>No Notifications</h3>
+                        <p>You're all caught up! Check back later.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = notifications.map(notif => {
+                const config = notificationTypes[notif.type] || notificationTypes.system;
+                return `
+                    <div class="notification-card ${notif.read ? '' : 'unread'}" onclick="handleNotification('${notif.id}', '${notif.action || ''}')">
+                        <div class="notification-icon" style="background: ${config.color}20;">
+                            <i class="ph-fill ${config.icon}" style="color: ${config.color};"></i>
+                        </div>
+                        <div class="notification-content">
+                            <p class="notification-title">${Utils.sanitize(notif.title)}</p>
+                            <p class="notification-message">${Utils.sanitize(notif.message)}</p>
+                            <p class="notification-time">${Utils.formatTimeAgo(notif.time)}</p>
+                        </div>
+                        ${!notif.read ? '<div style="width: 8px; height: 8px; background: var(--royal-gold); border-radius: 50%; flex-shrink: 0;"></div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleNotification(id, action) {
+            // Mark as read
+            const notif = notifications.find(n => n.id === id);
+            if (notif) notif.read = true;
+            renderNotifications();
+
+            // Navigate if action exists
+            if (action) {
+                window.location.href = action;
+            }
+        }
+
+        function markAllAsRead() {
+            notifications.forEach(n => n.read = true);
+            renderNotifications();
+            Utils.showToast('All notifications marked as read', 'success');
+        }
+    </script>
+</body>
+
+</html>

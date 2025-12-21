@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Morning Protocol - Set your daily tasks and conquer the day">
+    <title>Morning Protocol | REIGN</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/morning.html">
+    <meta property="og:title" content="Morning Protocol | REIGN">
+    <meta property="og:description" content="Set the coordinates for conquest. Plan your daily tasks.">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Morning Protocol | REIGN">
+    <meta name="twitter:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <!-- Page Hero -->
+                <div class="page-hero">
+                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <i class="ph-fill ph-sun-horizon"></i>
+                    </div>
+                    <h1 class="page-hero-title">Morning Protocol</h1>
+                    <p class="page-hero-subtitle">Set the coordinates for conquest. Define your daily battles.</p>
+                </div>
+
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <!-- Session Info Card -->
+                    <div class="glass-card p-6 mb-6" style="border-top: 4px solid var(--royal-gold);">
+                        <div class="grid grid-1 grid-2 gap-4 mb-4">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">Session Name (Optional)</label>
+                                <div class="form-input-icon">
+                                    <i class="ph-bold ph-flag-banner"></i>
+                                    <input type="text" id="session-name" class="form-input"
+                                        placeholder="e.g., Product Launch Day">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label">Location</label>
+                                <div class="form-input-icon">
+                                    <i class="ph-bold ph-map-pin"></i>
+                                    <input type="text" id="session-location" class="form-input"
+                                        placeholder="Home Office, Cafe...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar (shown when tasks exist) -->
+                    <div id="progress-section" class="mb-6" style="display: none;">
+                        <div class="progress-container">
+                            <div class="progress-header">
+                                <span class="progress-label">Battle Progress</span>
+                                <span class="progress-value" id="progress-text">0/0 Complete (0%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tasks List -->
+                    <div class="glass-card p-6 mb-6">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="font-family: var(--font-serif); font-weight: 700; color: white;">Today's Tasks
+                            </h3>
+                            <button onclick="openTaskModal()" class="btn btn-primary btn-sm">
+                                <i class="ph-bold ph-plus"></i> Add Task
+                            </button>
+                        </div>
+                        <div id="tasks-list">
+                            <div class="loading-state">
+                                <div class="loading-spinner"></div>
+                                <p>Loading tasks...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="grid grid-1 grid-2 gap-4">
+                        <a href="../index.html" class="btn btn-outline btn-block">
+                            <i class="ph-bold ph-arrow-left"></i> Back to Throne
+                        </a>
+                        <a href="evening.html" class="btn btn-secondary btn-block" id="evening-btn"
+                            style="display: none;">
+                            <i class="ph-bold ph-moon"></i> Evening Report
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Floating Add Button (Mobile) -->
+                <button class="fab" onclick="openTaskModal()">
+                    <i class="ph-bold ph-plus"></i>
+                </button>
+            </main>
+        </div>
+
+        <!-- Modal -->
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content" id="modal-content"></div>
+            </div>
+        </div>
+
+        <div id="footer-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        // Page State
+        let tasks = [];
+        let editingTaskId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Morning Protocol',
+                pageIcon: 'ph-sun-horizon'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+            loadMorningData();
+        });
+
+        // Load morning data from storage
+        function loadMorningData() {
+            const data = Storage.getData();
+            const today = Storage.getToday();
+            const log = data.logs[today]?.morning || null;
+
+            if (log) {
+                document.getElementById('session-name').value = log.sessionName || '';
+                document.getElementById('session-location').value = log.location || '';
+                tasks = log.tasks || [];
+            } else {
+                tasks = [];
+            }
+
+            renderTasks();
+            updateProgress();
+            setupAutoSave();
+        }
+
+        // Setup auto-save for session info
+        function setupAutoSave() {
+            const sessionName = document.getElementById('session-name');
+            const sessionLocation = document.getElementById('session-location');
+
+            const debouncedSave = Utils.debounce(saveMorningData, 500);
+            sessionName.addEventListener('input', debouncedSave);
+            sessionLocation.addEventListener('input', debouncedSave);
+        }
+
+        // Save morning data to storage
+        function saveMorningData() {
+            const data = Storage.getData();
+            const today = Storage.getToday();
+
+            if (!data.logs[today]) {
+                data.logs[today] = { morning: null, evening: null };
+            }
+
+            data.logs[today].morning = {
+                sessionName: document.getElementById('session-name').value,
+                location: document.getElementById('session-location').value,
+                tasks: tasks,
+                createdAt: data.logs[today].morning?.createdAt || new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            Storage.saveData(data);
+            syncToCloud();
+        }
+
+        // Sync to cloud if logged in
+        async function syncToCloud() {
+            if (!Auth.isLoggedIn()) return;
+
+            try {
+                const data = Storage.getData();
+                const today = Storage.getToday();
+                await API.post('/sync/logs', {
+                    date: today,
+                    log: data.logs[today]
+                });
+            } catch (error) {
+                console.error('Sync failed:', error);
+            }
+        }
+
+        // Render tasks list
+        function renderTasks() {
+            const container = document.getElementById('tasks-list');
+            const eveningBtn = document.getElementById('evening-btn');
+
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 3rem;">
+                        <i class="ph-duotone ph-sword" style="font-size: 4rem; color: #64748b; margin-bottom: 1rem;"></i>
+                        <h3 style="color: white; margin-bottom: 0.5rem;">No battles planned</h3>
+                        <p style="color: #94a3b8;">Add your first task to begin the conquest.</p>
+                    </div>
+                `;
+                eveningBtn.style.display = 'none';
+                return;
+            }
+
+            eveningBtn.style.display = 'flex';
+            container.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    ${tasks.map(task => renderTaskCard(task)).join('')}
+                </div>
+            `;
+        }
+
+        // Render single task card
+        function renderTaskCard(task) {
+            const priorityColors = {
+                high: '#ef4444',
+                medium: '#f59e0b',
+                low: '#10b981'
+            };
+            const statusIcons = {
+                pending: 'ph-circle',
+                'in-progress': 'ph-clock',
+                completed: 'ph-check-circle'
+            };
+
+            return `
+                <div class="list-item" style="cursor: pointer;" onclick="toggleTaskStatus('${task.id}')">
+                    <div class="list-item-checkbox ${task.status === 'completed' ? 'checked' : ''}" 
+                         style="border-color: ${priorityColors[task.priority] || '#64748b'};">
+                        <i class="ph-bold ph-check" style="opacity: ${task.status === 'completed' ? '1' : '0'};"></i>
+                    </div>
+                    <div class="list-item-content">
+                        <p class="list-item-title ${task.status === 'completed' ? 'completed' : ''}">${Utils.sanitize(task.title)}</p>
+                        <p class="list-item-meta">
+                            <span class="badge" style="background: ${priorityColors[task.priority]}20; color: ${priorityColors[task.priority]}; border: 1px solid ${priorityColors[task.priority]}40;">
+                                ${task.priority}
+                            </span>
+                            ${task.estimatedTime ? `<span style="margin-left: 0.5rem;">⏱ ${task.estimatedTime}h</span>` : ''}
+                        </p>
+                    </div>
+                    <div class="task-actions" onclick="event.stopPropagation();">
+                        <button class="icon-btn" onclick="editTask('${task.id}')" title="Edit">
+                            <i class="ph-bold ph-pencil-simple"></i>
+                        </button>
+                        <button class="icon-btn danger" onclick="deleteTask('${task.id}')" title="Delete">
+                            <i class="ph-bold ph-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progressSection = document.getElementById('progress-section');
+            const progressText = document.getElementById('progress-text');
+            const progressFill = document.getElementById('progress-fill');
+
+            if (tasks.length === 0) {
+                progressSection.style.display = 'none';
+                return;
+            }
+
+            progressSection.style.display = 'block';
+            const completed = tasks.filter(t => t.status === 'completed').length;
+            const percent = Math.round((completed / tasks.length) * 100);
+
+            progressText.textContent = `${completed}/${tasks.length} Complete (${percent}%)`;
+            progressFill.style.width = `${percent}%`;
+        }
+
+        // Toggle task status
+        function toggleTaskStatus(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const statusFlow = ['pending', 'in-progress', 'completed'];
+            const currentIndex = statusFlow.indexOf(task.status);
+            task.status = statusFlow[(currentIndex + 1) % statusFlow.length];
+
+            saveMorningData();
+            renderTasks();
+            updateProgress();
+
+            if (task.status === 'completed') {
+                Utils.showToast('Task completed! 🎉', 'success');
+            }
+        }
+
+        // Open task modal
+        function openTaskModal(taskId = null) {
+            editingTaskId = taskId;
+            const task = taskId ? tasks.find(t => t.id === taskId) : null;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-${taskId ? 'pencil-simple' : 'sword'}" style="color: var(--royal-gold);"></i>
+                        ${taskId ? 'Edit Task' : 'Add New Task'}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveTask(event)">
+                        <div class="form-group">
+                            <label class="form-label">Task Title *</label>
+                            <input type="text" id="task-title" class="form-input" required
+                                   placeholder="What needs to be done?" 
+                                   value="${task ? Utils.sanitize(task.title) : ''}">
+                        </div>
+                        <div class="grid grid-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Priority</label>
+                                <select id="task-priority" class="form-select">
+                                    <option value="medium" ${task?.priority === 'medium' ? 'selected' : ''}>Medium</option>
+                                    <option value="high" ${task?.priority === 'high' ? 'selected' : ''}>High</option>
+                                    <option value="low" ${task?.priority === 'low' ? 'selected' : ''}>Low</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Est. Hours</label>
+                                <input type="number" id="task-hours" class="form-input" 
+                                       min="0.5" max="12" step="0.5"
+                                       placeholder="1" value="${task?.estimatedTime || ''}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notes (Optional)</label>
+                            <textarea id="task-notes" class="form-textarea" rows="3"
+                                      placeholder="Additional details...">${task?.notes ? Utils.sanitize(task.notes) : ''}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">
+                            <i class="ph-bold ph-${taskId ? 'floppy-disk' : 'plus'}"></i>
+                            ${taskId ? 'Update Task' : 'Add Task'}
+                        </button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+            document.getElementById('task-title').focus();
+        }
+
+        // Edit task
+        function editTask(taskId) {
+            openTaskModal(taskId);
+        }
+
+        // Save task
+        function saveTask(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('task-title').value.trim();
+            const priority = document.getElementById('task-priority').value;
+            const estimatedTime = parseFloat(document.getElementById('task-hours').value) || null;
+            const notes = document.getElementById('task-notes').value.trim();
+
+            if (!title) {
+                Utils.showToast('Please enter a task title', 'danger');
+                return;
+            }
+
+            if (editingTaskId) {
+                // Update existing task
+                const task = tasks.find(t => t.id === editingTaskId);
+                if (task) {
+                    task.title = title;
+                    task.priority = priority;
+                    task.estimatedTime = estimatedTime;
+                    task.notes = notes;
+                    task.updatedAt = new Date().toISOString();
+                }
+                Utils.showToast('Task updated!', 'gold');
+            } else {
+                // Add new task
+                tasks.push({
+                    id: Utils.generateId(),
+                    title,
+                    priority,
+                    estimatedTime,
+                    notes,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                });
+                Utils.showToast('Task added to your arsenal! ⚔️', 'gold');
+            }
+
+            saveMorningData();
+            renderTasks();
+            updateProgress();
+            closeModal();
+        }
+
+        // Delete task
+        function deleteTask(taskId) {
+            if (!confirm('Remove this task?')) return;
+
+            tasks = tasks.filter(t => t.id !== taskId);
+            saveMorningData();
+            renderTasks();
+            updateProgress();
+            Utils.showToast('Task removed', 'info');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            editingTaskId = null;
+        }
+    </script>
+</body>
+
+</html>

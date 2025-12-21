@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="About REIGN - The King's Journal for ruling your day with purpose">
+    <title>About | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/about.html">
+    <meta property="og:title" content="About REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .about-hero {
+            text-align: center;
+            padding: 3rem 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-hero-crown {
+            width: 6rem;
+            height: 6rem;
+            background: linear-gradient(135deg, var(--royal-gold), #B8860B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 50px rgba(212, 175, 55, 0.4);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 50px rgba(212, 175, 55, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 10px 60px rgba(212, 175, 55, 0.6);
+            }
+        }
+
+        .about-hero-crown i {
+            font-size: 3rem;
+            color: var(--bg-primary);
+        }
+
+        .about-hero h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-hero .tagline {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            color: var(--royal-gold);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .about-hero p {
+            color: var(--text-secondary);
+            font-size: 1.0625rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .vision-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(184, 134, 11, 0.02));
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .vision-section h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--royal-gold);
+            margin-bottom: 1rem;
+        }
+
+        .vision-section p {
+            color: var(--text-secondary);
+            font-size: 1.0625rem;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .features-section h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--feature-color, var(--royal-gold));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--feature-color, rgba(212, 175, 55, 0.4));
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-icon i {
+            font-size: 1.75rem;
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        .philosophy-section {
+            background: linear-gradient(145deg, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.02));
+            border: 2px solid rgba(139, 92, 246, 0.25);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .philosophy-section h2 {
+            font-family: var(--font-serif);
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: #a78bfa;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .philosophy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .philosophy-item {
+            text-align: center;
+        }
+
+        .philosophy-item i {
+            font-size: 2.5rem;
+            color: #a78bfa;
+            margin-bottom: 0.75rem;
+        }
+
+        .philosophy-item h4 {
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .philosophy-item p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.02));
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-section h3 {
+            font-family: var(--font-serif);
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Light Mode - Clean & Premium */
+        [data-theme="light"] .about-hero h1 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .about-hero p {
+            color: #475569;
+        }
+
+        [data-theme="light"] .vision-section {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        [data-theme="light"] .vision-section p {
+            color: #334155;
+        }
+
+        [data-theme="light"] .features-section h2 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .feature-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        }
+
+        [data-theme="light"] .feature-card:hover {
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+
+        [data-theme="light"] .feature-card h3 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .feature-card p {
+            color: #475569;
+        }
+
+        [data-theme="light"] .philosophy-section {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        [data-theme="light"] .philosophy-item h4 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .philosophy-item p {
+            color: #64748b;
+        }
+
+        [data-theme="light"] .cta-section {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+
+        [data-theme="light"] .cta-section h3 {
+            color: #0f172a;
+        }
+
+        [data-theme="light"] .cta-section p {
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <!-- Hero -->
+                <div class="about-hero">
+                    <div class="about-hero-crown">
+                        <i class="ph-fill ph-crown"></i>
+                    </div>
+                    <h1>REIGN</h1>
+                    <p class="tagline">"Rule Your Day"</p>
+                    <p>REIGN is your personal kingdom management system. A thoughtfully crafted productivity companion
+                        designed to help you conquer each day with purpose, track your growth, and reflect on your
+                        journey toward greatness.</p>
+                </div>
+
+                <!-- Vision -->
+                <div class="vision-section">
+                    <h2><i class="ph-fill ph-eye"></i> Our Vision</h2>
+                    <p>We believe that every person has the potential for greatness. REIGN exists to help you unlock
+                        that potential through intentional daily planning, continuous learning, meaningful reflection,
+                        and nurturing the relationships that matter most. Every king needs a system to rule
+                        effectively—this is yours.</p>
+                </div>
+
+                <!-- Features -->
+                <div class="features-section">
+                    <h2>What You Can Do</h2>
+                    <div class="features-grid">
+                        <div class="feature-card" style="--feature-color: #f59e0b;">
+                            <div class="feature-icon" style="background: rgba(245, 158, 11, 0.15);">
+                                <i class="ph-duotone ph-sun-horizon" style="color: #f59e0b;"></i>
+                            </div>
+                            <h3>Morning Protocol</h3>
+                            <p>Start each day with clarity. Set your tasks, define your battles, and create a roadmap
+                                for daily conquest.</p>
+                        </div>
+
+                        <div class="feature-card" style="--feature-color: #6366f1;">
+                            <div class="feature-icon" style="background: rgba(99, 102, 241, 0.15);">
+                                <i class="ph-duotone ph-moon-stars" style="color: #6366f1;"></i>
+                            </div>
+                            <h3>Evening Report</h3>
+                            <p>Reflect on your day's victories and challenges. Track mood, energy, and plan strategies
+                                for tomorrow.</p>
+                        </div>
+
+                        <div class="feature-card" style="--feature-color: #8b5cf6;">
+                            <div class="feature-icon" style="background: rgba(139, 92, 246, 0.15);">
+                                <i class="ph-duotone ph-graduation-cap" style="color: #8b5cf6;"></i>
+                            </div>
+                            <h3>Learning Forge</h3>
+                            <p>Track your courses, maintain learning streaks, and forge yourself into the person you
+                                want to become.</p>
+                        </div>
+
+                        <div class="feature-card" style="--feature-color: #ef4444;">
+                            <div class="feature-icon" style="background: rgba(239, 68, 68, 0.15);">
+                                <i class="ph-duotone ph-heart" style="color: #ef4444;"></i>
+                            </div>
+                            <h3>Gratitude Practice</h3>
+                            <p>Find the good in every day. Build a habit of appreciation that transforms your
+                                perspective.</p>
+                        </div>
+
+                        <div class="feature-card" style="--feature-color: #ec4899;">
+                            <div class="feature-icon" style="background: rgba(236, 72, 153, 0.15);">
+                                <i class="ph-duotone ph-heart-half" style="color: #ec4899;"></i>
+                            </div>
+                            <h3>Rainy Day People</h3>
+                            <p>Nurture your support network. Document the people who lift you up when storms come.</p>
+                        </div>
+
+                        <div class="feature-card" style="--feature-color: #10b981;">
+                            <div class="feature-icon" style="background: rgba(16, 185, 129, 0.15);">
+                                <i class="ph-duotone ph-lightbulb" style="color: #10b981;"></i>
+                            </div>
+                            <h3>Idea Capture</h3>
+                            <p>Brilliant thoughts come unexpectedly. Capture them before they fade and build your idea
+                                treasury.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Philosophy -->
+                <div class="philosophy-section">
+                    <h2><i class="ph-fill ph-sparkle"></i> The REIGN Philosophy</h2>
+                    <div class="philosophy-grid">
+                        <div class="philosophy-item">
+                            <i class="ph-duotone ph-target"></i>
+                            <h4>Intentionality</h4>
+                            <p>Every day is an opportunity. Plan it with purpose.</p>
+                        </div>
+                        <div class="philosophy-item">
+                            <i class="ph-duotone ph-trend-up"></i>
+                            <h4>Growth</h4>
+                            <p>Small daily improvements lead to extraordinary results.</p>
+                        </div>
+                        <div class="philosophy-item">
+                            <i class="ph-duotone ph-heart-straight"></i>
+                            <h4>Gratitude</h4>
+                            <p>Appreciation is the foundation of a fulfilled life.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="cta-section">
+                    <h3>Ready to Rule?</h3>
+                    <p>Your kingdom awaits. Start your journey to mastery today.</p>
+                    <a href="../index.html" class="btn btn-primary btn-lg"
+                        style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="ph-bold ph-play"></i> Begin Now
+                    </a>
+                </div>
+
+                <!-- Support Link -->
+                <div style="text-align: center;">
+                    <a href="support.html" class="btn btn-outline">
+                        <i class="ph-bold ph-hand-heart"></i> Support REIGN
+                    </a>
+                </div>
+            </main>
+        </div>
+
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'About REIGN',
+                pageIcon: 'ph-info'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+        });
+    </script>
+</body>
+
+</html>

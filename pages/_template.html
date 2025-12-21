@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Page Template - A starting point for new pages">
+    <title>Page Title | REIGN</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/template.html">
+    <meta property="og:title" content="Page Title | REIGN">
+    <meta property="og:description" content="Rule Your Day - Your page description here.">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+    <meta property="og:site_name" content="REIGN">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Page Title | REIGN">
+    <meta name="twitter:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header Container (Injected by JS) -->
+        <div id="header-container"></div>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar Container (Injected by JS) -->
+            <div id="sidebar-container"></div>
+
+            <!-- Content Area -->
+            <main class="main-content fade-in" id="main-view">
+                <!-- Page Hero -->
+                <div class="page-hero">
+                    <div class="page-hero-icon">
+                        <i class="ph-fill ph-star"></i>
+                    </div>
+                    <h1 class="page-hero-title">Page Title</h1>
+                    <p class="page-hero-subtitle">A brief description of what this page does and why it matters to your
+                        daily reign.</p>
+                </div>
+
+                <!-- Stats Grid Example -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="ph-fill ph-target stat-card-icon"></i>
+                        <p class="stat-card-label">Total Items</p>
+                        <div>
+                            <span class="stat-card-value">24</span>
+                            <span class="stat-card-sublabel">this week</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-check-circle stat-card-icon" style="color: #10b981;"></i>
+                        <p class="stat-card-label">Completed</p>
+                        <div>
+                            <span class="stat-card-value" style="color: #10b981;">18</span>
+                            <span class="stat-card-sublabel">75%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-fire stat-card-icon" style="color: #f59e0b;"></i>
+                        <p class="stat-card-label">Streak</p>
+                        <div>
+                            <span class="stat-card-value" style="color: #f59e0b;">7</span>
+                            <span class="stat-card-sublabel">days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Section -->
+                <section class="glass-card p-6 mb-6">
+                    <h3 style="font-family: var(--font-serif); font-weight: 700; color: white; margin-bottom: 1rem;">
+                        Section Title
+                    </h3>
+
+                    <!-- List Items Example -->
+                    <div class="list-item">
+                        <div class="list-item-checkbox">
+                            <i class="ph-bold ph-check" style="opacity: 0;"></i>
+                        </div>
+                        <div class="list-item-content">
+                            <p class="list-item-title">Example List Item</p>
+                            <p class="list-item-meta">Added 2 hours ago</p>
+                        </div>
+                        <span class="badge badge-gold">Priority</span>
+                    </div>
+
+                    <div class="list-item">
+                        <div class="list-item-checkbox checked">
+                            <i class="ph-bold ph-check"></i>
+                        </div>
+                        <div class="list-item-content">
+                            <p class="list-item-title completed">Completed Item</p>
+                            <p class="list-item-meta">Completed 1 hour ago</p>
+                        </div>
+                        <span class="badge badge-success">Done</span>
+                    </div>
+                </section>
+
+                <!-- Action Cards Example -->
+                <div class="grid grid-2 mb-6">
+                    <div class="action-card" onclick="alert('Action 1')">
+                        <div class="action-card-icon"
+                            style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05));">
+                            <i class="ph-duotone ph-sun-horizon" style="color: #f59e0b;"></i>
+                        </div>
+                        <div class="action-card-content">
+                            <h4 class="action-card-title">Action Card</h4>
+                            <p class="action-card-desc">Click to perform an action</p>
+                        </div>
+                        <i class="ph-bold ph-caret-right action-card-arrow"></i>
+                    </div>
+
+                    <div class="action-card" onclick="alert('Action 2')">
+                        <div class="action-card-icon"
+                            style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.05));">
+                            <i class="ph-duotone ph-lightbulb" style="color: #8b5cf6;"></i>
+                        </div>
+                        <div class="action-card-content">
+                            <h4 class="action-card-title">Another Action</h4>
+                            <p class="action-card-desc">Secondary action description</p>
+                        </div>
+                        <i class="ph-bold ph-caret-right action-card-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- Empty State Example (uncomment to use) -->
+                <!--
+                <div class="empty-state">
+                    <i class="ph-duotone ph-folder-open"></i>
+                    <h3>Nothing Here Yet</h3>
+                    <p>Start adding items to see them appear here.</p>
+                    <button class="btn btn-primary">
+                        <i class="ph-bold ph-plus"></i> Add First Item
+                    </button>
+                </div>
+                -->
+
+                <!-- Loading State Example (uncomment to use) -->
+                <!--
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading your data...</p>
+                </div>
+                -->
+
+            </main>
+        </div>
+
+        <!-- Modal Container -->
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="UI.closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+
+        <!-- Footer Container (Mobile Bottom Nav) -->
+        <div id="footer-container"></div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <!-- Page-Specific Script -->
+    <script>
+        // Initialize shared components
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render header with page info
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Page Title',
+                pageIcon: 'ph-star'
+            });
+
+            // Render sidebar navigation
+            SidebarComponent.render('sidebar-container');
+
+            // Render mobile bottom nav
+            FooterComponent.render('footer-container');
+
+            // Initialize page-specific functionality
+            initPage();
+        });
+
+        /**
+         * Initialize page-specific functionality
+         */
+        function initPage() {
+            // Load data
+            const data = Storage.getData();
+
+            // Setup event listeners
+            setupEventListeners();
+
+            // Render content
+            renderContent(data);
+        }
+
+        /**
+         * Setup event listeners
+         */
+        function setupEventListeners() {
+            // Add your event listeners here
+        }
+
+        /**
+         * Render page content
+         */
+        function renderContent(data) {
+            // Add your rendering logic here
+        }
+    </script>
+</body>
+
+</html>

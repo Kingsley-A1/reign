@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Evening Report - Review your day and reflect on progress">
+    <title>Evening Report | REIGN</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/evening.html">
+    <meta property="og:title" content="Evening Report | REIGN">
+    <meta property="og:description" content="Review the battlefield and reflect on your day.">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .rating-slider {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .rating-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .rating-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .rating-btn.active {
+            background: linear-gradient(135deg, var(--royal-gold), #B8860B);
+            color: var(--bg-primary);
+            border-color: var(--royal-gold);
+        }
+
+        .task-review-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <!-- Page Hero -->
+                <div class="page-hero">
+                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                        <i class="ph-fill ph-moon-stars"></i>
+                    </div>
+                    <h1 class="page-hero-title">Evening Report</h1>
+                    <p class="page-hero-subtitle">Review the battlefield and reflect on your conquests.</p>
+                </div>
+
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <!-- Task Review Section -->
+                    <div id="task-review-section" class="glass-card p-6 mb-6"
+                        style="border-top: 4px solid #6366f1; display: none;">
+                        <h3
+                            style="font-family: var(--font-serif); font-weight: 700; color: white; margin-bottom: 1rem;">
+                            Task Review</h3>
+                        <div class="progress-container mb-4">
+                            <div class="progress-header">
+                                <span class="progress-label">Completion Rate</span>
+                                <span class="progress-value" id="completion-text">0/0 (0%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="completion-fill"
+                                    style="width: 0%; background: linear-gradient(90deg, #4f46e5, #6366f1);"></div>
+                            </div>
+                        </div>
+                        <div id="tasks-review-list"></div>
+                    </div>
+
+                    <!-- Reflection Form -->
+                    <form id="evening-form" class="glass-card p-6 mb-6" style="border-top: 4px solid #6366f1;">
+                        <!-- Mood & Energy -->
+                        <div class="grid grid-1 grid-2 gap-6 mb-6">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" style="color: #fbbf24;">
+                                    <i class="ph-fill ph-smiley"></i> Mood Level
+                                </label>
+                                <div class="rating-slider" id="mood-slider">
+                                    <button type="button" class="rating-btn" data-value="1">1</button>
+                                    <button type="button" class="rating-btn" data-value="2">2</button>
+                                    <button type="button" class="rating-btn" data-value="3">3</button>
+                                    <button type="button" class="rating-btn" data-value="4">4</button>
+                                    <button type="button" class="rating-btn" data-value="5">5</button>
+                                </div>
+                                <input type="hidden" name="mood" id="mood-input" value="">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" style="color: #60a5fa;">
+                                    <i class="ph-fill ph-lightning"></i> Energy Level
+                                </label>
+                                <div class="rating-slider" id="energy-slider">
+                                    <button type="button" class="rating-btn" data-value="1">1</button>
+                                    <button type="button" class="rating-btn" data-value="2">2</button>
+                                    <button type="button" class="rating-btn" data-value="3">3</button>
+                                    <button type="button" class="rating-btn" data-value="4">4</button>
+                                    <button type="button" class="rating-btn" data-value="5">5</button>
+                                </div>
+                                <input type="hidden" name="energyLevel" id="energy-input" value="">
+                            </div>
+                        </div>
+
+                        <!-- Text Reflections -->
+                        <div class="form-group">
+                            <label class="form-label" style="color: #10b981;">
+                                <i class="ph-fill ph-trophy"></i> Major Successes
+                            </label>
+                            <textarea name="success" id="success-input" class="form-textarea" rows="3" required
+                                placeholder="What went well today?"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" style="color: #ef4444;">
+                                <i class="ph-fill ph-warning-octagon"></i> Challenges / Blockers
+                            </label>
+                            <textarea name="challenges" id="challenges-input" class="form-textarea" rows="3" required
+                                placeholder="What stood in the way?"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" style="color: #3b82f6;">
+                                <i class="ph-fill ph-strategy"></i> Strategy for Tomorrow
+                            </label>
+                            <textarea name="strategy" id="strategy-input" class="form-textarea" rows="3" required
+                                placeholder="How will you improve tomorrow?"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary btn-lg btn-block">
+                            <i class="ph-bold ph-paper-plane-right"></i> Submit Report
+                        </button>
+                    </form>
+
+                    <!-- Navigation -->
+                    <div class="grid grid-1 grid-2 gap-4">
+                        <a href="../index.html" class="btn btn-outline btn-block">
+                            <i class="ph-bold ph-arrow-left"></i> Back to Throne
+                        </a>
+                        <a href="morning.html" class="btn btn-outline btn-block">
+                            <i class="ph-bold ph-sun-horizon"></i> Morning Protocol
+                        </a>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="UI.closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+
+        <div id="footer-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        let morningTasks = [];
+        let eveningData = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Evening Report',
+                pageIcon: 'ph-moon-stars'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+
+            loadEveningData();
+            setupRatingSliders();
+            setupFormSubmit();
+        });
+
+        function loadEveningData() {
+            const data = Storage.getData();
+            const today = Storage.getToday();
+            const log = data.logs[today] || {};
+
+            morningTasks = log.morning?.tasks || [];
+            eveningData = log.evening || {};
+
+            // Render task review
+            if (morningTasks.length > 0) {
+                renderTaskReview();
+            }
+
+            // Populate form with existing data
+            if (eveningData.mood) setRating('mood', eveningData.mood);
+            if (eveningData.energyLevel) setRating('energy', eveningData.energyLevel);
+            if (eveningData.success) document.getElementById('success-input').value = eveningData.success;
+            if (eveningData.challenges) document.getElementById('challenges-input').value = eveningData.challenges;
+            if (eveningData.strategy) document.getElementById('strategy-input').value = eveningData.strategy;
+        }
+
+        function renderTaskReview() {
+            const section = document.getElementById('task-review-section');
+            const list = document.getElementById('tasks-review-list');
+            const completionText = document.getElementById('completion-text');
+            const completionFill = document.getElementById('completion-fill');
+
+            section.style.display = 'block';
+
+            const completed = morningTasks.filter(t => t.status === 'completed').length;
+            const total = morningTasks.length;
+            const percent = Math.round((completed / total) * 100);
+
+            completionText.textContent = `${completed}/${total} (${percent}%)`;
+            completionFill.style.width = `${percent}%`;
+
+            list.innerHTML = morningTasks.map(task => `
+                <div class="task-review-item">
+                    ${task.status === 'completed'
+                    ? '<i class="ph-fill ph-check-circle" style="color: #10b981;"></i>'
+                    : task.status === 'in-progress'
+                        ? '<i class="ph-fill ph-clock" style="color: #f59e0b;"></i>'
+                        : '<i class="ph-fill ph-circle" style="color: #475569;"></i>'}
+                    <span style="font-size: 0.875rem; color: ${task.status === 'completed' ? '#64748b' : 'white'}; ${task.status === 'completed' ? 'text-decoration: line-through;' : ''}">
+                        ${Utils.sanitize(task.title)}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function setupRatingSliders() {
+            // Mood slider
+            document.querySelectorAll('#mood-slider .rating-btn').forEach(btn => {
+                btn.addEventListener('click', () => setRating('mood', parseInt(btn.dataset.value)));
+            });
+
+            // Energy slider
+            document.querySelectorAll('#energy-slider .rating-btn').forEach(btn => {
+                btn.addEventListener('click', () => setRating('energy', parseInt(btn.dataset.value)));
+            });
+        }
+
+        function setRating(type, value) {
+            const sliderId = type === 'mood' ? 'mood-slider' : 'energy-slider';
+            const inputId = type === 'mood' ? 'mood-input' : 'energy-input';
+
+            document.querySelectorAll(`#${sliderId} .rating-btn`).forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.value) === value);
+            });
+            document.getElementById(inputId).value = value;
+        }
+
+        function setupFormSubmit() {
+            document.getElementById('evening-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const mood = parseInt(document.getElementById('mood-input').value);
+                const energyLevel = parseInt(document.getElementById('energy-input').value);
+                const success = document.getElementById('success-input').value.trim();
+                const challenges = document.getElementById('challenges-input').value.trim();
+                const strategy = document.getElementById('strategy-input').value.trim();
+
+                if (!mood || !energyLevel) {
+                    Utils.showToast('Please rate your mood and energy level', 'danger');
+                    return;
+                }
+
+                // Save to storage
+                const data = Storage.getData();
+                const today = Storage.getToday();
+
+                if (!data.logs[today]) {
+                    data.logs[today] = { morning: null, evening: null };
+                }
+
+                data.logs[today].evening = {
+                    mood,
+                    energyLevel,
+                    success,
+                    challenges,
+                    strategy,
+                    submittedAt: new Date().toISOString()
+                };
+
+                Storage.saveData(data);
+
+                // Sync to cloud
+                if (Auth.isLoggedIn()) {
+                    try {
+                        await API.post('/sync/logs', {
+                            date: today,
+                            log: data.logs[today]
+                        });
+                    } catch (error) {
+                        console.error('Sync failed:', error);
+                    }
+                }
+
+                Utils.showToast('Evening report submitted! 🌙', 'success');
+
+                // Redirect to dashboard after delay
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+
+</html>

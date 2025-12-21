@@ -1,6 +1,7 @@
 /**
- * King Daily API Server
- * Backend for Authentication and Cloud Sync with Cloudflare R2
+ * REIGN API Server
+ * Backend for Authentication, Cloud Sync, and Relationships
+ * Now powered by CockroachDB Serverless
  */
 
 require('dotenv').config();
@@ -10,7 +11,9 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
 const syncRoutes = require('./routes/sync');
+const relationshipsRoutes = require('./routes/relationships');
 const r2 = require('./lib/r2');
+const db = require('./lib/database');
 const auth = require('./lib/auth');
 
 const app = express();
@@ -37,6 +40,8 @@ const authLimiter = rateLimit({
 const allowedOrigins = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
@@ -63,13 +68,18 @@ app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/sync', syncRoutes);
+app.use('/api/relationships', relationshipsRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+    const dbConnected = db.isConfigured() ? await db.testConnection().catch(() => false) : false;
+
     res.json({
         status: 'ok',
-        r2Configured: r2.isConfigured(),
-        timestamp: new Date().toISOString()
+        database: dbConnected ? 'connected' : 'not configured',
+        r2: r2.isConfigured() ? 'configured' : 'not configured',
+        timestamp: new Date().toISOString(),
+        version: '2.1.0'
     });
 });
 
@@ -82,23 +92,39 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+    console.log('SIGTERM received, closing connections...');
+    await db.close();
+    process.exit(0);
+});
+
 // Start server
 async function start() {
-    // Load existing users from R2
+    // Test database connection
+    if (db.isConfigured()) {
+        await db.testConnection();
+    }
+
+    // Legacy: Load users from R2 (now deprecated, shows migration message)
     await auth.loadUsersFromR2(r2);
 
     app.listen(PORT, () => {
+        const dbStatus = db.isConfigured() ? '✅ CockroachDB' : '⚠️  Not configured';
+        const r2Status = r2.isConfigured() ? '✅ Configured' : '⚠️  Not configured';
+
         console.log(`
-╔══════════════════════════════════════════════════╗
-║         👑 King Daily API Server 👑              ║
-╠══════════════════════════════════════════════════╣
-║  Server:    http://localhost:${PORT}               ║
-║  R2 Status: ${r2.isConfigured() ? '✅ Configured' : '⚠️  Not configured (check .env)'}           ║
-╚══════════════════════════════════════════════════╝
+╔═══════════════════════════════════════════════════════╗
+║            👑 REIGN API Server v2.1.0 👑              ║
+╠═══════════════════════════════════════════════════════╣
+║  Server:     http://localhost:${PORT}                   ║
+║  Database:   ${dbStatus}                       ║
+║  R2 Storage: ${r2Status}                       ║
+╚═══════════════════════════════════════════════════════╝
         `);
 
-        if (!r2.isConfigured()) {
-            console.log('\n⚠️  To enable cloud sync, fill in your R2 credentials in api/.env\n');
+        if (!db.isConfigured()) {
+            console.log('\n⚠️  To enable database, set DATABASE_URL in api/.env\n');
         }
     });
 }

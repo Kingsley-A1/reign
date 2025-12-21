@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Daily Lessons - Capture wisdom from every day">
+    <title>Daily Lessons | REIGN</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    <link rel="apple-touch-icon" href="../icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+
+    <meta property="og:url" content="https://kingsley-a1.github.io/reign/pages/lessons.html">
+    <meta property="og:title" content="Daily Lessons | REIGN">
+    <meta property="og:image" content="https://kingsley-a1.github.io/reign/icons/og-cover.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .lesson-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 4px solid var(--info);
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .lesson-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lesson-content {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .lesson-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .lesson-source {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border-radius: 0.375rem;
+            font-size: 0.6875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="header-container"></div>
+        <div class="main-layout">
+            <div id="sidebar-container"></div>
+            <main class="main-content fade-in" id="main-view">
+                <div class="page-hero">
+                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                        <i class="ph-fill ph-book-open-text"></i>
+                    </div>
+                    <h1 class="page-hero-title">Daily Lessons</h1>
+                    <p class="page-hero-subtitle">Wisdom compounds. Every lesson learned is a step toward mastery.</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="stat-card">
+                        <i class="ph-fill ph-book-open-text stat-card-icon" style="color: #3b82f6;"></i>
+                        <p class="stat-card-label">Total Lessons</p>
+                        <span class="stat-card-value" id="stat-total">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-calendar stat-card-icon" style="color: #10b981;"></i>
+                        <p class="stat-card-label">This Month</p>
+                        <span class="stat-card-value" id="stat-month">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ph-fill ph-graduation-cap stat-card-icon" style="color: #8b5cf6;"></i>
+                        <p class="stat-card-label">Best Streak</p>
+                        <span class="stat-card-value" id="stat-streak">0</span>
+                    </div>
+                </div>
+
+                <!-- Add Button -->
+                <div style="margin-bottom: 1.5rem;">
+                    <button class="btn btn-primary" onclick="openLessonModal()"
+                        style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                        <i class="ph-bold ph-plus"></i> Add Lesson
+                    </button>
+                </div>
+
+                <!-- Lessons List -->
+                <div id="lessons-list">
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                        <p>Loading lessons...</p>
+                    </div>
+                </div>
+
+                <button class="fab" onclick="openLessonModal()"
+                    style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                    <i class="ph-bold ph-plus"></i>
+                </button>
+            </main>
+        </div>
+
+        <div id="modal" class="modal">
+            <div class="modal-overlay" onclick="closeModal()"></div>
+            <div class="modal-container">
+                <div class="modal-content" id="modal-content"></div>
+            </div>
+        </div>
+        <div id="footer-container"></div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        let lessons = [];
+        let editingId = null;
+
+        const sources = ['Book', 'Podcast', 'Video', 'Article', 'Conversation', 'Experience', 'Reflection', 'Other'];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Daily Lessons',
+                pageIcon: 'ph-book-open-text'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+            loadLessons();
+        });
+
+        function loadLessons() {
+            const data = Storage.getData();
+            lessons = data.lessons || [];
+            updateStats();
+            renderLessons();
+        }
+
+        function updateStats() {
+            const monthAgo = new Date();
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+
+            document.getElementById('stat-total').textContent = lessons.length;
+            document.getElementById('stat-month').textContent = lessons.filter(l => new Date(l.date) > monthAgo).length;
+            document.getElementById('stat-streak').textContent = calculateStreak();
+        }
+
+        function calculateStreak() {
+            if (lessons.length === 0) return 0;
+            const dates = [...new Set(lessons.map(l => l.date.split('T')[0]))].sort().reverse();
+            let streak = 0;
+            let checkDate = new Date();
+
+            for (const dateStr of dates) {
+                const date = new Date(dateStr);
+                const diff = Math.floor((checkDate - date) / (1000 * 60 * 60 * 24));
+                if (diff <= 1) {
+                    streak++;
+                    checkDate = date;
+                } else {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function renderLessons() {
+            const container = document.getElementById('lessons-list');
+
+            if (lessons.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state glass-card">
+                        <i class="ph-duotone ph-book-open-text"></i>
+                        <h3>No Lessons Yet</h3>
+                        <p>Start capturing wisdom from your daily experiences.</p>
+                        <button class="btn btn-primary" onclick="openLessonModal()" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                            <i class="ph-bold ph-plus"></i> Add First Lesson
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...lessons].sort((a, b) => new Date(b.date) - new Date(a.date));
+            container.innerHTML = sorted.map(lesson => `
+                <div class="lesson-card" onclick="viewLesson('${lesson.id}')">
+                    <h4 class="lesson-title">
+                        <i class="ph-duotone ph-book-open-text" style="color: #3b82f6;"></i>
+                        ${Utils.sanitize(lesson.title)}
+                    </h4>
+                    <p class="lesson-content">${Utils.sanitize(lesson.content?.substring(0, 150) || '')}${lesson.content?.length > 150 ? '...' : ''}</p>
+                    <div class="lesson-meta">
+                        <span class="lesson-source">
+                            <i class="ph-bold ph-book"></i> ${lesson.source || 'Unknown'}
+                        </span>
+                        <span>${Utils.formatTimeAgo(lesson.date)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openLessonModal(lessonId = null) {
+            editingId = lessonId;
+            const lesson = lessonId ? lessons.find(l => l.id === lessonId) : null;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-book-open-text" style="color: #3b82f6;"></i>
+                        ${lesson ? 'Edit Lesson' : 'Add Daily Lesson'}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="saveLesson(event)">
+                        <div class="form-group">
+                            <label class="form-label">What did you learn? *</label>
+                            <input type="text" id="lesson-title" class="form-input" required
+                                   placeholder="The key insight or lesson" value="${lesson ? Utils.sanitize(lesson.title) : ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Source</label>
+                            <select id="lesson-source" class="form-select">
+                                ${sources.map(s => `<option value="${s}" ${lesson?.source === s ? 'selected' : ''}>${s}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Details & Reflection</label>
+                            <textarea id="lesson-content" class="form-textarea" rows="5" 
+                                      placeholder="Expand on what you learned and how you'll apply it...">${lesson?.content ? Utils.sanitize(lesson.content) : ''}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                            <i class="ph-bold ph-${lesson ? 'floppy-disk' : 'book-open-text'}"></i>
+                            ${lesson ? 'Update Lesson' : 'Save Lesson'}
+                        </button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function saveLesson(event) {
+            event.preventDefault();
+
+            const lessonData = {
+                title: document.getElementById('lesson-title').value.trim(),
+                source: document.getElementById('lesson-source').value,
+                content: document.getElementById('lesson-content').value.trim(),
+                date: new Date().toISOString()
+            };
+
+            if (!lessonData.title) {
+                Utils.showToast('Please enter a title', 'danger');
+                return;
+            }
+
+            const data = Storage.getData();
+            if (!data.lessons) data.lessons = [];
+
+            if (editingId) {
+                const index = data.lessons.findIndex(l => l.id === editingId);
+                if (index !== -1) {
+                    data.lessons[index] = { ...data.lessons[index], ...lessonData };
+                }
+                Utils.showToast('Lesson updated!', 'info');
+            } else {
+                data.lessons.push({
+                    id: Utils.generateId(),
+                    ...lessonData
+                });
+                Utils.showToast('Lesson captured! 📚', 'success');
+            }
+
+            Storage.saveData(data);
+            closeModal();
+            loadLessons();
+        }
+
+        function viewLesson(id) {
+            const lesson = lessons.find(l => l.id === id);
+            if (!lesson) return;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <i class="ph-duotone ph-book-open-text" style="color: #3b82f6;"></i>
+                        ${Utils.sanitize(lesson.title)}
+                    </h2>
+                    <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 1rem;">
+                        <span class="lesson-source">
+                            <i class="ph-bold ph-book"></i> ${lesson.source || 'Unknown'}
+                        </span>
+                    </div>
+                    ${lesson.content ? `<p style="color: white; line-height: 1.6; margin-bottom: 1.5rem;">${Utils.sanitize(lesson.content)}</p>` : '<p style="color: var(--text-muted); font-style: italic;">No details added.</p>'}
+                    <p style="font-size: 0.75rem; color: var(--text-muted);">Learned ${Utils.formatDate(lesson.date)}</p>
+                    <div class="grid grid-2 gap-4" style="margin-top: 1.5rem;">
+                        <button class="btn btn-outline btn-block" onclick="openLessonModal('${lesson.id}')">
+                            <i class="ph-bold ph-pencil-simple"></i> Edit
+                        </button>
+                        <button class="btn btn-outline btn-block danger" onclick="deleteLesson('${lesson.id}')">
+                            <i class="ph-bold ph-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function deleteLesson(id) {
+            if (!confirm('Delete this lesson?')) return;
+            const data = Storage.getData();
+            data.lessons = data.lessons.filter(l => l.id !== id);
+            Storage.saveData(data);
+            Utils.showToast('Lesson deleted', 'info');
+            closeModal();
+            loadLessons();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            editingId = null;
+        }
+    </script>
+</body>
+
+</html>
