@@ -454,6 +454,26 @@
             updateAuthUI();
         });
     </script>
+
+    <!-- Feedback Modal -->
+    <script src="js/components/feedback-modal.js"></script>
+    <script>
+        // Trigger feedback modal on page visibility change (user leaving)
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden' && FeedbackModal.shouldShowModal()) {
+                // User is leaving, mark that we should show modal next time
+                sessionStorage.setItem('reign_show_feedback_on_return', 'true');
+            }
+        });
+
+        // Show modal when user returns (if criteria met)
+        window.addEventListener('focus', () => {
+            if (sessionStorage.getItem('reign_show_feedback_on_return') === 'true') {
+                sessionStorage.removeItem('reign_show_feedback_on_return');
+                setTimeout(() => FeedbackModal.show(), 1000);
+            }
+        });
+    </script>
 </body>
 
 </html>

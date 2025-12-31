@@ -81,6 +81,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/sync', syncRoutes);
 app.use('/api/relationships', relationshipsRoutes);
 app.use('/api/admin', adminRoutes);  // Admin routes (require auth + admin role)
+app.use('/api/feedback', require('./routes/feedback'));  // Feedback routes
 
 // Health check
 app.get('/api/health', async (req, res) => {

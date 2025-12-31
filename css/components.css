@@ -2047,3 +2047,402 @@ select:focus-visible {
         justify-content: center;
     }
 }
+
+/* ============================================
+   FEEDBACK MODAL
+   Beautiful, role-aware feedback collection
+   ============================================ */
+
+.feedback-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10005;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.feedback-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.feedback-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+}
+
+.feedback-content {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    background: linear-gradient(145deg, rgba(21, 27, 43, 0.98), rgba(11, 15, 25, 0.98));
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 1.5rem;
+    padding: 1.75rem;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    transform: scale(0.9) translateY(20px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+}
+
+.feedback-modal.show .feedback-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Expand transition */
+.feedback-modal.expanded .feedback-content {
+    max-width: 450px;
+}
+
+/* Collapsed State */
+.feedback-collapsed {
+    display: block;
+}
+
+.feedback-modal.expanded .feedback-collapsed {
+    display: none;
+}
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.feedback-header.expanded {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+}
+
+.feedback-header.expanded i {
+    font-size: 2.5rem;
+    color: var(--royal-gold, #D4AF37);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.feedback-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--royal-gold, #D4AF37), #B8860B);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+}
+
+.feedback-icon i {
+    font-size: 1.5rem;
+    color: var(--royal-dark, #0B0F19);
+}
+
+.feedback-title h3 {
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.feedback-title p,
+.feedback-header.expanded p {
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    margin: 0;
+}
+
+.feedback-header.expanded h3 {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.feedback-actions-collapsed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.feedback-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.feedback-btn.primary {
+    background: linear-gradient(135deg, var(--royal-gold, #D4AF37), #B8860B);
+    color: var(--royal-dark, #0B0F19);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.feedback-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+}
+
+.feedback-btn.secondary {
+    background: transparent;
+    color: #64748b;
+    font-weight: 500;
+    padding: 0.625rem 1rem;
+}
+
+.feedback-btn.secondary:hover {
+    color: #94a3b8;
+}
+
+/* Expanded State */
+.feedback-expanded {
+    display: none;
+}
+
+.feedback-modal.expanded .feedback-expanded {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feedback-close {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #94a3b8;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.feedback-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* Rating Stars */
+.feedback-rating {
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.feedback-rating label {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    margin-bottom: 0.75rem;
+}
+
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.rating-stars .star {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0.25rem;
+}
+
+.rating-stars .star:hover,
+.rating-stars .star.active {
+    color: var(--royal-gold, #D4AF37);
+    transform: scale(1.2);
+}
+
+.rating-stars .star.active i {
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+}
+
+/* Form */
+.feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.feedback-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.feedback-group label {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.feedback-group input,
+.feedback-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.625rem;
+    color: white;
+    font-size: 0.9375rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    resize: none;
+}
+
+.feedback-group input:focus,
+.feedback-group textarea:focus {
+    outline: none;
+    border-color: var(--royal-gold, #D4AF37);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.feedback-group input::placeholder,
+.feedback-group textarea::placeholder {
+    color: #475569;
+}
+
+.submit-btn {
+    margin-top: 0.5rem;
+}
+
+/* Success State */
+.feedback-success {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.feedback-modal.success .feedback-collapsed,
+.feedback-modal.success .feedback-expanded {
+    display: none;
+}
+
+.feedback-modal.success .feedback-success {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.feedback-success>i {
+    font-size: 4rem;
+    color: var(--success, #10b981);
+    margin-bottom: 1rem;
+    animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.feedback-success h3 {
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.feedback-success p {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    margin: 0 0 1.5rem 0;
+    max-width: 280px;
+}
+
+/* Queen Theme */
+.feedback-modal.queen-theme .feedback-icon {
+    background: linear-gradient(135deg, #b76e79, #9a525c);
+    box-shadow: 0 8px 25px rgba(183, 110, 121, 0.3);
+}
+
+.feedback-modal.queen-theme .feedback-content {
+    border-color: rgba(183, 110, 121, 0.2);
+}
+
+.feedback-modal.queen-theme .feedback-btn.primary {
+    background: linear-gradient(135deg, #b76e79, #9a525c);
+    box-shadow: 0 4px 15px rgba(183, 110, 121, 0.3);
+}
+
+.feedback-modal.queen-theme .feedback-btn.primary:hover {
+    box-shadow: 0 8px 25px rgba(183, 110, 121, 0.4);
+}
+
+.feedback-modal.queen-theme .rating-stars .star:hover,
+.feedback-modal.queen-theme .rating-stars .star.active {
+    color: #b76e79;
+}
+
+.feedback-modal.queen-theme .feedback-group input:focus,
+.feedback-modal.queen-theme .feedback-group textarea:focus {
+    border-color: #b76e79;
+    box-shadow: 0 0 0 3px rgba(183, 110, 121, 0.1);
+}
+
+.feedback-modal.queen-theme .feedback-header.expanded i {
+    color: #b76e79;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+    .feedback-content {
+        max-width: 100%;
+        margin: 0.5rem;
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+    }
+
+    .feedback-modal.expanded .feedback-content {
+        max-width: 100%;
+    }
+
+    .feedback-icon {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .feedback-icon i {
+        font-size: 1.25rem;
+    }
+
+    .feedback-title h3 {
+        font-size: 1rem;
+    }
+
+    .rating-stars .star {
+        font-size: 1.75rem;
+    }
+}

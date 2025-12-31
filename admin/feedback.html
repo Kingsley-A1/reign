@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Management | REIGN Admin</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- Admin Styles -->
+    <link rel="stylesheet" href="admin.css">
+
+    <style>
+        /* Feedback Page Specific Styles */
+        .feedback-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .feedback-stat-card {
+            background: linear-gradient(145deg, rgba(21, 27, 43, 0.8), rgba(11, 15, 25, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .feedback-stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--royal-gold, #D4AF37);
+            margin-bottom: 0.25rem;
+        }
+
+        .feedback-stat-card .stat-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .feedback-stat-card.avg-rating .stat-value {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .feedback-stat-card.avg-rating .stat-value i {
+            color: #f59e0b;
+        }
+
+        .feedback-filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .filter-btn.active {
+            background: var(--royal-gold, #D4AF37);
+            border-color: var(--royal-gold);
+            color: var(--royal-dark, #0B0F19);
+            font-weight: 600;
+        }
+
+        .feedback-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feedback-item {
+            background: linear-gradient(145deg, rgba(21, 27, 43, 0.8), rgba(11, 15, 25, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .feedback-item:hover {
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+
+        .feedback-item-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .feedback-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--royal-gold), #B8860B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--royal-dark);
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .feedback-user-info h4 {
+            color: white;
+            font-size: 0.9375rem;
+            margin: 0 0 0.125rem 0;
+        }
+
+        .feedback-user-info span {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .feedback-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feedback-rating {
+            display: flex;
+            gap: 0.125rem;
+        }
+
+        .feedback-rating i {
+            font-size: 1rem;
+            color: #f59e0b;
+        }
+
+        .feedback-rating i.empty {
+            color: #475569;
+        }
+
+        .feedback-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .feedback-status.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .feedback-status.reviewed {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .feedback-status.resolved {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .feedback-message {
+            color: #e2e8f0;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0.5rem;
+            border-left: 3px solid var(--royal-gold, #D4AF37);
+        }
+
+        .feedback-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .feedback-date {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .feedback-action-btn {
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .feedback-action-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        .feedback-action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Loading skeleton */
+        .skeleton-feedback {
+            height: 160px;
+            background: linear-gradient(145deg, rgba(21, 27, 43, 0.8), rgba(11, 15, 25, 0.6));
+            border-radius: 1rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="ph-fill ph-crown"></i>
+                <span>REIGN Admin</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="admin.html" class="nav-item">
+                    <i class="ph-bold ph-house"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="admin.html#users" class="nav-item">
+                    <i class="ph-bold ph-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="feedback.html" class="nav-item active">
+                    <i class="ph-bold ph-chat-heart"></i>
+                    <span>Feedback</span>
+                </a>
+                <a href="admin.html#announcements" class="nav-item">
+                    <i class="ph-bold ph-megaphone"></i>
+                    <span>Announcements</span>
+                </a>
+                <a href="admin.html#audit" class="nav-item">
+                    <i class="ph-bold ph-clipboard-text"></i>
+                    <span>Audit Log</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="../index.html" class="nav-item">
+                    <i class="ph-bold ph-arrow-left"></i>
+                    <span>Back to App</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="ph-bold ph-list"></i>
+                </button>
+                <h1>Feedback Management</h1>
+            </header>
+
+            <div class="admin-content">
+                <!-- Stats -->
+                <div class="feedback-stats" id="stats-container">
+                    <div class="feedback-stat-card">
+                        <div class="stat-value" id="stat-total">-</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="feedback-stat-card">
+                        <div class="stat-value" id="stat-pending">-</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="feedback-stat-card">
+                        <div class="stat-value" id="stat-reviewed">-</div>
+                        <div class="stat-label">Reviewed</div>
+                    </div>
+                    <div class="feedback-stat-card">
+                        <div class="stat-value" id="stat-resolved">-</div>
+                        <div class="stat-label">Resolved</div>
+                    </div>
+                    <div class="feedback-stat-card avg-rating">
+                        <div class="stat-value" id="stat-rating">
+                            <i class="ph-fill ph-star"></i>
+                            <span>-</span>
+                        </div>
+                        <div class="stat-label">Avg Rating</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="feedback-filters">
+                    <button class="filter-btn active" data-status="">All</button>
+                    <button class="filter-btn" data-status="pending">Pending</button>
+                    <button class="filter-btn" data-status="reviewed">Reviewed</button>
+                    <button class="filter-btn" data-status="resolved">Resolved</button>
+                </div>
+
+                <!-- Feedback List -->
+                <div class="feedback-list" id="feedback-list">
+                    <!-- Loading skeletons -->
+                    <div class="skeleton-feedback"></div>
+                    <div class="skeleton-feedback"></div>
+                    <div class="skeleton-feedback"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="admin-api.js"></script>
+    <script>
+        // State
+        let feedbackData = [];
+        let currentFilter = '';
+
+        // DOM Elements
+        const feedbackList = document.getElementById('feedback-list');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStats();
+            await loadFeedback();
+            setupFilters();
+        });
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const token = localStorage.getItem('reign_admin_token');
+                const response = await fetch('/api/feedback/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const stats = await response.json();
+                    document.getElementById('stat-total').textContent = stats.total || 0;
+                    document.getElementById('stat-pending').textContent = stats.pending || 0;
+                    document.getElementById('stat-reviewed').textContent = stats.reviewed || 0;
+                    document.getElementById('stat-resolved').textContent = stats.resolved || 0;
+                    document.getElementById('stat-rating').querySelector('span').textContent = stats.avg_rating || '-';
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Load feedback
+        async function loadFeedback(status = '') {
+            try {
+                const token = localStorage.getItem('reign_admin_token');
+                const url = status ? `/api/feedback?status=${status}` : '/api/feedback';
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    feedbackData = data.feedback || [];
+                    renderFeedback();
+                }
+            } catch (error) {
+                console.error('Failed to load feedback:', error);
+                feedbackList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="ph-bold ph-warning-circle"></i>
+                        <h3>Failed to load feedback</h3>
+                        <p>Please check your connection and try again</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render feedback list
+        function renderFeedback() {
+            if (feedbackData.length === 0) {
+                feedbackList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="ph-bold ph-chat-circle-text"></i>
+                        <h3>No feedback yet</h3>
+                        <p>Feedback from users will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            feedbackList.innerHTML = feedbackData.map(item => `
+                <div class="feedback-item" data-id="${item.id}">
+                    <div class="feedback-item-header">
+                        <div class="feedback-user">
+                            <div class="feedback-avatar">${getInitials(item.name)}</div>
+                            <div class="feedback-user-info">
+                                <h4>${escapeHtml(item.name)}</h4>
+                                <span>${escapeHtml(item.email)}</span>
+                            </div>
+                        </div>
+                        <div class="feedback-meta">
+                            ${renderRating(item.rating)}
+                            <span class="feedback-status ${item.status}">${item.status}</span>
+                        </div>
+                    </div>
+                    <div class="feedback-message">${escapeHtml(item.message)}</div>
+                    <div class="feedback-footer">
+                        <span class="feedback-date">
+                            <i class="ph-bold ph-calendar"></i>
+                            ${formatDate(item.created_at)}
+                            ${item.persona ? `• ${item.persona}` : ''}
+                        </span>
+                        <div class="feedback-actions">
+                            ${item.status === 'pending' ? `
+                                <button class="feedback-action-btn" onclick="updateStatus('${item.id}', 'reviewed')">
+                                    <i class="ph-bold ph-check"></i> Mark Reviewed
+                                </button>
+                            ` : ''}
+                            ${item.status === 'reviewed' ? `
+                                <button class="feedback-action-btn" onclick="updateStatus('${item.id}', 'resolved')">
+                                    <i class="ph-bold ph-check-circle"></i> Resolve
+                                </button>
+                            ` : ''}
+                            <button class="feedback-action-btn danger" onclick="deleteFeedback('${item.id}')">
+                                <i class="ph-bold ph-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render rating stars
+        function renderRating(rating) {
+            if (!rating) return '';
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<i class="ph-fill ph-star ${i > rating ? 'empty' : ''}"></i>`;
+            }
+            return `<div class="feedback-rating">${stars}</div>`;
+        }
+
+        // Setup filter buttons
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.status;
+                    loadFeedback(currentFilter);
+                });
+            });
+        }
+
+        // Update feedback status
+        async function updateStatus(id, status) {
+            try {
+                const token = localStorage.getItem('reign_admin_token');
+                const response = await fetch(`/api/feedback/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status })
+                });
+
+                if (response.ok) {
+                    showToast('Status updated successfully');
+                    await loadStats();
+                    await loadFeedback(currentFilter);
+                }
+            } catch (error) {
+                showToast('Failed to update status', 'error');
+            }
+        }
+
+        // Delete feedback
+        async function deleteFeedback(id) {
+            if (!confirm('Are you sure you want to delete this feedback?')) return;
+
+            try {
+                const token = localStorage.getItem('reign_admin_token');
+                const response = await fetch(`/api/feedback/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    showToast('Feedback deleted');
+                    await loadStats();
+                    await loadFeedback(currentFilter);
+                }
+            } catch (error) {
+                showToast('Failed to delete feedback', 'error');
+            }
+        }
+
+        // Helper functions
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: 'top',
+                position: 'center',
+                style: {
+                    background: type === 'success'
+                        ? 'linear-gradient(135deg, #D4AF37, #C49B2F)'
+                        : 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    borderRadius: '0.75rem'
+                }
+            }).showToast();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+    </script>
+</body>
+
+</html>
