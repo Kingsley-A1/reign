@@ -12,7 +12,12 @@ const Views = {
     renderDashboard(container, data) {
         const today = Storage.getToday();
         const todayLog = data.logs[today] || { morning: null, evening: null };
-        const quote = Utils.getRandomQuote();
+        const fullQuote = Utils.getRandomQuote();
+
+        // Parse quote and author
+        const quoteParts = fullQuote.split(' – ');
+        const quoteText = quoteParts[0];
+        const quoteAuthor = quoteParts[1] || '';
         const analytics = Storage.getAnalytics(data);
         const last7Days = Storage.getLast7Days(data);
 
@@ -33,7 +38,142 @@ const Views = {
 
             <div class="page-header mb-8">
                 <h2 class="page-title">The Kingdom at a Glance</h2>
-                <p class="quote-block">"${quote}"</p>
+                <div class="quote-container" id="quote-container">
+                    <i class="ph-duotone ph-quotes" style="font-size: 2rem; color: var(--royal-gold); margin-bottom: 0.5rem;"></i>
+                    <p class="quote-text" id="quote-text">"${quoteText}"</p>
+                    ${quoteAuthor ? `<p class="quote-author" id="quote-author">— ${quoteAuthor}</p>` : ''}
+                </div>
+            </div>
+
+            <!-- Dashboard Navigation Cards -->
+            <div class="dashboard-nav-section mb-8">
+                <h3 style="font-family: var(--font-serif); font-weight: 700; color: white; margin-bottom: 1.5rem; text-align: center;">Your Royal Command Center</h3>
+                <div class="dashboard-grid">
+                    <!-- CORE -->
+                    <a href="index.html" class="dashboard-card active">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #D4AF37, #C5A028);">
+                            <i class="ph ph-crown" style="font-size: 2rem;"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">The Throne</h4>
+                            <p class="dashboard-card-desc">Command center</p>
+                        </div>
+                    </a>
+                    
+                    <a href="pages/morning.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #f97316, #ea580c);">
+                            <i class="ph-duotone ph-sun-horizon"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Morning Protocol</h4>
+                            <p class="dashboard-card-desc">Plan your day</p>
+                        </div>
+                    </a>
+                    
+                    <a href="pages/evening.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                            <i class="ph-duotone ph-moon-stars"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Evening Report</h4>
+                            <p class="dashboard-card-desc">Reflect & log</p>
+                        </div>
+                    </a>
+                    
+                    <!-- GROWTH -->
+                    <a href="pages/learning.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="ph-duotone ph-graduation-cap"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Learning Forge</h4>
+                            <p class="dashboard-card-desc">Track progress</p>
+                        </div>
+                    </a>
+                    
+                    <a href="pages/ideas.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #eab308, #ca8a04);">
+                            <i class="ph-duotone ph-lightbulb"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Today's Idea</h4>
+                            <p class="dashboard-card-desc">Capture thoughts</p>
+                        </div>
+                    </a>
+                    
+                    <a href="pages/logs.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                            <i class="ph-duotone ph-book-open"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Daily Lessons</h4>
+                            <p class="dashboard-card-desc">Log wisdom</p>
+                        </div>
+                    </a>
+                    
+                    <!-- REFLECTION -->
+                    <a href="pages/dailygood.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+                            <i class="ph-duotone ph-heart"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">The Good in Today</h4>
+                            <p class="dashboard-card-desc">Gratitude journal</p>
+                        </div>
+                    </a>
+                    
+                    <a href="pages/logs.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="ph-duotone ph-scroll"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Journal Archive</h4>
+                            <p class="dashboard-card-desc">Past entries</p>
+                        </div>
+                    </a>
+                    
+                    <a href="pages/relationships.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #f43f5e, #e11d48);">
+                            <i class="ph-duotone ph-users-three"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Rainy Day People</h4>
+                            <p class="dashboard-card-desc">Relationships</p>
+                        </div>
+                    </a>
+                    
+                    <!-- PLANNING -->
+                    <a href="pages/events.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                            <i class="ph-duotone ph-calendar"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Royal Calendar</h4>
+                            <p class="dashboard-card-desc">Important events</p>
+                        </div>
+                    </a>
+                    
+                    <a href="pages/analytics.html" class="dashboard-card">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #a855f7, #9333ea);">
+                            <i class="ph-duotone ph-chart-line"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Analytics</h4>
+                            <p class="dashboard-card-desc">Track insights</p>
+                        </div>
+                    </a>
+                    
+                    <a href="#" class="dashboard-card disabled">
+                        <div class="dashboard-card-icon" style="background: linear-gradient(135deg, #64748b, #475569);">
+                            <i class="ph-duotone ph-piggy-bank"></i>
+                        </div>
+                        <div class="dashboard-card-content">
+                            <h4 class="dashboard-card-title">Daily Savings</h4>
+                            <p class="dashboard-card-desc">Coming soon</p>
+                        </div>
+                        <span class="nav-badge coming-soon" style="position: absolute; top: 0.75rem; right: 0.75rem;">Soon</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Today's Progress -->

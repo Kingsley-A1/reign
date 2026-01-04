@@ -9,10 +9,10 @@ const FooterComponent = {
      */
     quickActions: [
         { id: 'dashboard', label: 'Home', icon: 'ph-throne', href: 'index.html' },
-        { id: 'morning', label: 'Morning', icon: 'ph-sun-horizon', href: 'pages/morning.html' },
-        { id: 'add', label: 'Quick Add', icon: 'ph-plus', action: 'FooterComponent.openQuickAdd()', type: 'action' },
-        { id: 'archive', label: 'Archive', icon: 'ph-book-bookmark', href: 'pages/archive.html' },
-        { id: 'settings', label: 'Settings', icon: 'ph-gear-six', href: 'pages/settings.html' }
+        { id: 'morning', label: 'Dawn', icon: 'ph-sun', href: 'pages/morning.html' },
+        { id: 'evening', label: 'Dusk', icon: 'ph-moon', href: 'pages/evening.html' },
+        { id: 'archive', label: 'Logs', icon: 'ph-book-open', href: 'pages/archive.html' },
+        { id: 'learning', label: 'Learn', icon: 'ph-graduation-cap', href: 'pages/learning.html' }
     ],
 
     /**
@@ -53,7 +53,7 @@ const FooterComponent = {
         });
 
         container.innerHTML = `
-            <nav class="bottom-nav">
+            <nav class="mobile-nav">
                 ${navHTML}
             </nav>
         `;

@@ -30,7 +30,22 @@ const app = {
         // Navigate to dashboard
         this.navigate('dashboard');
 
+        // Restore sidebar state
+        this.restoreSidebarState();
+
         console.log('Reign initialized successfully.');
+    },
+
+    /**
+     * Restore sidebar collapsed state from localStorage
+     */
+    restoreSidebarState() {
+        const isCollapsed = localStorage.getItem('reign_sidebar_collapsed') === 'true';
+        const sidebar = document.querySelector('.sidebar');
+
+        if (sidebar && isCollapsed) {
+            sidebar.classList.add('collapsed');
+        }
     },
 
     /**
@@ -50,6 +65,20 @@ const app = {
             } else {
                 document.body.style.overflow = '';
             }
+        }
+    },
+
+    /**
+     * Toggle desktop sidebar (collapsed state)
+     */
+    toggleSidebarDesktop() {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('collapsed');
+
+            // Save state to localStorage
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('reign_sidebar_collapsed', isCollapsed);
         }
     },
 
@@ -109,6 +138,9 @@ const app = {
                     break;
                 case 'relationships':
                     Views.renderRelationships(container, this.data);
+                    break;
+                case 'profile':
+                    Views.renderProfile(container, this.data);
                     break;
                 default:
                     // Check if it's a course detail view
@@ -894,6 +926,170 @@ const app = {
         }
 
         this.deleteAccount();
+    },
+
+    // ==========================================
+    // PROFILE MANAGEMENT
+    // ==========================================
+
+    /**
+     * Toggle profile edit mode
+     */
+    toggleProfileEdit() {
+        const viewMode = document.getElementById('profile-view-mode');
+        const editMode = document.getElementById('profile-edit-mode');
+        const toggleBtn = document.getElementById('toggle-edit-btn');
+
+        if (viewMode && editMode) {
+            viewMode.classList.toggle('hidden');
+            editMode.classList.toggle('hidden');
+
+            if (editMode.classList.contains('hidden')) {
+                toggleBtn.innerHTML = '<i class="ph-bold ph-pencil-simple"></i> Edit Profile';
+            } else {
+                toggleBtn.innerHTML = '<i class="ph-bold ph-x"></i> Cancel';
+            }
+        }
+    },
+
+    /**
+     * Cancel profile edit
+     */
+    cancelProfileEdit() {
+        this.toggleProfileEdit();
+    },
+
+    /**
+     * Save profile changes
+     * @param {Event} e - Form submit event
+     */
+    async saveProfileChanges(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        const updates = {
+            name: formData.get('name'),
+            email: formData.get('email')
+        };
+
+        try {
+            LoadingComponent.show('spinner', 'Saving changes...');
+            await Auth.updateProfile(updates);
+            LoadingComponent.hide();
+
+            Utils.showToast('Profile updated successfully!', 'gold');
+            this.toggleProfileEdit();
+
+            // Refresh profile view
+            setTimeout(() => {
+                this.navigate('profile');
+            }, 500);
+
+            // Update header if name changed
+            const user = Auth.getUser();
+            const initialsEl = document.getElementById('user-initials');
+            if (initialsEl && user) {
+                initialsEl.textContent = user.initials || user.name?.charAt(0) || 'U';
+            }
+        } catch (error) {
+            LoadingComponent.hide();
+            Utils.showToast('Failed to update profile: ' + error.message, 'danger');
+        }
+    },
+
+    /**
+     * Open avatar upload dialog
+     */
+    openAvatarUpload() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/jpeg,image/png,image/jpg,image/webp';
+        input.onchange = (e) => this.handleAvatarUpload(e);
+        input.click();
+    },
+
+    /**
+     * Handle avatar file upload
+     * @param {Event} e - Change event
+     */
+    async handleAvatarUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            Utils.showToast('Please select a valid image file (JPEG, PNG, WebP)', 'danger');
+            return;
+        }
+
+        // Validate file size (500KB max)
+        if (file.size > 500 * 1024) {
+            Utils.showToast('Image too large! Maximum size is 500KB', 'danger');
+            return;
+        }
+
+        try {
+            LoadingComponent.show('spinner', 'Uploading avatar...');
+            const updatedUser = await Auth.uploadAvatar(file);
+            LoadingComponent.hide();
+
+            Utils.showToast('Avatar updated successfully!', 'gold');
+
+            // Update profile view
+            const avatarContainer = document.getElementById('profile-avatar-container');
+            if (avatarContainer && updatedUser.avatar) {
+                avatarContainer.innerHTML = `<img src="${updatedUser.avatar}" alt="${updatedUser.name}" class="profile-avatar-img">`;
+            }
+
+            // Update header avatar
+            const headerAvatar = document.getElementById('user-avatar-img');
+            const headerInitials = document.getElementById('user-initials');
+            if (headerAvatar && headerInitials && updatedUser.avatar) {
+                headerAvatar.src = updatedUser.avatar;
+                headerAvatar.style.display = 'block';
+                headerInitials.style.display = 'none';
+            }
+        } catch (error) {
+            LoadingComponent.hide();
+            Utils.showToast('Failed to upload avatar: ' + error.message, 'danger');
+        }
+    },
+
+    /**
+     * Confirm and remove avatar
+     */
+    async confirmRemoveAvatar() {
+        if (!confirm('Are you sure you want to remove your profile picture?')) {
+            return;
+        }
+
+        try {
+            LoadingComponent.show('spinner', 'Removing avatar...');
+            const updatedUser = await Auth.removeAvatar();
+            LoadingComponent.hide();
+
+            Utils.showToast('Avatar removed', 'indigo');
+
+            // Update profile view
+            const avatarContainer = document.getElementById('profile-avatar-container');
+            if (avatarContainer) {
+                const initials = Auth.getInitials();
+                avatarContainer.innerHTML = `<div class="profile-avatar-initials-large">${initials}</div>`;
+            }
+
+            // Update header
+            const headerAvatar = document.getElementById('user-avatar-img');
+            const headerInitials = document.getElementById('user-initials');
+            if (headerAvatar && headerInitials) {
+                headerAvatar.style.display = 'none';
+                headerInitials.style.display = 'block';
+                headerInitials.textContent = updatedUser.initials || updatedUser.name?.charAt(0) || 'U';
+            }
+        } catch (error) {
+            LoadingComponent.hide();
+            Utils.showToast('Failed to remove avatar: ' + error.message, 'danger');
+        }
     },
 
     /**

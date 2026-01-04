@@ -174,12 +174,43 @@ const Utils = {
     },
 
     /**
-     * Get user's name from settings
-     * @returns {string} Username
+     * Get user's name from settings or auth
+     * @returns {string} Username or empty string
      */
     getUserName() {
+        const user = Auth.getUser();
+        if (user && user.name) {
+            return user.name.split(' ')[0];
+        }
         const data = Storage.getData();
-        return data.settings?.username || 'King';
+        return data.settings?.username || '';
+    },
+
+    /**
+     * Get personalized greeting with role and name
+     * @returns {string} Complete personalized greeting
+     */
+    getPersonalizedGreeting() {
+        const greeting = this.getGreeting();
+        const user = Auth.getUser();
+        const data = Storage.getData();
+        const role = data.settings?.role;
+
+        // Case 1: Registered user with role
+        if (user && user.name) {
+            const firstName = user.name.split(' ')[0];
+            const roleTitle = role === 'queen' ? 'Queen' : 'King';
+            return `${greeting} ${roleTitle} ${firstName}`;
+        }
+
+        // Case 2: Role selected but not registered
+        if (role && !user) {
+            const roleTitle = role === 'queen' ? 'Queen' : 'King';
+            return `${greeting} ${roleTitle}`;
+        }
+
+        // Case 3: Not registered, no role
+        return greeting;
     },
 
     /**
@@ -638,25 +669,70 @@ const UI = {
     },
 
     /**
-     * Set user role (king/queen)
-     * @param {string} role - 'king' or 'queen'
-     */
-    setRole(role) {
-        const data = Storage.getData();
-        if (!data.settings) data.settings = {};
-        data.settings.role = role;
-        Storage.saveData(data);
-        this.initTheme();
-        Utils.showToast(`Role set to ${role === 'queen' ? 'Queen 👸' : 'King 👑'}`, 'gold');
-    },
-
-    /**
      * Get current user role
      * @returns {string} 'king' or 'queen'
      */
     getRole() {
         const data = Storage.getData();
         return data.settings?.role || 'king';
+    },
+
+    /**
+     * Check if current user is Queen
+     * @returns {boolean}
+     */
+    isQueen() {
+        return this.getRole() === 'queen';
+    },
+
+    /**
+     * Get role-aware text (role-specific wording)
+     * @param {string} kingText - Text for king role
+     * @param {string} queenText - Text for queen role
+     * @returns {string} Appropriate text based on role
+     */
+    getRoleText(kingText, queenText) {
+        return this.isQueen() ? queenText : kingText;
+    },
+
+    /**
+     * Get role title with emoji
+     * @returns {string} 'King 👑' or 'Queen 👸'
+     */
+    getRoleTitle() {
+        return this.isQueen() ? 'Queen 👸' : 'King 👑';
+    },
+
+    /**
+     * Get role-specific pronoun object
+     * @returns {Object} Pronouns for current role
+     */
+    getRolePronouns() {
+        return this.isQueen()
+            ? { subject: 'she', object: 'her', possessive: 'her', reflexive: 'herself' }
+            : { subject: 'he', object: 'him', possessive: 'his', reflexive: 'himself' };
+    },
+
+    /**
+     * Set user role and apply theme
+     * @param {string} role - 'king' or 'queen'
+     */
+    setRole(role) {
+        if (role !== 'king' && role !== 'queen') {
+            console.error('Invalid role. Must be "king" or "queen"');
+            return;
+        }
+
+        const data = Storage.getData();
+        if (!data.settings) data.settings = {};
+        data.settings.role = role;
+        Storage.saveData(data);
+
+        this.initTheme();
+        Utils.showToast(`Role set to ${this.getRoleTitle()}`, 'gold');
+
+        // Trigger role change across platform
+        window.dispatchEvent(new CustomEvent('roleChanged', { detail: { role } }));
     },
 
     /**

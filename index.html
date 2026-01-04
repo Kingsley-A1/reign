@@ -29,6 +29,8 @@
     <!-- App Styles -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/enhancements.css">
+    <link rel="stylesheet" href="css/profile.css">
 
     <!-- Preload Critical Resources for Performance -->
     <link rel="preload" href="js/core.js" as="script">
@@ -180,6 +182,23 @@
                     .catch(err => console.log('Service Worker registration failed:', err));
             });
         }
+
+        // Intelligent Role-Based Redirection
+        // Redirect to appropriate landing page based on user role
+        (function () {
+            try {
+                const data = JSON.parse(localStorage.getItem('reignData') || '{}');
+                const role = data.settings?.role;
+
+                // If user has Queen role, redirect to queen.html
+                if (role === 'queen' && !window.location.pathname.includes('queen.html')) {
+                    console.log('🪄 Redirecting to Queen\'s Journal...');
+                    window.location.replace('queen.html');
+                }
+            } catch (e) {
+                console.warn('Role detection failed:', e);
+            }
+        })();
     </script>
 </head>
 
@@ -208,11 +227,9 @@
                 <i class="ph-bold ph-list"></i>
             </button>
             <div class="header-brand" onclick="app.navigate('dashboard')">
-                <i class="ph-fill ph-crown"></i>
-                <div>
-                    <h1>REIGN</h1>
-                    <p class="tagline hidden-mobile">Rule Your Day</p>
-                </div>
+                <img src="icons/icon-192.png" alt="REIGN" class="header-logo">
+                <h1 class="header-title">REIGN</h1>
+                <p class="tagline hidden-mobile">Rule Your Day</p>
             </div>
 
             <div class="header-actions">
@@ -224,8 +241,8 @@
                 </div>
 
                 <!-- Notifications (shown when logged in) -->
-                <a href="pages/notifications.html" id="notifications-btn" class="icon-btn notification-btn hidden"
-                    title="Notifications">
+                <a href="pages/notifications.html" id="notifications-btn"
+                    class="icon-btn notification-btn hidden hidden-mobile" title="Notifications">
                     <i class="ph-bold ph-bell"></i>
                     <span id="notification-badge" class="notification-dot hidden"></span>
                 </a>
@@ -240,9 +257,9 @@
                 </div>
 
                 <!-- Guest Prompt (shown when not logged in) -->
-                <a href="auth.html" id="guest-prompt" class="guest-prompt hidden-mobile">
-                    <i class="ph-bold ph-cloud-arrow-up"></i>
-                    <span>Log In/ Sign Up</span>
+                <a href="auth.html" id="guest-prompt" class="guest-prompt">
+                    <i class="ph-bold ph-sign-in"></i>
+                    <span>Log In</span>
                 </a>
 
                 <div class="header-time hidden-mobile">
@@ -250,7 +267,7 @@
                     <p class="time" id="current-time">00:00</p>
                 </div>
 
-                <div class="header-buttons">
+                <div class="header-buttons hidden-mobile">
                     <button onclick="app.exportData()" class="icon-btn" title="Export Backup">
                         <i class="ph-bold ph-download-simple"></i>
                     </button>
@@ -337,6 +354,10 @@
                     <!-- System Section -->
                     <div class="nav-divider"></div>
 
+                    <a href="pages/analytics.html" class="nav-btn" data-target="analytics">
+                        <i class="ph-duotone ph-chart-line-up"></i>
+                        <span>Progress</span>
+                    </a>
                     <a href="pages/notifications.html" class="nav-btn" data-target="notifications">
                         <i class="ph-duotone ph-bell"></i>
                         <span>Notifications</span>
@@ -347,6 +368,12 @@
                     </a>
                 </nav>
             </aside>
+
+            <!-- Desktop Sidebar Toggle -->
+            <button class="sidebar-toggle-desktop" onclick="app.toggleSidebarDesktop()" title="Toggle Sidebar"
+                aria-label="Toggle sidebar">
+                <i class="ph-bold ph-caret-left"></i>
+            </button>
 
             <!-- Content Area -->
             <main class="main-content fade-in" id="main-view">
@@ -425,6 +452,10 @@
     <script src="js/sync.js"></script>
     <script src="js/router.js"></script>
     <script src="js/charts.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/components/loading.js"></script>
+    <script src="js/role-modal.js"></script>
     <script src="js/views.js"></script>
     <script src="js/app.js"></script>
 
@@ -448,12 +479,16 @@
                 const user = Auth.getUser();
                 const profileEl = document.getElementById('user-profile');
                 const guestEl = document.getElementById('guest-prompt');
+                const notificationsBtn = document.getElementById('notifications-btn');
                 const initialsEl = document.getElementById('user-initials');
                 const avatarImg = document.getElementById('user-avatar-img');
 
                 if (user) {
                     profileEl.classList.remove('hidden');
                     guestEl.classList.add('hidden');
+                    if (notificationsBtn) {
+                        notificationsBtn.classList.remove('hidden');
+                    }
                     initialsEl.textContent = user.initials || 'U';
 
                     if (user.avatar) {
@@ -471,6 +506,9 @@
                 } else {
                     profileEl.classList.add('hidden');
                     guestEl.classList.remove('hidden');
+                    if (notificationsBtn) {
+                        notificationsBtn.classList.add('hidden');
+                    }
                 }
             };
 

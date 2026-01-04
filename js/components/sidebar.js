@@ -33,6 +33,7 @@ const SidebarComponent = {
 
         // System Section
         { id: 'divider-system', type: 'divider', label: '' },
+        { id: 'profile', label: 'Profile', icon: 'ph-user-circle', href: 'pages/profile.html' },
         { id: 'about', label: 'About REIGN', icon: 'ph-info', href: 'pages/about.html' },
         { id: 'support', label: 'Support', icon: 'ph-hand-heart', href: 'pages/support.html' },
         { id: 'notifications', label: 'Notifications', icon: 'ph-bell', href: 'pages/notifications.html' },

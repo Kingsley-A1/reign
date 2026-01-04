@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="REIGN Progress - Track your progress, streaks, and performance metrics">
+    <title>Progress | REIGN</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- App Styles -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/enhancements.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="../manifest.json">
+    <link rel="icon" type="image/png" href="../icons/icon-192.png">
+
+    <style>
+        /* 2-Column Grid for Cards */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .analytics-grid {
+                gap: 1rem;
+            }
+        }
+
+        /* Chart Container Cards */
+        .chart-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.15);
+        }
+
+        .chart-card h3 {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.125rem;
+        }
+
+        .chart-card h3 i {
+            color: var(--royal-gold);
+            font-size: 1.5rem;
+        }
+
+        /* Full-width Chart Card */
+        .chart-card-full {
+            grid-column: 1 / -1;
+        }
+
+        /* Stats Card Enhancement */
+        .stat-card {
+            position: relative;
+            overflow: visible;
+        }
+
+        .stat-icon-bg {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            opacity: 0.08;
+            font-size: 3.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div id="header-container"></div>
+
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <div id="sidebar-container"></div>
+
+            <!-- Main Content -->
+            <main class="main-content fade-in" id="main-view">
+                <!-- Page Hero -->
+                <div class="page-hero">
+                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #D4AF37, #b8941f);">
+                        <i class="ph-fill ph-chart-line-up"></i>
+                    </div>
+                    <h1 class="page-hero-title">Progress Dashboard</h1>
+                    <p class="page-hero-subtitle" id="hero-subtitle">Track your journey, celebrate your wins, and keep
+                        growing stronger every day.</p>
+                </div>
+
+                <!-- Stats Cards - 2 per row -->
+                <div class="analytics-grid">
+                    <!-- Current Streak -->
+                    <div class="stat-card glass-card">
+                        <i class="ph-fill ph-fire stat-icon-bg" style="color: #f59e0b;"></i>
+                        <p class="stat-label">Current Streak</p>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <span class="stat-value" id="stat-current-streak">0</span>
+                            <span class="stat-sublabel">days 🔥</span>
+                        </div>
+                    </div>
+
+                    <!-- Longest Streak -->
+                    <div class="stat-card glass-card">
+                        <i class="ph-fill ph-crown stat-icon-bg" style="color: var(--royal-gold);"></i>
+                        <p class="stat-label">Longest Streak</p>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <span class="stat-value" id="stat-longest-streak">0</span>
+                            <span class="stat-sublabel">days 👑</span>
+                        </div>
+                    </div>
+
+                    <!-- Completion Rate -->
+                    <div class="stat-card glass-card">
+                        <i class="ph-fill ph-target stat-icon-bg" style="color: #10b981;"></i>
+                        <p class="stat-label">Completion Rate</p>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <span class="stat-value" id="stat-completion-rate">0</span>
+                            <span class="stat-sublabel">% overall</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Hours -->
+                    <div class="stat-card glass-card">
+                        <i class="ph-fill ph-clock stat-icon-bg" style="color: #3b82f6;"></i>
+                        <p class="stat-label">Total Hours Logged</p>
+                        <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                            <span class="stat-value" id="stat-total-hours">0</span>
+                            <span class="stat-sublabel">hours</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Card - Full Width -->
+                <div class="glass-card p-6 mb-6">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="font-weight: 600; margin-bottom: 0.375rem; font-size: 1.125rem;">Export Your
+                                Data</h3>
+                            <p class="text-muted" style="font-size: 0.9375rem;">Download your analytics and progress
+                                history</p>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                            <button onclick="exportAnalytics('json')" class="btn btn-outline btn-sm">
+                                <i class="ph-bold ph-download"></i> JSON
+                            </button>
+                            <button onclick="exportAnalytics('csv')" class="btn btn-outline btn-sm">
+                                <i class="ph-bold ph-download"></i> CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Trends - Full Width -->
+                <div class="chart-card chart-card-full mb-6">
+                    <h3>
+                        <i class="ph-duotone ph-trend-up"></i>
+                        30-Day Performance Trend
+                    </h3>
+                    <div class="chart-container" style="height: 280px;">
+                        <canvas id="trends-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Focus Intensity & Discipline Ratio - 2 per row -->
+                <div class="analytics-grid">
+                    <!-- Focus Intensity Chart -->
+                    <div class="chart-card">
+                        <h3>
+                            <i class="ph-duotone ph-brain"></i>
+                            Focus Intensity
+                        </h3>
+                        <div class="chart-container" style="height: 240px;">
+                            <canvas id="focus-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Discipline Ratio Chart -->
+                    <div class="chart-card">
+                        <h3>
+                            <i class="ph-duotone ph-target"></i>
+                            Discipline Ratio
+                        </h3>
+                        <div class="chart-container" style="height: 240px;">
+                            <canvas id="discipline-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly vs Monthly Stats - 2 per row -->
+                <div class="analytics-grid">
+                    <!-- Weekly Stats -->
+                    <div class="glass-card p-6">
+                        <h3
+                            style="font-family: var(--font-serif); font-weight: 700; margin-bottom: 1.75rem; display: flex; align-items: center; gap: 0.75rem; font-size: 1.125rem;">
+                            <i class="ph-duotone ph-calendar" style="color: #10b981; font-size: 1.5rem;"></i>
+                            Last 7 Days
+                        </h3>
+                        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <div>
+                                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.375rem;">Total Tasks
+                                </p>
+                                <p id="weekly-total"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--royal-gold);">
+                                    0</p>
+                            </div>
+                            <div>
+                                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.375rem;">Completed
+                                </p>
+                                <p id="weekly-completed" style="font-size: 1.75rem; font-weight: 700; color: #10b981;">0
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.375rem;">Rate</p>
+                                <p id="weekly-rate" style="font-size: 2.25rem; font-weight: 700;">0%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Stats -->
+                    <div class="glass-card p-6">
+                        <h3
+                            style="font-family: var(--font-serif); font-weight: 700; margin-bottom: 1.75rem; display: flex; align-items: center; gap: 0.75rem; font-size: 1.125rem;">
+                            <i class="ph-duotone ph-calendar-blank" style="color: #3b82f6; font-size: 1.5rem;"></i>
+                            Last 30 Days
+                        </h3>
+                        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <div>
+                                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.375rem;">Total Tasks
+                                </p>
+                                <p id="monthly-total"
+                                    style="font-size: 1.75rem; font-weight: 700; color: var(--royal-gold);">
+                                    0</p>
+                            </div>
+                            <div>
+                                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.375rem;">Completed
+                                </p>
+                                <p id="monthly-completed" style="font-size: 1.75rem; font-weight: 700; color: #10b981;">
+                                    0
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.375rem;">Rate</p>
+                                <p id="monthly-rate" style="font-size: 2.25rem; font-weight: 700;">0%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Breakdown - Full Width -->
+                <div class="chart-card chart-card-full" style="margin-top: 1.5rem;">
+                    <h3>
+                        <i class="ph-duotone ph-stack"></i>
+                        Category Breakdown
+                    </h3>
+                    <div class="chart-container" style="height: 320px;">
+                        <canvas id="category-chart"></canvas>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <div id="footer-container"></div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/core.js"></script>
+    <script src="../js/charts.js"></script>
+    <script src="../js/analytics.js"></script>
+    <script src="../js/components/header.js"></script>
+    <script src="../js/components/sidebar.js"></script>
+    <script src="../js/components/footer.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply role-aware theming
+            const data = Storage.getData();
+            const role = data.settings?.role;
+
+            if (role === 'queen') {
+                document.body.classList.add('queen-theme');
+                document.getElementById('hero-subtitle').textContent =
+                    "Track your journey, celebrate your wins, and keep growing more graceful every day.";
+            }
+
+            // Render components
+            HeaderComponent.render('header-container', {
+                showBreadcrumb: true,
+                pageTitle: 'Progress Dashboard',
+                pageIcon: 'ph-chart-line-up'
+            });
+            SidebarComponent.render('sidebar-container');
+            FooterComponent.render('footer-container');
+
+            // Load and display analytics
+            loadAnalytics();
+        });
+
+        function loadAnalytics() {
+            try {
+                const data = Storage.getData();
+                const analytics = Analytics.getComprehensiveAnalytics(data);
+
+                console.log('Analytics:', analytics);
+
+                // Update stat cards
+                document.getElementById('stat-current-streak').textContent = analytics.streaks.currentStreak;
+                document.getElementById('stat-longest-streak').textContent = analytics.streaks.longestStreak;
+                document.getElementById('stat-completion-rate').textContent = analytics.overall.completionRate;
+                document.getElementById('stat-total-hours').textContent = analytics.overall.totalHours;
+
+                // Update weekly stats
+                document.getElementById('weekly-total').textContent = analytics.weekly.totalTasks;
+                document.getElementById('weekly-completed').textContent = analytics.weekly.completedTasks;
+                document.getElementById('weekly-rate').textContent = analytics.weekly.completionRate + '%';
+
+                // Update monthly stats
+                document.getElementById('monthly-total').textContent = analytics.monthly.totalTasks;
+                document.getElementById('monthly-completed').textContent = analytics.monthly.completedTasks;
+                document.getElementById('monthly-rate').textContent = analytics.monthly.completionRate + '%';
+
+                // Create charts
+                createTrendsChart(analytics.trends);
+                createFocusChart(data);
+                createDisciplineChart(analytics);
+                createCategoryChart(analytics.categories);
+
+            } catch (error) {
+                console.error('Failed to load analytics:', error);
+                Utils.showToast('Failed to load analytics', 'danger');
+            }
+        }
+
+        function createTrendsChart(trends) {
+            const ctx = document.getElementById('trends-chart');
+            if (!ctx) return;
+
+            const isQueen = UI.isQueen();
+            const primaryColor = isQueen ? '#b76e79' : '#D4AF37';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: trends.map(t => new Date(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                    datasets: [{
+                        label: 'Completion Rate',
+                        data: trends.map(t => t.rate),
+                        borderColor: primaryColor,
+                        backgroundColor: isQueen ? 'rgba(183, 110, 121, 0.1)' : 'rgba(212, 175, 55, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: primaryColor
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: primaryColor,
+                            bodyColor: '#e2e8f0',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: (context) => `${context.parsed.y}% completion`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: {
+                                callback: (value) => value + '%',
+                                color: '#94a3b8'
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createFocusChart(data) {
+            const last7Days = Storage.getLast7Days(data);
+            const chartData = last7Days.map(day => {
+                const log = data.logs[day.date];
+                const hours = log?.morning?.tasks?.reduce((sum, task) =>
+                    sum + (parseFloat(task.estimatedTime) || 0), 0) || 0;
+                return { label: day.dayName, hours };
+            });
+
+            Charts.createFocusChart('focus-chart', chartData);
+        }
+
+        function createDisciplineChart(analytics) {
+            const morningCount = Object.values(Storage.getData().logs).filter(log => log.morning).length;
+            const eveningCount = Object.values(Storage.getData().logs).filter(log => log.evening).length;
+
+            Charts.createDisciplineChart('discipline-chart', {
+                ...analytics,
+                morningCount,
+                eveningCount
+            });
+        }
+
+        function createCategoryChart(categories) {
+            const categoryHours = {};
+            Object.keys(categories).forEach(cat => {
+                categoryHours[cat] = Math.round(categories[cat].hours * 10) / 10;
+            });
+
+            Charts.createCategoryChart('category-chart', categoryHours);
+        }
+
+        function exportAnalytics(format) {
+            try {
+                const data = Storage.getData();
+                const analytics = Analytics.getComprehensiveAnalytics(data);
+                Analytics.exportData(analytics, format);
+                Utils.showToast(`Analytics exported as ${format.toUpperCase()}`, 'success');
+            } catch (error) {
+                console.error('Export failed:', error);
+                Utils.showToast('Export failed', 'danger');
+            }
+        }
+    </script>
+</body>
+
+</html>

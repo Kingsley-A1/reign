@@ -5,7 +5,7 @@
 
 const Router = {
     currentView: 'dashboard',
-    views: ['dashboard', 'morning', 'evening', 'archive', 'events', 'learning', 'notifications', 'settings', 'idea', 'dailygood', 'lessons', 'savings'],
+    views: ['dashboard', 'morning', 'evening', 'archive', 'events', 'learning', 'notifications', 'settings', 'idea', 'dailygood', 'lessons', 'savings', 'relationships', 'analytics'],
 
     /**
      * Navigate to a view

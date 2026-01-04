@@ -34,70 +34,62 @@ const HeaderComponent = {
                 </button>
                 
                 <a href="${basePath}index.html" class="header-brand">
-                    <i class="ph-fill ph-crown"></i>
-                    <div>
-                        <h1>REIGN</h1>
-                        <p class="tagline hidden-mobile">Rule Your Day</p>
-                    </div>
+                    <img src="${basePath}icons/icon-192.png" alt="REIGN" class="header-logo">
+                    <h1 class="header-title">REIGN</h1>
+                    <p class="tagline hidden-mobile">Rule Your Day</p>
                 </a>
 
-                ${showBreadcrumb && pageTitle ? `
-                    <div class="breadcrumb hidden-mobile">
-                        <i class="ph-bold ph-caret-right"></i>
-                        <span><i class="ph-duotone ${pageIcon}"></i> ${pageTitle}</span>
-                    </div>
-                ` : ''}
-
                 <div class="header-actions">
-                    <!-- Learning Streak Badge -->
-                    <button id="streak-badge" class="streak-badge hidden" onclick="Nav.goto('learning')" aria-label="Learning streak - click to view progress">
-                        <i class="ph-fill ph-fire" aria-hidden="true"></i>
+                    <!-- Streak Badge (visible when learning streak > 0) -->
+                    <div id="streak-badge" class="streak-badge hidden" onclick="Nav.goto('learning')" title="Learning Streak">
+                        <i class="ph-fill ph-fire"></i>
                         <span id="streak-count">0</span>
-                    </button>
+                    </div>
 
-                    <!-- Sync Status -->
+                    <!-- Notifications (shown when logged in) -->
                     ${isLoggedIn ? `
-                        <div class="sync-indicator" title="Data synced">
-                            <div class="avatar-wrapper">
-                                <button id="user-avatar-btn" class="user-avatar-btn" onclick="HeaderComponent.toggleUserMenu()" aria-label="User menu" aria-expanded="false" aria-haspopup="true">
-                                    <span class="user-initials">${Auth.getInitials()}</span>
-                                </button>
-                            </div>
-                            <span id="sync-status" class="sync-status"></span>
+                        <a href="${basePath}pages/notifications.html" id="notifications-btn" class="icon-btn notification-btn hidden-mobile" title="Notifications">
+                            <i class="ph-bold ph-bell"></i>
+                            <span id="notification-badge" class="notification-dot hidden"></span>
+                        </a>
+                    ` : ''}
+
+                    <!-- User Profile (shown when logged in) -->
+                    ${isLoggedIn ? `
+                        <div id="user-profile" class="user-profile">
+                            <a href="${basePath}pages/settings.html" class="user-avatar" title="Settings">
+                                <span id="user-initials">${Auth.getInitials()}</span>
+                            </a>
+                            <span id="sync-status" class="sync-status" title="Sync Status"></span>
                         </div>
                     ` : ''}
 
-                    <!-- Guest Prompt -->
-                    <a href="${basePath}auth.html" id="guest-prompt" class="guest-prompt ${isLoggedIn ? 'hidden' : ''}" style="display: ${isLoggedIn ? 'none' : 'flex'}" aria-label="Login or Sign Up to sync your data">
-                        <i class="ph-bold ph-cloud-arrow-up" aria-hidden="true"></i>
-                        <span class="hidden-mobile">Login/Sign Up</span>
-                    </a>
-
-                    <!-- Settings -->
-                    <div class="header-settings hidden-mobile">
-                        <label class="theme-toggle" title="Toggle Theme">
-                            <input type="checkbox" id="theme-toggle" onchange="HeaderComponent.toggleTheme()" aria-label="Toggle dark/light theme">
-                            <i class="ph-duotone ph-moon" aria-hidden="true"></i>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- User Dropdown Menu -->
-                ${isLoggedIn ? `
-                    <div id="user-dropdown" class="user-dropdown hidden">
-                        <div class="dropdown-header">
-                            <strong>${user?.name || 'User'}</strong>
-                            <small>${user?.email || ''}</small>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="${basePath}pages/settings.html" class="dropdown-item">
-                            <i class="ph-bold ph-gear"></i> Settings
+                    <!-- Guest Prompt (shown when not logged in) -->
+                    ${!isLoggedIn ? `
+                        <a href="${basePath}auth.html" id="guest-prompt" class="guest-prompt">
+                            <i class="ph-bold ph-sign-in"></i>
+                            <span>Log In</span>
                         </a>
-                        <button class="dropdown-item" onclick="Auth.logout()" aria-label="Log out of your account">
-                            <i class="ph-bold ph-sign-out" aria-hidden="true"></i> Logout
+                    ` : ''}
+
+                    <div class="header-time hidden-mobile">
+                        <p class="date" id="current-date">Today</p>
+                        <p class="time" id="current-time">00:00</p>
+                    </div>
+
+                    <div class="header-buttons hidden-mobile">
+                        <button onclick="Storage.export()" class="icon-btn" title="Export Backup">
+                            <i class="ph-bold ph-download-simple"></i>
+                        </button>
+                        <label class="icon-btn" title="Import Backup" style="cursor: pointer;">
+                            <i class="ph-bold ph-upload-simple"></i>
+                            <input type="file" accept=".json" style="display: none;" onchange="Storage.import(this)">
+                        </label>
+                        <button onclick="Storage.reset()" class="icon-btn danger" title="Reset All Data">
+                            <i class="ph-bold ph-trash"></i>
                         </button>
                     </div>
-                ` : ''}
+                </div>
             </header>
         `;
 

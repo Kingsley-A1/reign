@@ -255,28 +255,48 @@ const Utils = {
      */
     getGreeting() {
         const hour = new Date().getHours();
-        if (hour < 5) return 'Midnight hour';
-        if (hour < 12) return 'Good morning';
-        if (hour < 17) return 'Good afternoon';
-        if (hour < 21) return 'Good evening';
-        return 'Good night';
+        if (hour < 12) return 'Good Morning';
+        if (hour < 17) return 'Good Afternoon';
+        return 'Good Evening';
     },
 
     /**
-     * Get user's first name or default
-     * @returns {string} User's first name or 'Champion'
+     * Get user's first name
+     * @returns {string} User's first name or empty string
      */
     getUserName() {
         const user = Config.getUser();
         if (user && user.name) {
             return user.name.split(' ')[0];
         }
-        // Check localStorage for guest name
-        const settings = JSON.parse(localStorage.getItem('king-daily-settings') || '{}');
-        if (settings.userName) {
-            return settings.userName.split(' ')[0];
+        return '';
+    },
+
+    /**
+     * Get personalized greeting with role and name
+     * @returns {string} Complete personalized greeting
+     */
+    getPersonalizedGreeting() {
+        const greeting = this.getGreeting();
+        const user = Config.getUser();
+        const data = Storage.getData();
+        const role = data.settings?.role;
+
+        // Case 1: Registered user with role
+        if (user && user.name) {
+            const firstName = user.name.split(' ')[0];
+            const roleTitle = role === 'queen' ? 'Queen' : 'King';
+            return `${greeting} ${roleTitle} ${firstName}`;
         }
-        return 'Champion';
+
+        // Case 2: Role selected but not registered
+        if (role && !user) {
+            const roleTitle = role === 'queen' ? 'Queen' : 'King';
+            return `${greeting} ${roleTitle}`;
+        }
+
+        // Case 3: Not registered, no role
+        return greeting;
     }
 };
 

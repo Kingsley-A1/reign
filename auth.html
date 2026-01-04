@@ -64,6 +64,66 @@
             --font-sans: 'Inter', system-ui, sans-serif;
         }
 
+        /* Queen Theme Variables */
+        body.queen-theme {
+            --royal-gold: #b76e79;
+            --royal-gold-10: rgba(183, 110, 121, 0.1);
+            --royal-gold-20: rgba(183, 110, 121, 0.2);
+            --royal-darker: #1a0a18;
+        }
+
+        /* Dynamic theming for auth elements */
+        body.queen-theme .auth-logo {
+            background: linear-gradient(135deg, #b76e79 0%, #9a525c 100%);
+        }
+
+        body.queen-theme .gradient-text {
+            background: linear-gradient(135deg, #b76e79 0%, #c5828c 50%, #b76e79 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.queen-theme .auth-tab.active {
+            background: #b76e79;
+        }
+
+        body.queen-theme .auth-btn {
+            background: linear-gradient(135deg, #b76e79, #9a525c);
+        }
+
+        body.queen-theme .auth-btn:hover {
+            box-shadow: 0 8px 24px rgba(183, 110, 121, 0.3);
+        }
+
+        body.queen-theme .persona-btn:last-child:hover {
+            border-color: #b76e79;
+            background: rgba(183, 110, 121, 0.1);
+        }
+
+        body.queen-theme .returning-welcome {
+            background: linear-gradient(135deg, rgba(183, 110, 121, 0.15), rgba(183, 110, 121, 0.05));
+            border-color: rgba(183, 110, 121, 0.3);
+        }
+
+        body.queen-theme .returning-welcome .welcome-avatar {
+            background: linear-gradient(135deg, #b76e79, #9a525c);
+            color: white;
+        }
+
+        body.queen-theme .returning-welcome .welcome-text strong {
+            color: #c5828c;
+        }
+
+        body.queen-theme .skip-link a:hover {
+            color: #b76e79;
+        }
+
+        body.queen-theme .back-btn:hover {
+            color: #b76e79;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -937,6 +997,11 @@
 
             // Show toast
             function showToast(message, type = 'success') {
+                const isQueenTheme = document.body.classList.contains('queen-theme');
+                const successGradient = isQueenTheme
+                    ? 'linear-gradient(135deg, #b76e79, #9a525c)'
+                    : 'linear-gradient(135deg, #D4AF37, #C49B2F)';
+
                 Toastify({
                     text: message,
                     duration: 3000,
@@ -944,7 +1009,7 @@
                     position: 'center',
                     style: {
                         background: type === 'success'
-                            ? 'linear-gradient(135deg, #D4AF37, #C49B2F)'
+                            ? successGradient
                             : 'linear-gradient(135deg, #ef4444, #dc2626)',
                         borderRadius: '0.75rem',
                         fontWeight: '600',
@@ -1117,9 +1182,18 @@
                 selectedPersona = persona;
                 localStorage.setItem('reign_persona', persona);
 
-                // Show auth step
+                // Apply theme dynamically
+                if (persona === 'queen') {
+                    document.body.classList.add('queen-theme');
+                } else {
+                    document.body.classList.remove('queen-theme');
+                }
+
+                // Show auth step with smooth transition
                 document.getElementById('persona-step').classList.remove('active');
-                document.getElementById('auth-step').classList.add('active');
+                setTimeout(() => {
+                    document.getElementById('auth-step').classList.add('active');
+                }, 100);
             }
 
             function continueWithoutAccount() {
@@ -1136,6 +1210,9 @@
             }
 
             function goBackToPersonaStep() {
+                // Remove theme when going back
+                document.body.classList.remove('queen-theme');
+
                 document.getElementById('auth-step').classList.remove('active');
                 document.getElementById('persona-step').classList.add('active');
             }
@@ -1143,3 +1220,4 @@
 </body>
 
 </html>
+```
