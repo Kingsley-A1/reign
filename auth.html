@@ -1045,7 +1045,13 @@
                         })
                     });
 
-                    const data = await response.json();
+                    // Safe JSON parsing - handle non-JSON API responses
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (jsonError) {
+                        throw new Error('Server returned an invalid response. Please try again.');
+                    }
 
                     if (!response.ok) {
                         throw new Error(data.error || 'Login failed');
@@ -1108,7 +1114,13 @@
                         })
                     });
 
-                    const data = await response.json();
+                    // Safe JSON parsing - handle non-JSON API responses
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (jsonError) {
+                        throw new Error('Server returned an invalid response. Please try again.');
+                    }
 
                     if (!response.ok) {
                         throw new Error(data.error || 'Registration failed');
