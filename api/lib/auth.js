@@ -404,6 +404,11 @@ module.exports = {
     adminMiddleware,
     superAdminMiddleware,
 
+    // Convenience middleware: combines auth + admin check in one
+    requireAdmin: [authMiddleware, adminMiddleware],
+    requireSuperAdmin: [authMiddleware, superAdminMiddleware],
+    requireAuth: authMiddleware,
+
     // Audit
     logAudit,
 
