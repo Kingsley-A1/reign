@@ -22,6 +22,7 @@ const FooterComponent = {
         { id: 'learning', label: 'Learning Forge', icon: 'ph-graduation-cap', href: 'app/learning.html' },
         { id: 'idea', label: "Today's Idea", icon: 'ph-lightbulb', href: 'app/idea.html' },
         { id: 'lessons', label: 'Daily Lessons', icon: 'ph-book-open-text', href: 'app/lessons.html' },
+        { id: 'analytics', label: 'Progress', icon: 'ph-chart-line-up', href: 'app/analytics.html' },
         { id: 'dailygood', label: 'The Good in Today', icon: 'ph-heart', href: 'app/dailygood.html' },
         { id: 'relationships', label: 'Relationships', icon: 'ph-heart-half', href: 'app/relationships.html' },
         { id: 'events', label: 'Royal Calendar', icon: 'ph-calendar-check', href: 'app/events.html' },

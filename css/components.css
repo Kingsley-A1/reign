@@ -2586,3 +2586,46 @@ select:focus-visible {
         display: none !important;
     }
 }
+
+/* ============================================
+   MOBILE CONTENT PADDING
+   Ensure content is visible above fixed mobile nav
+   ============================================ */
+
+@media (max-width: 768px) {
+
+    /* Ensure main content areas have padding for mobile nav */
+    .main-content,
+    .page-container,
+    .content-area,
+    main {
+        padding-bottom: 100px !important;
+    }
+
+    /* Glass cards and form containers need extra bottom margin */
+    .glass-card:last-child,
+    form:last-child,
+    .form-actions {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Ensure form submit buttons are visible */
+    .form-actions,
+    .btn-row,
+    .action-buttons,
+    .submit-row {
+        position: relative;
+        z-index: 10;
+    }
+
+    /* Fixed bottom action bar for forms (optional class) */
+    .mobile-fixed-actions {
+        position: fixed;
+        bottom: 80px;
+        left: 0;
+        right: 0;
+        background: linear-gradient(180deg, transparent 0%, var(--royal-dark) 30%);
+        padding: 1rem;
+        z-index: 100;
+    }
+}

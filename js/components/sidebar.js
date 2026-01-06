@@ -19,6 +19,7 @@ const SidebarComponent = {
         { id: 'learning', label: 'Learning Forge', icon: 'ph-graduation-cap', href: 'app/learning.html' },
         { id: 'idea', label: "Today's Idea", icon: 'ph-lightbulb', href: 'app/idea.html' },
         { id: 'lessons', label: 'Daily Lessons', icon: 'ph-book-open-text', href: 'app/lessons.html' },
+        { id: 'analytics', label: 'Progress', icon: 'ph-chart-line-up', href: 'app/analytics.html' },
 
         // Reflection Section
         { id: 'divider-reflection', type: 'divider', label: 'Reflection' },
