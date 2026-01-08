@@ -28,7 +28,7 @@ const HeaderComponent = {
             const isLoggedIn = typeof Auth !== 'undefined' && Auth.isLoggedIn ? Auth.isLoggedIn() : false;
             const user = typeof Auth !== 'undefined' && Auth.getUser ? Auth.getUser() : null;
             const userInitials = typeof Auth !== 'undefined' && Auth.getInitials ? Auth.getInitials() : 'U';
-            
+
             const basePath = window.location.pathname.includes('/app/') ? '../' : '';
             const landingPage = (typeof UI !== 'undefined' && UI.isQueen && UI.isQueen()) ? 'queen.html' : 'index.html';
 
@@ -118,50 +118,6 @@ const HeaderComponent = {
                     </header>
                 `;
             }
-        }
-    },
-                            <a href="${basePath}app/profile.html" class="user-avatar" title="Profile">
-                                <span id="user-initials">${Auth.getInitials()}</span>
-                            </a>
-                            <span id="sync-status" class="sync-status" title="Sync Status"></span>
-                        </div>
-                    ` : ''}
-
-                    <!-- Guest Prompt (shown when not logged in) -->
-                    ${!isLoggedIn ? `
-                        <a href="${basePath}auth.html" id="guest-prompt" class="guest-prompt">
-                            <i class="ph-bold ph-sign-in"></i>
-                            <span>Log In</span>
-                        </a>
-                    ` : ''}
-
-                    <div class="header-time hidden-mobile">
-                        <p class="date" id="current-date">Today</p>
-                        <p class="time" id="current-time">00:00</p>
-                    </div>
-
-                    <div class="header-buttons hidden-mobile">
-                        <button onclick="Storage.export()" class="icon-btn" title="Export Backup">
-                            <i class="ph-bold ph-download-simple"></i>
-                        </button>
-                        <label class="icon-btn" title="Import Backup" style="cursor: pointer;">
-                            <i class="ph-bold ph-upload-simple"></i>
-                            <input type="file" accept=".json" style="display: none;" onchange="Storage.import(this)">
-                        </label>
-                        <button onclick="Storage.reset()" class="icon-btn danger" title="Reset All Data">
-                            <i class="ph-bold ph-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </header>
-        `;
-
-        // Update streak badge
-        this.updateStreakBadge();
-
-        // Apply role theme (King/Queen) after components render
-        if (typeof UI !== 'undefined' && UI.initTheme) {
-            UI.initTheme();
         }
     },
 

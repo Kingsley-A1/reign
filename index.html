@@ -311,12 +311,6 @@
     <!-- Auth & Sync Initialization -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Check session expiry first
-            if (typeof CONFIG !== 'undefined' && Auth.isLoggedIn()) {
-                const token = CONFIG.getAuthToken();
-                // Simple session check - the Auth module handles expiry
-            }
-
             // Render shared components (same as all /app pages)
             if (typeof HeaderComponent !== 'undefined') {
                 HeaderComponent.render('header-container', {

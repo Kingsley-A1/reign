@@ -6,21 +6,21 @@
 // ==========================================
 // GLOBAL ERROR BOUNDARY
 // ==========================================
-window.onerror = function(message, source, lineno, colno, error) {
+window.onerror = function (message, source, lineno, colno, error) {
     console.error('Global error:', { message, source, lineno, colno, error });
-    
+
     // Show user-friendly error message
     if (typeof Utils !== 'undefined' && Utils.showToast) {
         Utils.showToast('Something went wrong. Please refresh the page.', 'danger');
     }
-    
+
     // Don't prevent default error handling in development
     return false;
 };
 
-window.addEventListener('unhandledrejection', function(event) {
+window.addEventListener('unhandledrejection', function (event) {
     console.error('Unhandled promise rejection:', event.reason);
-    
+
     // Show user-friendly error message
     if (typeof Utils !== 'undefined' && Utils.showToast) {
         Utils.showToast('An operation failed. Please try again.', 'warning');
@@ -1170,7 +1170,7 @@ const app = {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `king-daily-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `reign-backup-${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1206,7 +1206,8 @@ const app = {
      * Apply saved settings on init
      */
     applySettings() {
-        const settings = Storage.getSettings();
+        const data = Storage.getData();
+        const settings = data.settings || {};
 
         // Apply theme
         if (settings.theme === 'light') {
@@ -1481,9 +1482,9 @@ const app = {
         if (!user) return;
 
         try {
-            const response = await fetch(`${CONFIG.API_URL}/relationships`, {
+            const response = await fetch(`${Config.API_URL}/relationships`, {
                 headers: {
-                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                    'Authorization': `Bearer ${Config.getToken()}`
                 }
             });
 
@@ -1593,15 +1594,15 @@ const app = {
 
         try {
             const url = isEdit
-                ? `${CONFIG.API_URL}/relationships/${relationshipId}`
-                : `${CONFIG.API_URL}/relationships`;
+                ? `${Config.API_URL}/relationships/${relationshipId}`
+                : `${Config.API_URL}/relationships`;
             const method = isEdit ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                    'Authorization': `Bearer ${Config.getToken()}`
                 },
                 body: JSON.stringify(data)
             });
@@ -1651,10 +1652,10 @@ const app = {
      */
     async toggleRelationshipFavorite(id) {
         try {
-            const response = await fetch(`${CONFIG.API_URL}/relationships/${id}/favorite`, {
+            const response = await fetch(`${Config.API_URL}/relationships/${id}/favorite`, {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                    'Authorization': `Bearer ${Config.getToken()}`
                 }
             });
 
@@ -1679,10 +1680,10 @@ const app = {
         if (!confirm('Remove this person from your rainy day people?')) return;
 
         try {
-            const response = await fetch(`${CONFIG.API_URL}/relationships/${id}`, {
+            const response = await fetch(`${Config.API_URL}/relationships/${id}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${CONFIG.getAuthToken()}`
+                    'Authorization': `Bearer ${Config.getToken()}`
                 }
             });
 

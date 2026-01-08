@@ -1,5 +1,5 @@
 /**
- * King Daily - Cloud Sync Module
+ * REIGN - Cloud Sync Module
  * Syncs user data with Cloudflare R2 storage
  */
 
