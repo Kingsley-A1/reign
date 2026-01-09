@@ -115,7 +115,7 @@ const Notifications = {
             if (!data.logs[today]?.morning) {
                 this.show('Good Morning! Time to Plan Your Day', {
                     body: 'Set your tasks and goals for today.',
-                    url: '/app/morning.html',
+                    url: '/app/morning',
                     tag: 'morning-reminder',
                     icon: '/icons/icon-192x192.png'
                 });
@@ -161,7 +161,7 @@ const Notifications = {
             if (!data.logs[today]?.evening) {
                 this.show('Evening Reflection Time', {
                     body: 'How did your day go? Submit your evening report.',
-                    url: '/app/evening.html',
+                    url: '/app/evening',
                     tag: 'evening-reminder',
                     icon: '/icons/icon-192x192.png'
                 });
@@ -258,3 +258,4 @@ if (document.readyState === 'loading') {
         Notifications.init();
     }
 }
+

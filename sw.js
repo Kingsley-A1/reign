@@ -1,56 +1,62 @@
 /**
  * Reign - Service Worker
  * Enables offline functionality and caching
- * Updated for production deployment
+ * Updated for production deployment with clean URLs
  */
 
-const CACHE_NAME = 'reign-v24';
+const CACHE_NAME = "reign-v26";
 
 // Core assets that must be cached for offline functionality
+// Using clean URLs (no .html extension) for Vercel deployment
 const CORE_ASSETS = [
-    '/',
-    '/index.html',
-    '/queen.html',
-    '/auth.html',
-    '/styles.css',
-    '/css/components.css',
-    '/manifest.json',
-    '/icons/icon-192.png',
-    '/icons/icon-512.png'
+  "/",
+  "/queen",
+  "/auth",
+  "/styles.css",
+  "/css/components.css",
+  "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
 ];
 
 // JavaScript files
 const JS_ASSETS = [
-    '/js/core.js',
-    '/js/app.js',
-    '/js/storage.js',
-    '/js/router.js',
-    '/js/charts.js',
-    '/js/views.js',
-    '/js/utils.js',
-    '/js/config.js',
-    '/js/auth.js',
-    '/js/sync.js',
-    '/js/components/header.js',
-    '/js/components/sidebar.js',
-    '/js/components/footer.js'
+  "/js/core.js",
+  "/js/app.js",
+  "/js/storage.js",
+  "/js/router.js",
+  "/js/charts.js",
+  "/js/views.js",
+  "/js/utils.js",
+  "/js/config.js",
+  "/js/auth.js",
+  "/js/sync.js",
+  "/js/components/header.js",
+  "/js/components/sidebar.js",
+  "/js/components/footer.js",
 ];
 
-// All pages
+// All pages (clean URLs)
 const PAGE_ASSETS = [
-    '/app/morning.html',
-    '/app/evening.html',
-    '/app/events.html',
-    '/app/learning.html',
-    '/app/lessons.html',
-    '/app/idea.html',
-    '/app/dailygood.html',
-    '/app/relationships.html',
-    '/app/notifications.html',
-    '/app/archive.html',
-    '/app/settings.html',
-    '/app/about.html',
-    '/app/support.html'
+  "/app/morning.html",
+  "/app/evening.html",
+  "/app/events.html",
+  "/app/learning.html",
+  "/app/lessons.html",
+  "/app/idea.html",
+  "/app/dailygood.html",
+  "/app/relationships.html",
+  "/app/notifications.html",
+  "/app/archive.html",
+  "/app/settings.html",
+  "/app/about.html",
+  "/app/support.html",
+  "/app/focus.html",
+  "/app/goals.html",
+  "/app/reviews.html",
+  "/app/analytics.html",
+  "/app/profile.html",
+  "/app/docs.html",
 ];
 
 // Combine all assets
@@ -58,108 +64,119 @@ const ASSETS_TO_CACHE = [...CORE_ASSETS, ...JS_ASSETS, ...PAGE_ASSETS];
 
 // External CDN resources (cache on first use)
 const CDN_RESOURCES = [
-    'https://fonts.googleapis.com',
-    'https://fonts.gstatic.com',
-    'https://unpkg.com',
-    'https://cdn.jsdelivr.net'
+  "https://fonts.googleapis.com",
+  "https://fonts.gstatic.com",
+  "https://unpkg.com",
+  "https://cdn.jsdelivr.net",
 ];
 
 // Install event - cache core assets
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then((cache) => {
-                console.log('[SW] Caching core assets...');
-                return cache.addAll(ASSETS_TO_CACHE);
-            })
-            .then(() => self.skipWaiting())
-            .catch((err) => {
-                console.error('[SW] Cache install failed:', err);
-            })
-    );
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => {
+        console.log("[SW] Caching core assets...");
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
+      .then(() => self.skipWaiting())
+      .catch((err) => {
+        console.error("[SW] Cache install failed:", err);
+      })
+  );
 });
 
 // Activate event - clean old caches
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys()
-            .then((cacheNames) => {
-                return Promise.all(
-                    cacheNames.map((cache) => {
-                        if (cache !== CACHE_NAME) {
-                            console.log('[SW] Clearing old cache:', cache);
-                            return caches.delete(cache);
-                        }
-                    })
-                );
-            })
-            .then(() => self.clients.claim())
-    );
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cache) => {
+            if (cache !== CACHE_NAME) {
+              console.log("[SW] Clearing old cache:", cache);
+              return caches.delete(cache);
+            }
+          })
+        );
+      })
+      .then(() => self.clients.claim())
+  );
 });
 
 // Fetch event - Network first for API, Cache first for assets
-self.addEventListener('fetch', (event) => {
-    const url = new URL(event.request.url);
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
 
-    // Skip non-GET requests
-    if (event.request.method !== 'GET') return;
+  // Skip non-GET requests
+  if (event.request.method !== "GET") return;
 
-    // Skip API requests (let them go to network)
-    if (url.pathname.startsWith('/api/')) {
-        return event.respondWith(fetch(event.request));
-    }
+  // Skip API requests (let them go to network)
+  if (url.pathname.startsWith("/api/")) {
+    return event.respondWith(fetch(event.request));
+  }
 
-    // For CDN resources - stale while revalidate
-    if (CDN_RESOURCES.some(cdn => url.origin.includes(cdn.replace('https://', '')))) {
-        event.respondWith(
-            caches.match(event.request).then((cachedResponse) => {
-                const fetchPromise = fetch(event.request).then((networkResponse) => {
-                    if (networkResponse.ok) {
-                        const clone = networkResponse.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-                    }
-                    return networkResponse;
-                }).catch(() => cachedResponse);
-
-                return cachedResponse || fetchPromise;
-            })
-        );
-        return;
-    }
-
-    // For app assets - cache first, network fallback
+  // For CDN resources - stale while revalidate
+  if (
+    CDN_RESOURCES.some((cdn) =>
+      url.origin.includes(cdn.replace("https://", ""))
+    )
+  ) {
     event.respondWith(
-        caches.match(event.request)
-            .then((cachedResponse) => {
-                if (cachedResponse) {
-                    // Return cached, but also update cache in background
-                    fetch(event.request).then((networkResponse) => {
-                        if (networkResponse.ok) {
-                            caches.open(CACHE_NAME).then((cache) => {
-                                cache.put(event.request, networkResponse);
-                            });
-                        }
-                    }).catch(() => { });
-                    return cachedResponse;
-                }
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse.ok) {
+              const clone = networkResponse.clone();
+              caches
+                .open(CACHE_NAME)
+                .then((cache) => cache.put(event.request, clone));
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
 
-                // Not in cache, fetch from network
-                return fetch(event.request)
-                    .then((networkResponse) => {
-                        if (networkResponse.ok) {
-                            const clone = networkResponse.clone();
-                            caches.open(CACHE_NAME).then((cache) => {
-                                cache.put(event.request, clone);
-                            });
-                        }
-                        return networkResponse;
-                    })
-                    .catch(() => {
-                        // Offline fallback for navigation
-                        if (event.request.mode === 'navigate') {
-                            return caches.match('/index.html');
-                        }
-                    });
-            })
+        return cachedResponse || fetchPromise;
+      })
     );
+    return;
+  }
+
+  // For app assets - cache first, network fallback
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        // Return cached, but also update cache in background
+        fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse.ok) {
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, networkResponse);
+              });
+            }
+          })
+          .catch(() => {});
+        return cachedResponse;
+      }
+
+      // Not in cache, fetch from network
+      return fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.ok) {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, clone);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // Offline fallback for navigation
+          if (event.request.mode === "navigate") {
+            return caches.match("/index.html");
+          }
+        });
+    })
+  );
 });

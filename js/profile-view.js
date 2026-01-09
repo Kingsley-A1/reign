@@ -5,30 +5,35 @@
 
 // Define global function for rendering profile
 window.renderProfileView = function (container, data) {
-    const user = Auth.getUser();
+  const user = Auth.getUser();
 
-    if (!user) {
-        window.location.href = '../auth.html';
-        return;
-    }
+  if (!user) {
+    window.location.href = "/auth.html";
+    return;
+  }
 
-    const streak = data.learning?.streak || 0;
-    const totalEntries = Object.keys(data.logs || {}).length;
-    const createdDate = new Date(user.createdAt || Date.now());
-    const accountAge = Math.floor((Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
-    // Use consistent role source from Storage
-    const role = data.settings?.role || 'king';
+  const streak = data.learning?.streak || 0;
+  const totalEntries = Object.keys(data.logs || {}).length;
+  const createdDate = new Date(user.createdAt || Date.now());
+  const accountAge = Math.floor(
+    (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  // Use consistent role source from Storage
+  const role = data.settings?.role || "king";
 
-    container.innerHTML = `
+  container.innerHTML = `
         <div class="profile-container">
             <!-- Profile Header -->
             <div class="profile-header-section">
                 <div class="profile-avatar-wrapper">
                     <div class="profile-avatar-large" id="profile-avatar-container">
-                        ${user.avatar
-            ? `<img src="${user.avatar}" alt="${Utils.sanitize(user.name)}" class="profile-avatar-img">`
-            : `<div class="profile-avatar-initials-large">${Auth.getInitials()}</div>`
-        }
+                        ${
+                          user.avatar
+                            ? `<img src="${user.avatar}" alt="${Utils.sanitize(
+                                user.name
+                              )}" class="profile-avatar-img">`
+                            : `<div class="profile-avatar-initials-large">${Auth.getInitials()}</div>`
+                        }
                     </div>
                     <button class="avatar-edit-btn" onclick="app.openAvatarUpload()" title="Change Avatar">
                         <i class="ph-bold ph-camera"></i>
@@ -36,7 +41,9 @@ window.renderProfileView = function (container, data) {
                 </div>
                 
                 <h1 class="profile-name">${Utils.sanitize(user.name)}</h1>
-                <span class="role-badge ${role}">${role === 'queen' ? '👸 Queen' : '🤴 King'}</span>
+                <span class="role-badge ${role}">${
+    role === "queen" ? "👸 Queen" : "🤴 King"
+  }</span>
                 <p class="profile-email">${Utils.sanitize(user.email)}</p>
             </div>
 
@@ -82,28 +89,36 @@ window.renderProfileView = function (container, data) {
                             <i class="ph-duotone ph-user"></i>
                             Full Name
                         </span>
-                        <span class="info-value">${Utils.sanitize(user.name)}</span>
+                        <span class="info-value">${Utils.sanitize(
+                          user.name
+                        )}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">
                             <i class="ph-duotone ph-envelope"></i>
                             Email
                         </span>
-                        <span class="info-value">${Utils.sanitize(user.email)}</span>
+                        <span class="info-value">${Utils.sanitize(
+                          user.email
+                        )}</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">
                             <i class="ph-duotone ph-crown"></i>
                             Role
                         </span>
-                        <span class="info-value">${role === 'queen' ? 'Queen' : 'King'}</span>
+                        <span class="info-value">${
+                          role === "queen" ? "Queen" : "King"
+                        }</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label">
                             <i class="ph-duotone ph-calendar-check"></i>
                             Member Since
                         </span>
-                        <span class="info-value">${Utils.formatDate(createdDate)}</span>
+                        <span class="info-value">${Utils.formatDate(
+                          createdDate
+                        )}</span>
                     </div>
                 </div>
 
@@ -115,7 +130,9 @@ window.renderProfileView = function (container, data) {
                                 <i class="ph-duotone ph-user"></i>
                                 Full Name
                             </label>
-                            <input type="text" name="name" class="form-input" value="${Utils.sanitize(user.name)}" required>
+                            <input type="text" name="name" class="form-input" value="${Utils.sanitize(
+                              user.name
+                            )}" required>
                         </div>
                         
                         <div class="form-group">
@@ -123,7 +140,9 @@ window.renderProfileView = function (container, data) {
                                 <i class="ph-duotone ph-envelope"></i>
                                 Email
                             </label>
-                            <input type="email" name="email" class="form-input" value="${Utils.sanitize(user.email)}" required>
+                            <input type="email" name="email" class="form-input" value="${Utils.sanitize(
+                              user.email
+                            )}" required>
                             <small style="color: #64748b; font-size: 0.75rem; margin-top: 0.25rem; display: block;">Changing email requires verification</small>
                         </div>
 
@@ -153,7 +172,9 @@ window.renderProfileView = function (container, data) {
                             <h4>Remove Avatar</h4>
                             <p>Delete your profile picture</p>
                         </div>
-                        <button class="btn-danger-sm" onclick="app.confirmRemoveAvatar()" ${!user.avatar ? 'disabled' : ''}>
+                        <button class="btn-danger-sm" onclick="app.confirmRemoveAvatar()" ${
+                          !user.avatar ? "disabled" : ""
+                        }>
                             Remove
                         </button>
                     </div>

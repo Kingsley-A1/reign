@@ -5,97 +5,100 @@
  */
 
 const SharePrompt = {
-    // Modal state
-    modalElement: null,
-    isShowing: false,
-    hasShownThisSession: false,
+  // Modal state
+  modalElement: null,
+  isShowing: false,
+  hasShownThisSession: false,
 
-    // Configuration
-    config: {
-        storageKey: 'reign_share_last_shown',
-        cooldownDays: 7, // Show once per week max
-        shareUrl: 'https://reign-pi.vercel.app',
-        shareMessage: 'REIGN App now at your finger tips. INSTALL IT AND BECOME THE BEST OF YOURSELF! 👑',
-        ogImage: 'https://reign-pi.vercel.app/icons/og-cover.jpg',
-        appName: 'REIGN'
-    },
+  // Configuration
+  config: {
+    storageKey: "reign_share_last_shown",
+    cooldownDays: 7, // Show once per week max
+    shareUrl: "https://reign-pi.vercel.app",
+    shareMessage:
+      "REIGN App now at your finger tips. INSTALL IT AND BECOME THE BEST OF YOURSELF! 👑",
+    ogImage: "https://reign-pi.vercel.app/icons/og-cover.jpg",
+    appName: "REIGN",
+  },
 
-    /**
-     * Initialize the share prompt system
-     */
-    init() {
-        this.createModal();
-        this.setupExitDetection();
-    },
+  /**
+   * Initialize the share prompt system
+   */
+  init() {
+    this.createModal();
+    this.setupExitDetection();
+  },
 
-    /**
-     * Check if we should show the modal
-     */
-    shouldShowModal() {
-        // Don't show if already shown this session
-        if (this.hasShownThisSession) return false;
+  /**
+   * Check if we should show the modal
+   */
+  shouldShowModal() {
+    // Don't show if already shown this session
+    if (this.hasShownThisSession) return false;
 
-        // Don't show if user is on auth page
-        if (window.location.pathname.includes('auth.html')) return false;
+    // Don't show if user is on auth page
+    if (window.location.pathname.includes("auth")) return false;
 
-        // Check cooldown
-        const lastShown = localStorage.getItem(this.config.storageKey);
-        if (lastShown) {
-            const daysSinceShown = (Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24);
-            if (daysSinceShown < this.config.cooldownDays) return false;
+    // Check cooldown
+    const lastShown = localStorage.getItem(this.config.storageKey);
+    if (lastShown) {
+      const daysSinceShown =
+        (Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24);
+      if (daysSinceShown < this.config.cooldownDays) return false;
+    }
+
+    // Check if user has used the app for at least 3 days
+    const firstUse = localStorage.getItem("reign_first_use_date");
+    if (firstUse) {
+      const daysSinceFirst =
+        (Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24);
+      if (daysSinceFirst < 3) return false;
+    }
+
+    return true;
+  },
+
+  /**
+   * Setup exit-intent detection
+   */
+  setupExitDetection() {
+    // Desktop: Mouse leaving viewport toward top
+    document.addEventListener("mouseout", (e) => {
+      if (e.clientY <= 0 && this.shouldShowModal()) {
+        this.show();
+      }
+    });
+
+    // Mobile: Before unload (back button, closing tab)
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden" && this.shouldShowModal()) {
+        // Mark to show on next visit
+        sessionStorage.setItem("reign_show_share_on_return", "true");
+      }
+    });
+
+    // Show on return if marked
+    window.addEventListener("focus", () => {
+      if (sessionStorage.getItem("reign_show_share_on_return") === "true") {
+        sessionStorage.removeItem("reign_show_share_on_return");
+        if (this.shouldShowModal()) {
+          setTimeout(() => this.show(), 1500);
         }
+      }
+    });
+  },
 
-        // Check if user has used the app for at least 3 days
-        const firstUse = localStorage.getItem('reign_first_use_date');
-        if (firstUse) {
-            const daysSinceFirst = (Date.now() - parseInt(firstUse)) / (1000 * 60 * 60 * 24);
-            if (daysSinceFirst < 3) return false;
-        }
+  /**
+   * Create the modal HTML
+   */
+  createModal() {
+    // Check if modal already exists
+    if (document.getElementById("share-prompt-modal")) return;
 
-        return true;
-    },
-
-    /**
-     * Setup exit-intent detection
-     */
-    setupExitDetection() {
-        // Desktop: Mouse leaving viewport toward top
-        document.addEventListener('mouseout', (e) => {
-            if (e.clientY <= 0 && this.shouldShowModal()) {
-                this.show();
-            }
-        });
-
-        // Mobile: Before unload (back button, closing tab)
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden' && this.shouldShowModal()) {
-                // Mark to show on next visit
-                sessionStorage.setItem('reign_show_share_on_return', 'true');
-            }
-        });
-
-        // Show on return if marked
-        window.addEventListener('focus', () => {
-            if (sessionStorage.getItem('reign_show_share_on_return') === 'true') {
-                sessionStorage.removeItem('reign_show_share_on_return');
-                if (this.shouldShowModal()) {
-                    setTimeout(() => this.show(), 1500);
-                }
-            }
-        });
-    },
-
-    /**
-     * Create the modal HTML
-     */
-    createModal() {
-        // Check if modal already exists
-        if (document.getElementById('share-prompt-modal')) return;
-
-        const modal = document.createElement('div');
-        modal.id = 'share-prompt-modal';
-        modal.className = 'share-prompt-overlay';
-        modal.innerHTML = `
+    const modal = document.createElement("div");
+    modal.id = "share-prompt-modal";
+    modal.className = "share-prompt-overlay";
+    modal.innerHTML = `
             <div class="share-prompt-container">
                 <!-- Close Button -->
                 <button class="share-prompt-close" onclick="SharePrompt.dismiss()" aria-label="Close">
@@ -467,176 +470,195 @@ const SharePrompt = {
             </style>
         `;
 
-        document.body.appendChild(modal);
-        this.modalElement = modal;
-    },
+    document.body.appendChild(modal);
+    this.modalElement = modal;
+  },
 
-    /**
-     * Show the share prompt
-     */
-    show() {
-        if (this.isShowing || !this.modalElement) return;
+  /**
+   * Show the share prompt
+   */
+  show() {
+    if (this.isShowing || !this.modalElement) return;
 
-        this.isShowing = true;
-        this.hasShownThisSession = true;
-        this.modalElement.classList.add('active');
+    this.isShowing = true;
+    this.hasShownThisSession = true;
+    this.modalElement.classList.add("active");
 
-        // Record show time
-        localStorage.setItem(this.config.storageKey, Date.now().toString());
+    // Record show time
+    localStorage.setItem(this.config.storageKey, Date.now().toString());
 
-        // Trap focus
-        document.body.style.overflow = 'hidden';
-    },
+    // Trap focus
+    document.body.style.overflow = "hidden";
+  },
 
-    /**
-     * Dismiss the modal
-     */
-    dismiss() {
-        if (!this.modalElement) return;
+  /**
+   * Dismiss the modal
+   */
+  dismiss() {
+    if (!this.modalElement) return;
 
-        this.isShowing = false;
-        this.modalElement.classList.remove('active');
-        document.body.style.overflow = '';
-    },
+    this.isShowing = false;
+    this.modalElement.classList.remove("active");
+    document.body.style.overflow = "";
+  },
 
-    /**
-     * Native share API
-     */
-    async nativeShare() {
-        const shareData = {
-            title: this.config.appName,
-            text: this.config.shareMessage,
-            url: this.config.shareUrl
-        };
+  /**
+   * Native share API
+   */
+  async nativeShare() {
+    const shareData = {
+      title: this.config.appName,
+      text: this.config.shareMessage,
+      url: this.config.shareUrl,
+    };
 
-        if (navigator.share) {
-            try {
-                await navigator.share(shareData);
-                this.showConfetti();
-                this.showThankYou();
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    // Fall back to copy
-                    this.copyLink();
-                }
-            }
-        } else {
-            // Fall back to copy
-            this.copyLink();
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        this.showConfetti();
+        this.showThankYou();
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          // Fall back to copy
+          this.copyLink();
         }
-    },
-
-    /**
-     * Share to WhatsApp
-     */
-    shareToWhatsApp() {
-        const text = encodeURIComponent(`${this.config.shareMessage}\n\n${this.config.shareUrl}`);
-        window.open(`https://wa.me/?text=${text}`, '_blank');
-        this.showConfetti();
-    },
-
-    /**
-     * Share to Twitter/X
-     */
-    shareToTwitter() {
-        const text = encodeURIComponent(this.config.shareMessage);
-        const url = encodeURIComponent(this.config.shareUrl);
-        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
-        this.showConfetti();
-    },
-
-    /**
-     * Share to Facebook
-     */
-    shareToFacebook() {
-        const url = encodeURIComponent(this.config.shareUrl);
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
-        this.showConfetti();
-    },
-
-    /**
-     * Share to LinkedIn
-     */
-    shareToLinkedIn() {
-        const url = encodeURIComponent(this.config.shareUrl);
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
-        this.showConfetti();
-    },
-
-    /**
-     * Share to Telegram
-     */
-    shareToTelegram() {
-        const text = encodeURIComponent(this.config.shareMessage);
-        const url = encodeURIComponent(this.config.shareUrl);
-        window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
-        this.showConfetti();
-    },
-
-    /**
-     * Copy link to clipboard
-     */
-    async copyLink() {
-        try {
-            await navigator.clipboard.writeText(this.config.shareUrl);
-            this.showConfetti();
-            
-            // Show toast
-            if (typeof Utils !== 'undefined' && Utils.showToast) {
-                Utils.showToast('Link copied to clipboard! 📋', 'success');
-            }
-        } catch (err) {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = this.config.shareUrl;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-
-            if (typeof Utils !== 'undefined' && Utils.showToast) {
-                Utils.showToast('Link copied! 📋', 'success');
-            }
-        }
-    },
-
-    /**
-     * Show celebratory confetti
-     */
-    showConfetti() {
-        const container = this.modalElement.querySelector('.share-prompt-container');
-        if (!container) return;
-
-        const colors = ['var(--royal-gold)', 'var(--royal-accent)', '#ffffff', 'var(--royal-gold)'];
-
-        for (let i = 0; i < 15; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = Math.random() * 100 + '%';
-            confetti.style.top = Math.random() * 100 + '%';
-            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-            confetti.style.animationDelay = Math.random() * 0.3 + 's';
-            container.appendChild(confetti);
-
-            // Remove after animation
-            setTimeout(() => confetti.remove(), 1500);
-        }
-    },
-
-    /**
-     * Show thank you message
-     */
-    showThankYou() {
-        setTimeout(() => {
-            this.dismiss();
-            if (typeof Utils !== 'undefined' && Utils.showToast) {
-                Utils.showToast('Thank you for spreading the reign! 👑', 'success');
-            }
-        }, 500);
+      }
+    } else {
+      // Fall back to copy
+      this.copyLink();
     }
+  },
+
+  /**
+   * Share to WhatsApp
+   */
+  shareToWhatsApp() {
+    const text = encodeURIComponent(
+      `${this.config.shareMessage}\n\n${this.config.shareUrl}`
+    );
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+    this.showConfetti();
+  },
+
+  /**
+   * Share to Twitter/X
+   */
+  shareToTwitter() {
+    const text = encodeURIComponent(this.config.shareMessage);
+    const url = encodeURIComponent(this.config.shareUrl);
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      "_blank"
+    );
+    this.showConfetti();
+  },
+
+  /**
+   * Share to Facebook
+   */
+  shareToFacebook() {
+    const url = encodeURIComponent(this.config.shareUrl);
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      "_blank"
+    );
+    this.showConfetti();
+  },
+
+  /**
+   * Share to LinkedIn
+   */
+  shareToLinkedIn() {
+    const url = encodeURIComponent(this.config.shareUrl);
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+      "_blank"
+    );
+    this.showConfetti();
+  },
+
+  /**
+   * Share to Telegram
+   */
+  shareToTelegram() {
+    const text = encodeURIComponent(this.config.shareMessage);
+    const url = encodeURIComponent(this.config.shareUrl);
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, "_blank");
+    this.showConfetti();
+  },
+
+  /**
+   * Copy link to clipboard
+   */
+  async copyLink() {
+    try {
+      await navigator.clipboard.writeText(this.config.shareUrl);
+      this.showConfetti();
+
+      // Show toast
+      if (typeof Utils !== "undefined" && Utils.showToast) {
+        Utils.showToast("Link copied to clipboard! 📋", "success");
+      }
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement("textarea");
+      textArea.value = this.config.shareUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+
+      if (typeof Utils !== "undefined" && Utils.showToast) {
+        Utils.showToast("Link copied! 📋", "success");
+      }
+    }
+  },
+
+  /**
+   * Show celebratory confetti
+   */
+  showConfetti() {
+    const container = this.modalElement.querySelector(
+      ".share-prompt-container"
+    );
+    if (!container) return;
+
+    const colors = [
+      "var(--royal-gold)",
+      "var(--royal-accent)",
+      "#ffffff",
+      "var(--royal-gold)",
+    ];
+
+    for (let i = 0; i < 15; i++) {
+      const confetti = document.createElement("div");
+      confetti.className = "confetti";
+      confetti.style.left = Math.random() * 100 + "%";
+      confetti.style.top = Math.random() * 100 + "%";
+      confetti.style.background =
+        colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 0.3 + "s";
+      container.appendChild(confetti);
+
+      // Remove after animation
+      setTimeout(() => confetti.remove(), 1500);
+    }
+  },
+
+  /**
+   * Show thank you message
+   */
+  showThankYou() {
+    setTimeout(() => {
+      this.dismiss();
+      if (typeof Utils !== "undefined" && Utils.showToast) {
+        Utils.showToast("Thank you for spreading the reign! 👑", "success");
+      }
+    }, 500);
+  },
 };
 
 // Auto-initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-    SharePrompt.init();
+document.addEventListener("DOMContentLoaded", () => {
+  SharePrompt.init();
 });

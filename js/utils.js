@@ -248,8 +248,34 @@ const Utils = {
         "He who has a why to live can bear almost any how. – Nietzsche",
         "The only way to do great work is to love what you do. – Steve Jobs",
         "Success is not final, failure is not fatal: it is the courage to continue that counts. – Churchill",
-        "Your time is limited, don't waste it living someone else's life. – Steve Jobs"
+        "Your time is limited, don't waste it living someone else's life. – Steve Jobs",
+        "It is not that we have a short time to live, but that we waste a lot of it. – Seneca",
+        "The best time to plant a tree was 20 years ago. The second best time is now. – Chinese Proverb",
+        "You have power over your mind – not outside events. Realize this, and you will find strength. – Marcus Aurelius",
+        "The man who moves a mountain begins by carrying away small stones. – Confucius",
+        "Do not go where the path may lead, go instead where there is no path and leave a trail. – Ralph Waldo Emerson",
+        "Greatness is not in never falling, but in rising every time we fall. – Nelson Mandela",
+        "I fear not the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times. – Bruce Lee",
+        "The impediment to action advances action. What stands in the way becomes the way. – Marcus Aurelius",
+        "First say to yourself what you would be; and then do what you have to do. – Epictetus",
+        "It does not matter how slowly you go as long as you do not stop. – Confucius",
+        "Difficulties strengthen the mind, as labor does the body. – Seneca",
+        "Begin at once to live, and count each separate day as a separate life. – Seneca",
+        "The secret of getting ahead is getting started. – Mark Twain",
+        "What lies behind us and what lies before us are tiny matters compared to what lies within us. – Ralph Waldo Emerson",
+        "Energy and persistence conquer all things. – Benjamin Franklin",
+        "The world makes way for the man who knows where he is going. – Ralph Waldo Emerson"
     ],
+
+    /**
+     * Current quote index for rotation
+     */
+    currentQuoteIndex: 0,
+
+    /**
+     * Quote rotation interval ID
+     */
+    quoteRotationInterval: null,
 
     /**
      * Get random quote
@@ -257,6 +283,95 @@ const Utils = {
      */
     getRandomQuote() {
         return this.quotes[Math.floor(Math.random() * this.quotes.length)];
+    },
+
+    /**
+     * Get next quote in sequence (for rotation)
+     * @returns {string} Quote
+     */
+    getNextQuote() {
+        this.currentQuoteIndex = (this.currentQuoteIndex + 1) % this.quotes.length;
+        return this.quotes[this.currentQuoteIndex];
+    },
+
+    /**
+     * Parse quote into text and author
+     * @param {string} fullQuote - Full quote string
+     * @returns {Object} { text, author }
+     */
+    parseQuote(fullQuote) {
+        const parts = fullQuote.split(' – ');
+        return {
+            text: parts[0],
+            author: parts[1] || ''
+        };
+    },
+
+    /**
+     * Start quote rotation (every 40 seconds)
+     * Call this on dashboard/landing page load
+     */
+    startQuoteRotation() {
+        // Clear any existing interval
+        if (this.quoteRotationInterval) {
+            clearInterval(this.quoteRotationInterval);
+        }
+
+        // Set initial random index
+        this.currentQuoteIndex = Math.floor(Math.random() * this.quotes.length);
+
+        // Rotate every 40 seconds
+        this.quoteRotationInterval = setInterval(() => {
+            this.rotateQuote();
+        }, 40000);
+    },
+
+    /**
+     * Stop quote rotation
+     */
+    stopQuoteRotation() {
+        if (this.quoteRotationInterval) {
+            clearInterval(this.quoteRotationInterval);
+            this.quoteRotationInterval = null;
+        }
+    },
+
+    /**
+     * Rotate to next quote with fade animation
+     */
+    rotateQuote() {
+        const quoteContainer = document.getElementById('quote-container');
+        const quoteTextEl = document.getElementById('quote-text');
+        const quoteAuthorEl = document.getElementById('quote-author');
+
+        if (!quoteContainer || !quoteTextEl) return;
+
+        // Fade out
+        quoteContainer.style.opacity = '0';
+
+        setTimeout(() => {
+            // Get next quote
+            const nextQuote = this.getNextQuote();
+            const { text, author } = this.parseQuote(nextQuote);
+
+            // Update content
+            quoteTextEl.textContent = `"${text}"`;
+            
+            if (quoteAuthorEl) {
+                quoteAuthorEl.textContent = author ? `— ${author}` : '';
+                quoteAuthorEl.style.display = author ? 'block' : 'none';
+            } else if (author) {
+                // Create author element if it doesn't exist
+                const newAuthorEl = document.createElement('p');
+                newAuthorEl.className = 'quote-author';
+                newAuthorEl.id = 'quote-author';
+                newAuthorEl.textContent = `— ${author}`;
+                quoteTextEl.parentNode.appendChild(newAuthorEl);
+            }
+
+            // Fade in
+            quoteContainer.style.opacity = '1';
+        }, 300);
     },
 
     /**

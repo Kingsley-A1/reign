@@ -1,311 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="REIGN Settings - Customize your experience">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="REIGN Settings - Customize your experience"
+    />
     <title>Settings | REIGN</title>
 
-    <link rel="manifest" href="../manifest.json">
-    <meta name="theme-color" content="#0B0F19">
-    <link rel="apple-touch-icon" href="../icons/icon-192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
-
-    <meta property="og:url" content="https://reign-pi.vercel.app/app/settings.html">
-    <meta property="og:title" content="Settings | REIGN">
-    <meta property="og:image" content="https://reign-pi.vercel.app/icons/og-cover.jpg">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#0B0F19" />
+    <link rel="apple-touch-icon" href="../icons/icon-192.png" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../icons/icon-192.png"
+    />
+
+    <meta
+      property="og:url"
+      content="https://reign-pi.vercel.app/app/settings.html"
+    />
+    <meta property="og:title" content="Settings | REIGN" />
+    <meta
+      property="og:image"
+      content="https://reign-pi.vercel.app/icons/og-cover.jpg"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/enhancements.css">
-    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/enhancements.css" />
+    <link rel="stylesheet" href="../css/mobile.css" />
 
     <style>
-        .settings-section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
+      .settings-section {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
 
-        .settings-section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .settings-section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        .setting-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--glass-border);
-        }
+      .setting-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--glass-border);
+      }
 
-        .setting-item:last-child {
-            border-bottom: none;
-        }
+      .setting-item:last-child {
+        border-bottom: none;
+      }
 
-        .setting-label {
-            color: white;
-            font-weight: 500;
-        }
+      .setting-label {
+        color: white;
+        font-weight: 500;
+      }
 
-        .setting-desc {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
+      .setting-desc {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+      }
 
-        .toggle-switch {
-            position: relative;
-            width: 3rem;
-            height: 1.5rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+      .toggle-switch {
+        position: relative;
+        width: 3rem;
+        height: 1.5rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
 
-        .toggle-switch.active {
-            background: linear-gradient(135deg, var(--royal-gold), var(--royal-accent));
-            border-color: var(--royal-gold);
-        }
+      .toggle-switch.active {
+        background: linear-gradient(
+          135deg,
+          var(--royal-gold),
+          var(--royal-accent)
+        );
+        border-color: var(--royal-gold);
+      }
 
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 1.125rem;
-            height: 1.125rem;
-            background: white;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
+      .toggle-switch::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 1.125rem;
+        height: 1.125rem;
+        background: white;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+      }
 
-        .toggle-switch.active::after {
-            transform: translateX(1.5rem);
-        }
+      .toggle-switch.active::after {
+        transform: translateX(1.5rem);
+      }
 
-        .danger-zone {
-            border-color: rgba(239, 68, 68, 0.3);
-            background: rgba(239, 68, 68, 0.05);
-        }
+      .danger-zone {
+        border-color: rgba(239, 68, 68, 0.3);
+        background: rgba(239, 68, 68, 0.05);
+      }
 
-        .danger-zone .settings-section-title {
-            color: #ef4444;
-        }
+      .danger-zone .settings-section-title {
+        color: #ef4444;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="app-container">
-        <div id="header-container"></div>
-        <div class="main-layout">
-            <div id="sidebar-container"></div>
-            <main class="main-content fade-in" id="main-view">
-                <div class="page-hero">
-                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #64748b, #475569);">
-                        <i class="ph-fill ph-gear-six"></i>
-                    </div>
-                    <h1 class="page-hero-title">Settings</h1>
-                    <p class="page-hero-subtitle">Configure your REIGN experience to rule effectively.</p>
-                </div>
+      <div id="header-container"></div>
+      <div class="main-layout">
+        <div id="sidebar-container"></div>
+        <main class="main-content fade-in" id="main-view">
+          <div class="page-hero">
+            <div
+              class="page-hero-icon"
+              style="background: linear-gradient(135deg, #64748b, #475569)"
+            >
+              <i class="ph-fill ph-gear-six"></i>
+            </div>
+            <h1 class="page-hero-title">Settings</h1>
+            <p class="page-hero-subtitle">
+              Configure your REIGN experience to rule effectively.
+            </p>
+          </div>
 
-                <!-- Profile Section -->
-                <div class="settings-section">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-user" style="color: var(--royal-gold);"></i> Profile
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Display Name</p>
-                            <p class="setting-desc">How you'd like to be addressed</p>
-                        </div>
-                        <input type="text" id="setting-username" class="form-input" style="max-width: 200px;"
-                            placeholder="Your name">
-                    </div>
-                </div>
+          <!-- Profile Section -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-user" style="color: var(--royal-gold)"></i>
+              Profile
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Display Name</p>
+                <p class="setting-desc">How you'd like to be addressed</p>
+              </div>
+              <input
+                type="text"
+                id="setting-username"
+                class="form-input"
+                style="max-width: 200px"
+                placeholder="Your name"
+              />
+            </div>
+          </div>
 
-                <!-- Security Section -->
-                <div class="settings-section" id="security-section" style="display: none;">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-shield-check" style="color: #10b981;"></i> Security & Recovery
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Password Recovery</p>
-                            <p class="setting-desc">Set a security question to recover your password</p>
-                        </div>
-                        <button class="btn btn-outline btn-sm" onclick="openSecurityModal()">
-                            <i class="ph-bold ph-key"></i> Setup
-                        </button>
-                    </div>
-                </div>
+          <!-- Security Section -->
+          <div
+            class="settings-section"
+            id="security-section"
+            style="display: none"
+          >
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-shield-check" style="color: #10b981"></i>
+              Security & Recovery
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Password Recovery</p>
+                <p class="setting-desc">
+                  Set a security question to recover your password
+                </p>
+              </div>
+              <button
+                class="btn btn-outline btn-sm"
+                onclick="openSecurityModal()"
+              >
+                <i class="ph-bold ph-key"></i> Setup
+              </button>
+            </div>
+          </div>
 
-                <!-- Account Section (if logged in) -->
-                <div id="account-section" class="settings-section" style="display: none;">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-cloud" style="color: #3b82f6;"></i> Account & Sync
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label" id="account-email">-</p>
-                            <p class="setting-desc">Logged in account</p>
-                        </div>
-                        <button class="btn btn-outline btn-sm" onclick="Auth.logout()">
-                            <i class="ph-bold ph-sign-out"></i> Logout
-                        </button>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Last Synced</p>
-                            <p class="setting-desc" id="last-sync">Never</p>
-                        </div>
-                        <button class="btn btn-primary btn-sm" onclick="syncNow()">
-                            <i class="ph-bold ph-arrows-clockwise"></i> Sync Now
-                        </button>
-                    </div>
-                </div>
+          <!-- Account Section (if logged in) -->
+          <div
+            id="account-section"
+            class="settings-section"
+            style="display: none"
+          >
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-cloud" style="color: #3b82f6"></i> Account &
+              Sync
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label" id="account-email">-</p>
+                <p class="setting-desc">Logged in account</p>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="Auth.logout()">
+                <i class="ph-bold ph-sign-out"></i> Logout
+              </button>
+            </div>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Last Synced</p>
+                <p class="setting-desc" id="last-sync">Never</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="syncNow()">
+                <i class="ph-bold ph-arrows-clockwise"></i> Sync Now
+              </button>
+            </div>
+          </div>
 
-                <!-- Appearance Section -->
-                <div class="settings-section">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-palette" style="color: #8b5cf6;"></i> Appearance
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Role / Theme Style</p>
-                            <p class="setting-desc">Choose your royal identity</p>
-                        </div>
-                        <div class="role-selector" style="display: flex; gap: 0.5rem;">
-                            <button id="role-king" class="role-btn active" onclick="setRole('king')"
-                                style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 2px solid var(--royal-gold); background: linear-gradient(135deg, #D4AF37, #B8860B); color: #0f172a; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.375rem; transition: all 0.2s ease;">
-                                <i class="ph-fill ph-crown"></i> King
-                            </button>
-                            <button id="role-queen" class="role-btn" onclick="setRole('queen')"
-                                style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 2px solid #b76e79; background: transparent; color: #b76e79; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.375rem; transition: all 0.2s ease;">
-                                <i class="ph-fill ph-crown"></i> Queen
-                            </button>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Dark Mode</p>
-                            <p class="setting-desc">Toggle dark/light theme</p>
-                        </div>
-                        <div class="toggle-switch active" id="toggle-theme" onclick="toggleTheme()"></div>
-                    </div>
-                </div>
+          <!-- Appearance Section -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-palette" style="color: #8b5cf6"></i>
+              Appearance
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Role / Theme Style</p>
+                <p class="setting-desc">Choose your royal identity</p>
+              </div>
+              <div class="role-selector" style="display: flex; gap: 0.5rem">
+                <button
+                  id="role-king"
+                  class="role-btn active"
+                  onclick="setRole('king')"
+                  style="
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.5rem;
+                    border: 2px solid var(--royal-gold);
+                    background: linear-gradient(135deg, #d4af37, #b8860b);
+                    color: #0f172a;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.375rem;
+                    transition: all 0.2s ease;
+                  "
+                >
+                  <i class="ph-fill ph-crown"></i> King
+                </button>
+                <button
+                  id="role-queen"
+                  class="role-btn"
+                  onclick="setRole('queen')"
+                  style="
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.5rem;
+                    border: 2px solid #b76e79;
+                    background: transparent;
+                    color: #b76e79;
+                    font-weight: 600;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.375rem;
+                    transition: all 0.2s ease;
+                  "
+                >
+                  <i class="ph-fill ph-crown"></i> Queen
+                </button>
+              </div>
+            </div>
+            <!-- Light/Dark theme toggle - DISABLED: Only King/Queen theming for now
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Dark Mode</p>
+                <p class="setting-desc">Toggle dark/light theme</p>
+              </div>
+              <div
+                class="toggle-switch active"
+                id="toggle-theme"
+                onclick="toggleTheme()"
+              ></div>
+            </div>
+            -->
+          </div>
 
-                <!-- Notifications Section -->
-                <div class="settings-section">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-bell" style="color: #f59e0b;"></i> Notifications
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Push Notifications</p>
-                            <p class="setting-desc">Receive reminders and updates</p>
-                        </div>
-                        <div class="toggle-switch" id="toggle-notifications" onclick="toggleNotifications()"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Sound Effects</p>
-                            <p class="setting-desc">Play sounds on actions</p>
-                        </div>
-                        <div class="toggle-switch" id="toggle-sound" onclick="toggleSound()"></div>
-                    </div>
-                </div>
+          <!-- Notifications Section -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-bell" style="color: #f59e0b"></i>
+              Notifications
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Push Notifications</p>
+                <p class="setting-desc">Receive reminders and updates</p>
+              </div>
+              <div
+                class="toggle-switch"
+                id="toggle-notifications"
+                onclick="toggleNotifications()"
+              ></div>
+            </div>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Sound Effects</p>
+                <p class="setting-desc">Play sounds on actions</p>
+              </div>
+              <div
+                class="toggle-switch"
+                id="toggle-sound"
+                onclick="toggleSound()"
+              ></div>
+            </div>
+          </div>
 
-                <!-- Data Section -->
-                <div class="settings-section">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-database" style="color: #10b981;"></i> Data Management
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Export Data</p>
-                            <p class="setting-desc">Download all your data as JSON</p>
-                        </div>
-                        <button class="btn btn-outline btn-sm" onclick="exportData()">
-                            <i class="ph-bold ph-download"></i> Export
-                        </button>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Import Data</p>
-                            <p class="setting-desc">Restore from a backup file</p>
-                        </div>
-                        <label class="btn btn-outline btn-sm" style="cursor: pointer;">
-                            <i class="ph-bold ph-upload"></i> Import
-                            <input type="file" id="import-file" accept=".json" style="display: none;"
-                                onchange="importData(event)">
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Storage Used</p>
-                            <p class="setting-desc">Local storage usage</p>
-                        </div>
-                        <span id="storage-size" style="color: var(--text-muted);">-</span>
-                    </div>
-                </div>
+          <!-- Data Section -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-database" style="color: #10b981"></i> Data
+              Management
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Export Data</p>
+                <p class="setting-desc">Download all your data as JSON</p>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="exportData()">
+                <i class="ph-bold ph-download"></i> Export
+              </button>
+            </div>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Import Data</p>
+                <p class="setting-desc">Restore from a backup file</p>
+              </div>
+              <label class="btn btn-outline btn-sm" style="cursor: pointer">
+                <i class="ph-bold ph-upload"></i> Import
+                <input
+                  type="file"
+                  id="import-file"
+                  accept=".json"
+                  style="display: none"
+                  onchange="importData(event)"
+                />
+              </label>
+            </div>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Storage Used</p>
+                <p class="setting-desc">Local storage usage</p>
+              </div>
+              <span id="storage-size" style="color: var(--text-muted)">-</span>
+            </div>
+          </div>
 
-                <!-- Danger Zone -->
-                <div class="settings-section danger-zone">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-warning"></i> Danger Zone
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">Clear All Data</p>
-                            <p class="setting-desc">This action cannot be undone</p>
-                        </div>
-                        <button class="btn btn-outline btn-sm danger" onclick="clearAllData()">
-                            <i class="ph-bold ph-trash"></i> Clear
-                        </button>
-                    </div>
-                </div>
+          <!-- Danger Zone -->
+          <div class="settings-section danger-zone">
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-warning"></i> Danger Zone
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">Clear All Data</p>
+                <p class="setting-desc">This action cannot be undone</p>
+              </div>
+              <button
+                class="btn btn-outline btn-sm danger"
+                onclick="clearAllData()"
+              >
+                <i class="ph-bold ph-trash"></i> Clear
+              </button>
+            </div>
+          </div>
 
-                <!-- About Section -->
-                <div class="settings-section">
-                    <h3 class="settings-section-title">
-                        <i class="ph-bold ph-info" style="color: var(--royal-gold);"></i> About
-                    </h3>
-                    <div class="setting-item">
-                        <div>
-                            <p class="setting-label">REIGN</p>
-                            <p class="setting-desc">Version 1.0.0 • Rule Your Day</p>
-                        </div>
-                        <i class="ph-fill ph-crown" style="font-size: 1.5rem; color: var(--royal-gold);"></i>
-                    </div>
-                </div>
-            </main>
-        </div>
+          <!-- About Section -->
+          <div class="settings-section">
+            <h3 class="settings-section-title">
+              <i class="ph-bold ph-info" style="color: var(--royal-gold)"></i>
+              About
+            </h3>
+            <div class="setting-item">
+              <div>
+                <p class="setting-label">REIGN</p>
+                <p class="setting-desc">Version 1.0.0 • Rule Your Day</p>
+              </div>
+              <i
+                class="ph-fill ph-crown"
+                style="font-size: 1.5rem; color: var(--royal-gold)"
+              ></i>
+            </div>
+          </div>
+        </main>
+      </div>
 
-        <div id="footer-container"></div>
+      <div id="footer-container"></div>
     </div>
 
+    <!-- Core Dependencies (must load in this order) -->
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
     <script src="../js/core.js"></script>
     <script src="../js/components/header.js"></script>
     <script src="../js/components/sidebar.js"></script>
@@ -313,29 +429,27 @@
     <script src="../js/components/share-prompt.js"></script>
 
     <script>
-        let settings = {};
+      let settings = {};
 
-        document.addEventListener('DOMContentLoaded', () => {
-            HeaderComponent.render('header-container', {
-                showBreadcrumb: true,
-                pageTitle: 'Settings',
-                pageIcon: 'ph-gear-six'
-            });
-            SidebarComponent.render('sidebar-container');
-            FooterComponent.render('footer-container');
-
-            // Apply role theme (King/Queen)
-            if (typeof UI !== 'undefined' && UI.initTheme) {
-                UI.initTheme();
-            }
-
-            loadSettings();
+      document.addEventListener("DOMContentLoaded", () => {
+        HeaderComponent.render("header-container", {
+          showBreadcrumb: true,
+          pageTitle: "Settings",
+          pageIcon: "ph-gear-six",
         });
+        SidebarComponent.render("sidebar-container");
+        FooterComponent.render("footer-container");
 
+        // Apply role theme (King/Queen)
+        if (typeof UI !== "undefined" && UI.initTheme) {
+          UI.initTheme();
+        }
 
+        loadSettings();
+      });
 
-        function openSecurityModal() {
-            UI.showModal(`
+      function openSecurityModal() {
+        UI.showModal(`
                 <div style="text-align: left;">
                     <h3 style="margin-bottom: 1rem; color: white;">Setup Password Recovery</h3>
                     <p style="color: #94a3b8; margin-bottom: 1.5rem; font-size: 0.9rem;">
@@ -372,214 +486,233 @@
                     </div>
                 </div>
             `);
+      }
+
+      async function saveSecurityQuestion(btn) {
+        const question = document.getElementById("sec-question").value;
+        const answer = document.getElementById("sec-answer").value;
+        const password = document.getElementById("sec-password").value;
+
+        if (!answer || !password) {
+          Utils.showToast("All fields are required", "danger");
+          return;
         }
 
-        async function saveSecurityQuestion(btn) {
-            const question = document.getElementById('sec-question').value;
-            const answer = document.getElementById('sec-answer').value;
-            const password = document.getElementById('sec-password').value;
+        UI.setButtonLoading(btn, true);
 
-            if (!answer || !password) {
-                Utils.showToast('All fields are required', 'danger');
-                return;
+        try {
+          await API.put("/auth/security-question", {
+            question,
+            answer,
+            password,
+          });
+
+          Utils.showToast("Security question updated!", "success");
+          UI.closeModal();
+        } catch (error) {
+          Utils.showToast(error.message, "danger");
+          UI.setButtonLoading(btn, false);
+        }
+      }
+
+      function loadSettings() {
+        const data = Storage.getData();
+        settings = data.settings || {};
+
+        // Set values
+        document.getElementById("setting-username").value =
+          settings.username || "King";
+
+        // Set toggles
+        const theme = settings.theme || "dark";
+        const role = settings.role || "king";
+
+        document
+          .getElementById("toggle-theme")
+          .classList.toggle("active", theme === "dark");
+        document
+          .getElementById("toggle-notifications")
+          .classList.toggle("active", settings.notifications === true);
+        document
+          .getElementById("toggle-sound")
+          .classList.toggle("active", settings.soundEnabled === true);
+
+        // Set role buttons
+        updateRoleButtons(role);
+
+        // Account section
+        if (Auth.isLoggedIn()) {
+          document.getElementById("account-section").style.display = "block";
+          document.getElementById("security-section").style.display = "block";
+          const user = Auth.getUser();
+          document.getElementById("account-email").textContent =
+            user?.email || "Unknown";
+          document.getElementById("last-sync").textContent = data.lastUpdated
+            ? Utils.formatTimeAgo(data.lastUpdated)
+            : "Never";
+        }
+
+        // Storage size
+        calculateStorageSize();
+
+        // Setup auto-save for username
+        document
+          .getElementById("setting-username")
+          .addEventListener("input", Utils.debounce(saveSettings, 500));
+      }
+
+      function updateRoleButtons(role) {
+        const kingBtn = document.getElementById("role-king");
+        const queenBtn = document.getElementById("role-queen");
+
+        if (role === "queen") {
+          kingBtn.style.background = "transparent";
+          kingBtn.style.color = "#D4AF37";
+          queenBtn.style.background =
+            "linear-gradient(135deg, #b76e79, #9a525c)";
+          queenBtn.style.color = "#0f172a";
+        } else {
+          kingBtn.style.background =
+            "linear-gradient(135deg, #D4AF37, #B8860B)";
+          kingBtn.style.color = "#0f172a";
+          queenBtn.style.background = "transparent";
+          queenBtn.style.color = "#b76e79";
+        }
+      }
+
+      function setRole(role) {
+        UI.setRole(role);
+        updateRoleButtons(role);
+      }
+
+      function saveSettings() {
+        const data = Storage.getData();
+        data.settings = data.settings || {};
+        data.settings.username =
+          document.getElementById("setting-username").value.trim() || "King";
+        Storage.saveData(data);
+        Utils.showToast("Settings saved!", "success");
+      }
+
+      function toggleTheme() {
+        // Light mode is disabled - only king-theme and queen-theme are supported
+        // This function is kept for backward compatibility but does nothing
+        console.log('Light mode is disabled. Use role switching (king/queen) instead.');
+      }
+
+      function toggleNotifications() {
+        const toggle = document.getElementById("toggle-notifications");
+        toggle.classList.toggle("active");
+
+        const data = Storage.getData();
+        data.settings = data.settings || {};
+        data.settings.notifications = toggle.classList.contains("active");
+        Storage.saveData(data);
+
+        if (data.settings.notifications) {
+          requestNotificationPermission();
+        }
+      }
+
+      function toggleSound() {
+        const toggle = document.getElementById("toggle-sound");
+        toggle.classList.toggle("active");
+
+        const data = Storage.getData();
+        data.settings = data.settings || {};
+        data.settings.soundEnabled = toggle.classList.contains("active");
+        Storage.saveData(data);
+      }
+
+      async function requestNotificationPermission() {
+        if ("Notification" in window) {
+          const permission = await Notification.requestPermission();
+          if (permission !== "granted") {
+            Utils.showToast("Notification permission denied", "danger");
+            document
+              .getElementById("toggle-notifications")
+              .classList.remove("active");
+          }
+        }
+      }
+
+      async function syncNow() {
+        if (!Auth.isLoggedIn()) {
+          window.location.href = "../auth.html";
+          return;
+        }
+
+        try {
+          Utils.showToast("Syncing...", "info");
+          const data = Storage.getData();
+          await API.post("/sync/full", data);
+
+          const serverData = await API.get("/sync/full");
+          Storage.saveData(serverData);
+
+          Utils.showToast("Synced successfully!", "success");
+          loadSettings();
+        } catch (error) {
+          Utils.showToast("Sync failed: " + error.message, "danger");
+        }
+      }
+
+      function exportData() {
+        const data = Storage.getData();
+        const blob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `reign-backup-${Storage.getToday()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        Utils.showToast("Data exported!", "success");
+      }
+
+      function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!data.logs && !data.settings) {
+              throw new Error("Invalid backup file");
             }
-
-            UI.setButtonLoading(btn, true);
-
-            try {
-                await API.put('/auth/security-question', {
-                    question,
-                    answer,
-                    password
-                });
-
-                Utils.showToast('Security question updated!', 'success');
-                UI.closeModal();
-            } catch (error) {
-                Utils.showToast(error.message, 'danger');
-                UI.setButtonLoading(btn, false);
-            }
-        }
-
-        function loadSettings() {
-            const data = Storage.getData();
-            settings = data.settings || {};
-
-            // Set values
-            document.getElementById('setting-username').value = settings.username || 'King';
-
-            // Set toggles
-            const theme = settings.theme || 'dark';
-            const role = settings.role || 'king';
-
-            document.getElementById('toggle-theme').classList.toggle('active', theme === 'dark');
-            document.getElementById('toggle-notifications').classList.toggle('active', settings.notifications === true);
-            document.getElementById('toggle-sound').classList.toggle('active', settings.soundEnabled === true);
-
-            // Set role buttons
-            updateRoleButtons(role);
-
-            // Account section
-            if (Auth.isLoggedIn()) {
-                document.getElementById('account-section').style.display = 'block';
-                document.getElementById('security-section').style.display = 'block';
-                const user = Auth.getUser();
-                document.getElementById('account-email').textContent = user?.email || 'Unknown';
-                document.getElementById('last-sync').textContent = data.lastUpdated ? Utils.formatTimeAgo(data.lastUpdated) : 'Never';
-            }
-
-            // Storage size
-            calculateStorageSize();
-
-            // Setup auto-save for username
-            document.getElementById('setting-username').addEventListener('input', Utils.debounce(saveSettings, 500));
-        }
-
-        function updateRoleButtons(role) {
-            const kingBtn = document.getElementById('role-king');
-            const queenBtn = document.getElementById('role-queen');
-
-            if (role === 'queen') {
-                kingBtn.style.background = 'transparent';
-                kingBtn.style.color = '#D4AF37';
-                queenBtn.style.background = 'linear-gradient(135deg, #b76e79, #9a525c)';
-                queenBtn.style.color = '#0f172a';
-            } else {
-                kingBtn.style.background = 'linear-gradient(135deg, #D4AF37, #B8860B)';
-                kingBtn.style.color = '#0f172a';
-                queenBtn.style.background = 'transparent';
-                queenBtn.style.color = '#b76e79';
-            }
-        }
-
-        function setRole(role) {
-            UI.setRole(role);
-            updateRoleButtons(role);
-        }
-
-        function saveSettings() {
-            const data = Storage.getData();
-            data.settings = data.settings || {};
-            data.settings.username = document.getElementById('setting-username').value.trim() || 'King';
             Storage.saveData(data);
-            Utils.showToast('Settings saved!', 'success');
-        }
+            Utils.showToast("Data imported successfully!", "success");
+            loadSettings();
+          } catch (error) {
+            Utils.showToast("Invalid backup file", "danger");
+          }
+        };
+        reader.readAsText(file);
+      }
 
-        function toggleTheme() {
-            const toggle = document.getElementById('toggle-theme');
-            toggle.classList.toggle('active');
+      function calculateStorageSize() {
+        const data = localStorage.getItem("reignData") || "";
+        const bytes = new Blob([data]).size;
+        const kb = (bytes / 1024).toFixed(2);
+        document.getElementById("storage-size").textContent = `${kb} KB`;
+      }
 
-            const data = Storage.getData();
-            data.settings = data.settings || {};
-            data.settings.theme = toggle.classList.contains('active') ? 'dark' : 'light';
-            Storage.saveData(data);
-            document.documentElement.setAttribute('data-theme', data.settings.theme);
-        }
+      function clearAllData() {
+        if (
+          !confirm(
+            "Are you SURE you want to delete ALL your data? This cannot be undone!"
+          )
+        )
+          return;
+        if (!confirm("This is your last chance. Really delete everything?"))
+          return;
 
-        function toggleNotifications() {
-            const toggle = document.getElementById('toggle-notifications');
-            toggle.classList.toggle('active');
-
-            const data = Storage.getData();
-            data.settings = data.settings || {};
-            data.settings.notifications = toggle.classList.contains('active');
-            Storage.saveData(data);
-
-            if (data.settings.notifications) {
-                requestNotificationPermission();
-            }
-        }
-
-        function toggleSound() {
-            const toggle = document.getElementById('toggle-sound');
-            toggle.classList.toggle('active');
-
-            const data = Storage.getData();
-            data.settings = data.settings || {};
-            data.settings.soundEnabled = toggle.classList.contains('active');
-            Storage.saveData(data);
-        }
-
-        async function requestNotificationPermission() {
-            if ('Notification' in window) {
-                const permission = await Notification.requestPermission();
-                if (permission !== 'granted') {
-                    Utils.showToast('Notification permission denied', 'danger');
-                    document.getElementById('toggle-notifications').classList.remove('active');
-                }
-            }
-        }
-
-        async function syncNow() {
-            if (!Auth.isLoggedIn()) {
-                window.location.href = '../auth.html';
-                return;
-            }
-
-            try {
-                Utils.showToast('Syncing...', 'info');
-                const data = Storage.getData();
-                await API.post('/sync/full', data);
-
-                const serverData = await API.get('/sync/full');
-                Storage.saveData(serverData);
-
-                Utils.showToast('Synced successfully!', 'success');
-                loadSettings();
-            } catch (error) {
-                Utils.showToast('Sync failed: ' + error.message, 'danger');
-            }
-        }
-
-        function exportData() {
-            const data = Storage.getData();
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `reign-backup-${Storage.getToday()}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            Utils.showToast('Data exported!', 'success');
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (!data.logs && !data.settings) {
-                        throw new Error('Invalid backup file');
-                    }
-                    Storage.saveData(data);
-                    Utils.showToast('Data imported successfully!', 'success');
-                    loadSettings();
-                } catch (error) {
-                    Utils.showToast('Invalid backup file', 'danger');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function calculateStorageSize() {
-            const data = localStorage.getItem(CONFIG.STORAGE_KEY) || '';
-            const bytes = new Blob([data]).size;
-            const kb = (bytes / 1024).toFixed(2);
-            document.getElementById('storage-size').textContent = `${kb} KB`;
-        }
-
-        function clearAllData() {
-            if (!confirm('Are you SURE you want to delete ALL your data? This cannot be undone!')) return;
-            if (!confirm('This is your last chance. Really delete everything?')) return;
-
-            localStorage.removeItem(CONFIG.STORAGE_KEY);
-            Utils.showToast('All data cleared', 'info');
-            setTimeout(() => window.location.href = '../index.html', 1000);
-        }
+        localStorage.removeItem("reignData");
+        Utils.showToast("All data cleared", "info");
+        setTimeout(() => (window.location.href = "../"), 1000);
+      }
     </script>
-</body>
-
+  </body>
 </html>

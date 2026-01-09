@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description"
-        content="Reign - The King's Journal for planning daily activities and tracking progress with an elite, royal experience.">
-    <meta name="theme-color" content="#0B0F19">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Reign - The King's Journal for planning daily activities and tracking progress with an elite, royal experience."
+    />
+    <meta name="theme-color" content="#0B0F19" />
     <title>Reign | The King's Journal</title>
 
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -23,270 +28,307 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Toastify -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <!-- App Styles -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/enhancements.css">
-    <link rel="stylesheet" href="css/profile.css">
-    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/enhancements.css" />
+    <link rel="stylesheet" href="css/profile.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
 
     <!-- Preload Critical Resources for Performance -->
-    <link rel="preload" href="js/core.js" as="script">
-    <link rel="preload" href="js/app.js" as="script">
-    <link rel="preload" href="js/views.js" as="script">
-
+    <link rel="preload" href="js/core.js" as="script" />
+    <link rel="preload" href="js/app.js" as="script" />
+    <link rel="preload" href="js/views.js" as="script" />
 
     <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon-192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-192.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-192.png">
-    <link rel="canonical" href="https://reign-pi.vercel.app/">
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-192.png" />
+    <link rel="canonical" href="https://reign-pi.vercel.app/" />
 
     <!-- Open Graph / Facebook / WhatsApp / Instagram / TikTok / YouTube -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://reign-pi.vercel.app/">
-    <meta property="og:title" content="REIGN | Rule Your Day">
-    <meta property="og:description"
-        content="The King's Journal - Plan your daily activities, track learning progress, and reign over your life with royal precision.">
-    <meta property="og:image" content="https://reign-pi.vercel.app/icons/og-cover.jpg">
-    <meta property="og:image:secure_url" content="https://reign-pi.vercel.app/icons/og-cover.jpg">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="REIGN - Rule Your Day with the King's Journal">
-    <meta property="og:site_name" content="REIGN">
-    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://reign-pi.vercel.app/" />
+    <meta property="og:title" content="REIGN | Rule Your Day" />
+    <meta
+      property="og:description"
+      content="The King's Journal - Plan your daily activities, track learning progress, and reign over your life with royal precision."
+    />
+    <meta
+      property="og:image"
+      content="https://reign-pi.vercel.app/icons/og-cover.jpg"
+    />
+    <meta
+      property="og:image:secure_url"
+      content="https://reign-pi.vercel.app/icons/og-cover.jpg"
+    />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="REIGN - Rule Your Day with the King's Journal"
+    />
+    <meta property="og:site_name" content="REIGN" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://reign-pi.vercel.app/">
-    <meta name="twitter:title" content="REIGN | Rule Your Day">
-    <meta name="twitter:description"
-        content="The King's Journal - Plan your daily activities, track learning progress, and reign over your life with royal precision.">
-    <meta name="twitter:image" content="https://reign-pi.vercel.app/icons/og-cover.jpg">
-    <meta name="twitter:image:alt" content="REIGN - Rule Your Day with the King's Journal">
-    <meta name="twitter:creator" content="@reign_app">
-    <meta name="twitter:site" content="@reign_app">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://reign-pi.vercel.app/" />
+    <meta name="twitter:title" content="REIGN | Rule Your Day" />
+    <meta
+      name="twitter:description"
+      content="The King's Journal - Plan your daily activities, track learning progress, and reign over your life with royal precision."
+    />
+    <meta
+      name="twitter:image"
+      content="https://reign-pi.vercel.app/icons/og-cover.jpg"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="REIGN - Rule Your Day with the King's Journal"
+    />
+    <meta name="twitter:creator" content="@reign_app" />
+    <meta name="twitter:site" content="@reign_app" />
 
     <!-- PWA Install Prompt Logic -->
     <script>
-        // PWA Install Prompt Handler
-        let deferredPrompt = null;
-        let installBannerDismissed = false;
+      // PWA Install Prompt Handler
+      let deferredPrompt = null;
+      let installBannerDismissed = false;
 
-        // Check if app is already installed
-        function isAppInstalled() {
-            return window.matchMedia('(display-mode: standalone)').matches ||
-                window.navigator.standalone === true ||
-                localStorage.getItem('pwaInstalled') === 'true';
+      // Check if app is already installed
+      function isAppInstalled() {
+        return (
+          window.matchMedia("(display-mode: standalone)").matches ||
+          window.navigator.standalone === true ||
+          localStorage.getItem("pwaInstalled") === "true"
+        );
+      }
+
+      // Show the install banner
+      function showInstallBanner() {
+        const banner = document.getElementById("pwa-install-banner");
+        if (banner && !installBannerDismissed && !isAppInstalled()) {
+          setTimeout(() => {
+            banner.classList.add("show");
+          }, 2000); // Show after 2 seconds
+        }
+      }
+
+      // Hide the install banner
+      function hideInstallBanner() {
+        const banner = document.getElementById("pwa-install-banner");
+        if (banner) {
+          banner.classList.remove("show");
+        }
+      }
+
+      // Handle install button click
+      async function installPWA() {
+        if (!deferredPrompt) {
+          console.log("Install prompt not available");
+          return;
         }
 
-        // Show the install banner
-        function showInstallBanner() {
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner && !installBannerDismissed && !isAppInstalled()) {
-                setTimeout(() => {
-                    banner.classList.add('show');
-                }, 2000); // Show after 2 seconds
-            }
+        // Show the install prompt
+        deferredPrompt.prompt();
+
+        // Wait for user response
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`Install prompt outcome: ${outcome}`);
+
+        if (outcome === "accepted") {
+          localStorage.setItem("pwaInstalled", "true");
+          if (typeof Toastify !== "undefined") {
+            Toastify({
+              text: "👑 Reign installed successfully!",
+              duration: 3000,
+              gravity: "top",
+              position: "center",
+              style: {
+                background: "linear-gradient(135deg, #D4AF37 0%, #C5A028 100%)",
+                color: "#0B0F19",
+                fontWeight: "600",
+              },
+            }).showToast();
+          }
         }
 
-        // Hide the install banner
-        function hideInstallBanner() {
-            const banner = document.getElementById('pwa-install-banner');
-            if (banner) {
-                banner.classList.remove('show');
-            }
+        // Clear the deferred prompt
+        deferredPrompt = null;
+        hideInstallBanner();
+      }
+
+      // Dismiss the install banner
+      function dismissInstallBanner() {
+        installBannerDismissed = true;
+        hideInstallBanner();
+        // Don't show again for 7 days
+        localStorage.setItem("pwaInstallDismissed", Date.now().toString());
+      }
+
+      // Check if banner was recently dismissed
+      function wasBannerRecentlyDismissed() {
+        const dismissedTime = localStorage.getItem("pwaInstallDismissed");
+        if (!dismissedTime) return false;
+        const sevenDays = 7 * 24 * 60 * 60 * 1000;
+        return Date.now() - parseInt(dismissedTime) < sevenDays;
+      }
+
+      // Listen for beforeinstallprompt event
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        console.log("Install prompt captured");
+
+        // Show banner if not recently dismissed
+        if (!wasBannerRecentlyDismissed()) {
+          showInstallBanner();
         }
+      });
 
-        // Handle install button click
-        async function installPWA() {
-            if (!deferredPrompt) {
-                console.log('Install prompt not available');
-                return;
-            }
+      // Listen for app installed event
+      window.addEventListener("appinstalled", () => {
+        console.log("PWA was installed");
+        localStorage.setItem("pwaInstalled", "true");
+        deferredPrompt = null;
+        hideInstallBanner();
 
-            // Show the install prompt
-            deferredPrompt.prompt();
-
-            // Wait for user response
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`Install prompt outcome: ${outcome}`);
-
-            if (outcome === 'accepted') {
-                localStorage.setItem('pwaInstalled', 'true');
-                if (typeof Toastify !== 'undefined') {
-                    Toastify({
-                        text: "👑 Reign installed successfully!",
-                        duration: 3000,
-                        gravity: "top",
-                        position: "center",
-                        style: {
-                            background: "linear-gradient(135deg, #D4AF37 0%, #C5A028 100%)",
-                            color: "#0B0F19",
-                            fontWeight: "600"
-                        }
-                    }).showToast();
-                }
-            }
-
-            // Clear the deferred prompt
-            deferredPrompt = null;
-            hideInstallBanner();
+        // Show success toast with option to open app
+        if (typeof Toastify !== "undefined") {
+          Toastify({
+            text: "👑 REIGN installed! Tap to open the app",
+            duration: 8000,
+            gravity: "top",
+            position: "center",
+            close: true,
+            onClick: function () {
+              // When clicked, just reload (app will open in standalone mode)
+              window.location.reload();
+            },
+            style: {
+              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+              color: "#fff",
+              fontWeight: "600",
+              borderRadius: "12px",
+              padding: "16px 24px",
+              cursor: "pointer",
+              boxShadow: "0 10px 40px rgba(16, 185, 129, 0.4)",
+            },
+          }).showToast();
         }
+      });
 
-        // Dismiss the install banner
-        function dismissInstallBanner() {
-            installBannerDismissed = true;
-            hideInstallBanner();
-            // Don't show again for 7 days
-            localStorage.setItem('pwaInstallDismissed', Date.now().toString());
-        }
-
-        // Check if banner was recently dismissed
-        function wasBannerRecentlyDismissed() {
-            const dismissedTime = localStorage.getItem('pwaInstallDismissed');
-            if (!dismissedTime) return false;
-            const sevenDays = 7 * 24 * 60 * 60 * 1000;
-            return (Date.now() - parseInt(dismissedTime)) < sevenDays;
-        }
-
-        // Listen for beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            console.log('Install prompt captured');
-
-            // Show banner if not recently dismissed
-            if (!wasBannerRecentlyDismissed()) {
-                showInstallBanner();
-            }
+      // Service Worker Registration
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => console.log("Service Worker registered:", reg.scope))
+            .catch((err) =>
+              console.log("Service Worker registration failed:", err)
+            );
         });
+      }
 
-        // Listen for app installed event
-        window.addEventListener('appinstalled', () => {
-            console.log('PWA was installed');
-            localStorage.setItem('pwaInstalled', 'true');
-            deferredPrompt = null;
-            hideInstallBanner();
+      // Intelligent Role-Based Redirection
+      // Only redirect if user has EXPLICITLY confirmed their role choice
+      (function () {
+        try {
+          const data = JSON.parse(localStorage.getItem("reignData") || "{}");
+          const role = data.settings?.role;
+          const roleConfirmed = data.settings?.roleConfirmed === true;
 
-            // Show success toast with option to open app
-            if (typeof Toastify !== 'undefined') {
-                Toastify({
-                    text: "👑 REIGN installed! Tap to open the app",
-                    duration: 8000,
-                    gravity: "top",
-                    position: "center",
-                    close: true,
-                    onClick: function () {
-                        // When clicked, just reload (app will open in standalone mode)
-                        window.location.reload();
-                    },
-                    style: {
-                        background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                        color: "#fff",
-                        fontWeight: "600",
-                        borderRadius: "12px",
-                        padding: "16px 24px",
-                        cursor: "pointer",
-                        boxShadow: "0 10px 40px rgba(16, 185, 129, 0.4)"
-                    }
-                }).showToast();
-            }
-        });
-
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(reg => console.log('Service Worker registered:', reg.scope))
-                    .catch(err => console.log('Service Worker registration failed:', err));
-            });
+          // Only redirect to queen.html if role is explicitly set AND confirmed
+          if (
+            role === "queen" &&
+            roleConfirmed &&
+            !window.location.pathname.includes("queen")
+          ) {
+            console.log("🪄 Redirecting to Queen's Journal...");
+            window.location.replace("queen.html");
+          }
+        } catch (e) {
+          console.warn("Role detection failed:", e);
         }
-
-        // Intelligent Role-Based Redirection
-        // Redirect to appropriate landing page based on user role
-        (function () {
-            try {
-                const data = JSON.parse(localStorage.getItem('reignData') || '{}');
-                const role = data.settings?.role;
-
-                // If user has Queen role, redirect to queen.html
-                if (role === 'queen' && !window.location.pathname.includes('queen.html')) {
-                    console.log('🪄 Redirecting to Queen\'s Journal...');
-                    window.location.replace('queen.html');
-                }
-            } catch (e) {
-                console.warn('Role detection failed:', e);
-            }
-        })();
+      })();
     </script>
-</head>
+  </head>
 
-<body>
-
+  <body class="king-theme">
     <div class="app-container">
-        <!-- Header (rendered by HeaderComponent) -->
-        <div id="header-container"></div>
+      <!-- Header (rendered by HeaderComponent) -->
+      <div id="header-container"></div>
 
-        <!-- Main Layout -->
-        <div class="main-layout">
-            <!-- Sidebar (rendered by SidebarComponent) -->
-            <div id="sidebar-container"></div>
+      <!-- Main Layout -->
+      <div class="main-layout">
+        <!-- Sidebar (rendered by SidebarComponent) -->
+        <div id="sidebar-container"></div>
 
-            <!-- Content Area -->
-            <main class="main-content fade-in" id="main-view">
-                <!-- Dynamic Content Rendered Here -->
-            </main>
+        <!-- Content Area -->
+        <main class="main-content fade-in" id="main-view">
+          <!-- Dynamic Content Rendered Here -->
+        </main>
+      </div>
+
+      <!-- Mobile Navigation (Footer Component) -->
+      <div id="footer-container"></div>
+
+      <!-- Modal Container -->
+      <div id="modal" class="modal">
+        <div class="modal-overlay" onclick="UI.closeModal()"></div>
+        <div class="modal-container">
+          <div class="modal-content" id="modal-content">
+            <!-- Modal content injected dynamically -->
+          </div>
         </div>
-
-        <!-- Mobile Navigation (Footer Component) -->
-        <div id="footer-container"></div>
-
-        <!-- Modal Container -->
-        <div id="modal" class="modal">
-            <div class="modal-overlay" onclick="UI.closeModal()"></div>
-            <div class="modal-container">
-                <div class="modal-content" id="modal-content">
-                    <!-- Modal content injected dynamically -->
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <!-- PWA Install Banner -->
     <div id="pwa-install-banner" class="pwa-install-banner">
-        <button class="pwa-install-close" onclick="dismissInstallBanner()" title="Dismiss">
-            <i class="ph-bold ph-x"></i>
-        </button>
-        <div class="pwa-install-content">
-            <div class="pwa-install-icon">
-                <img src="icons/icon-192.png" alt="REIGN">
-            </div>
-            <div class="pwa-install-text">
-                <h3 class="pwa-install-title">
-                    <i class="ph-fill ph-crown crown"></i>
-                    Install Reign
-                </h3>
-                <p class="pwa-install-desc">
-                    Add to your home screen for <strong>instant access</strong> and a native app experience. Works
-                    offline!
-                </p>
-                <div class="pwa-install-actions">
-                    <button class="pwa-install-btn primary" onclick="installPWA()">
-                        <i class="ph-bold ph-download-simple"></i>
-                        Install
-                    </button>
-                    <button class="pwa-install-btn secondary" onclick="dismissInstallBanner()">
-                        Not Now
-                    </button>
-                </div>
-            </div>
+      <button
+        class="pwa-install-close"
+        onclick="dismissInstallBanner()"
+        title="Dismiss"
+      >
+        <i class="ph-bold ph-x"></i>
+      </button>
+      <div class="pwa-install-content">
+        <div class="pwa-install-icon">
+          <img src="icons/icon-192.png" alt="REIGN" />
         </div>
+        <div class="pwa-install-text">
+          <h3 class="pwa-install-title">
+            <i class="ph-fill ph-crown crown"></i>
+            Install Reign
+          </h3>
+          <p class="pwa-install-desc">
+            Add to your home screen for <strong>instant access</strong> and a
+            native app experience. Works offline!
+          </p>
+          <div class="pwa-install-actions">
+            <button class="pwa-install-btn primary" onclick="installPWA()">
+              <i class="ph-bold ph-download-simple"></i>
+              Install
+            </button>
+            <button
+              class="pwa-install-btn secondary"
+              onclick="dismissInstallBanner()"
+            >
+              Not Now
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Application Scripts -->
@@ -310,38 +352,46 @@
 
     <!-- Auth & Sync Initialization -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Render shared components (same as all /app pages)
-            if (typeof HeaderComponent !== 'undefined') {
-                HeaderComponent.render('header-container', {
-                    pageTitle: 'The Throne',
-                    pageIcon: 'ph-crown'
-                });
-            }
-            if (typeof SidebarComponent !== 'undefined') {
-                SidebarComponent.render('sidebar-container');
-            }
-            if (typeof FooterComponent !== 'undefined') {
-                FooterComponent.render('footer-container');
-            }
+      document.addEventListener("DOMContentLoaded", () => {
+        // Check session expiry first - using Config (not CONFIG)
+        if (typeof Config !== "undefined" && Auth.isLoggedIn()) {
+          // Session validation is handled by Auth module
+        }
 
-            // Initialize sync module
-            if (typeof Sync !== 'undefined') {
-                Sync.init();
-            }
+        // Render shared components (same as all /app pages)
+        if (typeof HeaderComponent !== "undefined") {
+          HeaderComponent.render("header-container", {
+            pageTitle: "The Throne",
+            pageIcon: "ph-crown",
+          });
+        }
+        if (typeof SidebarComponent !== "undefined") {
+          SidebarComponent.render("sidebar-container");
+        }
+        if (typeof FooterComponent !== "undefined") {
+          FooterComponent.render("footer-container");
+        }
 
-            // Apply role theme
-            if (typeof UI !== 'undefined' && UI.initTheme) {
-                UI.initTheme();
-            }
+        // Initialize sync module
+        if (typeof Sync !== "undefined") {
+          Sync.init();
+        }
 
-            // Initialize the App (renders dashboard content)
-            if (typeof app !== 'undefined' && typeof app.init === 'function') {
-                app.init();
-            } else if (typeof App !== 'undefined' && typeof App.init === 'function') {
-                App.init();
-            }
-        });
+        // Apply role theme
+        if (typeof UI !== "undefined" && UI.initTheme) {
+          UI.initTheme();
+        }
+
+        // Initialize the App (renders dashboard content)
+        if (typeof app !== "undefined" && typeof app.init === "function") {
+          app.init();
+        } else if (
+          typeof App !== "undefined" &&
+          typeof App.init === "function"
+        ) {
+          App.init();
+        }
+      });
     </script>
 
     <!-- Share Prompt Component -->
@@ -350,22 +400,26 @@
     <!-- Feedback Modal -->
     <script src="js/components/feedback-modal.js"></script>
     <script>
-        // Trigger feedback modal on page visibility change (user leaving)
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden' && FeedbackModal.shouldShowModal()) {
-                // User is leaving, mark that we should show modal next time
-                sessionStorage.setItem('reign_show_feedback_on_return', 'true');
-            }
-        });
+      // Trigger feedback modal on page visibility change (user leaving)
+      document.addEventListener("visibilitychange", () => {
+        if (
+          document.visibilityState === "hidden" &&
+          FeedbackModal.shouldShowModal()
+        ) {
+          // User is leaving, mark that we should show modal next time
+          sessionStorage.setItem("reign_show_feedback_on_return", "true");
+        }
+      });
 
-        // Show modal when user returns (if criteria met)
-        window.addEventListener('focus', () => {
-            if (sessionStorage.getItem('reign_show_feedback_on_return') === 'true') {
-                sessionStorage.removeItem('reign_show_feedback_on_return');
-                setTimeout(() => FeedbackModal.show(), 1000);
-            }
-        });
+      // Show modal when user returns (if criteria met)
+      window.addEventListener("focus", () => {
+        if (
+          sessionStorage.getItem("reign_show_feedback_on_return") === "true"
+        ) {
+          sessionStorage.removeItem("reign_show_feedback_on_return");
+          setTimeout(() => FeedbackModal.show(), 1000);
+        }
+      });
     </script>
-</body>
-
+  </body>
 </html>

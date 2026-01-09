@@ -2,8 +2,9 @@
 node_modules/
 package-lock.json
 
-# API .env - keep secrets out of repo
-api/.env
+# API folder - deployed separately on Render
+# Keep local for development, but don't deploy to Vercel
+api/
 
 # Environment files
 .env

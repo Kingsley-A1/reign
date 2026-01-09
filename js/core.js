@@ -2,7 +2,7 @@
  * REIGN - Core Module
  * Shared utilities, storage extensions, and common functionality
  * This module is loaded on ALL pages for consistent behavior
- * 
+ *
  * DEPENDENCIES: config.js must be loaded BEFORE this file
  * @version 2.0.0
  */
@@ -10,8 +10,10 @@
 // ============================================
 // VERIFY DEPENDENCIES
 // ============================================
-if (typeof Config === 'undefined') {
-  console.error('REIGN: Config is not defined. Make sure config.js is loaded before core.js');
+if (typeof Config === "undefined") {
+  console.error(
+    "REIGN: Config is not defined. Make sure config.js is loaded before core.js"
+  );
 }
 
 // ============================================
@@ -54,7 +56,12 @@ Object.assign(Storage, {
       localStorage.setItem(Config.STORAGE_KEYS.DATA, JSON.stringify(data));
 
       // Auto-sync to cloud if logged in (debounced)
-      if (!skipSync && typeof Sync !== "undefined" && typeof Auth !== "undefined" && Auth.isLoggedIn()) {
+      if (
+        !skipSync &&
+        typeof Sync !== "undefined" &&
+        typeof Auth !== "undefined" &&
+        Auth.isLoggedIn()
+      ) {
         if (typeof Sync.debouncedUpload === "function") {
           Sync.debouncedUpload();
         } else if (typeof Sync.autoSync === "function") {
@@ -67,7 +74,10 @@ Object.assign(Storage, {
       console.error("Failed to save data:", e);
       if (e.name === "QuotaExceededError") {
         if (typeof Utils !== "undefined") {
-          Utils.showToast("Storage full! Please clear some old data.", "danger");
+          Utils.showToast(
+            "Storage full! Please clear some old data.",
+            "danger"
+          );
         }
       }
       return false;
@@ -114,6 +124,7 @@ Object.assign(Storage, {
       settings: {
         username: "King",
         role: "king",
+        roleConfirmed: false,
         theme: "dark",
         notifications: true,
         soundEnabled: false,
@@ -336,25 +347,25 @@ Object.assign(Utils, {
       "The best investment you can make is in yourself. – Warren Buffett",
       "An investment in knowledge pays the best interest. – Benjamin Franklin",
       "What lies behind us and what lies before us are tiny matters compared to what lies within us. – Ralph Waldo Emerson",
-      "The royal path to self-mastery is paved with daily rituals. – REIGN"
+      "The royal path to self-mastery is paved with daily rituals. – REIGN",
     ];
 
     // Use rotation to ensure all quotes are shown over time
-    const storageKey = 'reign_quote_index';
-    const lastIndexKey = 'reign_quote_last_date';
+    const storageKey = "reign_quote_index";
+    const lastIndexKey = "reign_quote_last_date";
     const today = new Date().toDateString();
     const lastDate = localStorage.getItem(lastIndexKey);
-    
+
     let index;
     if (lastDate !== today) {
       // New day - advance to next quote
-      const lastIndex = parseInt(localStorage.getItem(storageKey) || '-1');
+      const lastIndex = parseInt(localStorage.getItem(storageKey) || "-1");
       index = (lastIndex + 1) % quotes.length;
       localStorage.setItem(storageKey, index.toString());
       localStorage.setItem(lastIndexKey, today);
     } else {
       // Same day - use stored index
-      index = parseInt(localStorage.getItem(storageKey) || '0');
+      index = parseInt(localStorage.getItem(storageKey) || "0");
     }
 
     return quotes[index];
@@ -676,8 +687,11 @@ const Nav = {
   goto(page) {
     const basePath = window.location.pathname.includes("/app/") ? "../" : "";
     const pagesPath = window.location.pathname.includes("/app/") ? "" : "app/";
-    // Safe access to UI.isQueen with fallback
-    const landingPage = (typeof UI !== 'undefined' && UI.isQueen && UI.isQueen()) ? "queen.html" : "index.html";
+    // Safe access to UI.isQueen with fallback - use .html for localhost compatibility
+    const landingPage =
+      typeof UI !== "undefined" && UI.isQueen && UI.isQueen()
+        ? "queen.html"
+        : "index.html";
 
     // Handle special cases
     if (page === "dashboard" || page === "home") {
@@ -685,6 +699,7 @@ const Nav = {
       return;
     }
 
+    // Use .html extension for localhost compatibility (Vercel cleanUrls strips it)
     window.location.href = basePath + pagesPath + page + ".html";
   },
 
@@ -694,8 +709,9 @@ const Nav = {
    */
   getCurrentPage() {
     const path = window.location.pathname;
+    // Handle clean URLs (no .html) and traditional URLs
     const filename = path.split("/").pop().replace(".html", "");
-    return filename === "index" ? "dashboard" : filename;
+    return filename === "index" || filename === "" ? "dashboard" : filename;
   },
 
   /**
@@ -721,7 +737,7 @@ const UI = {
       this.setActiveNav();
       this.initTheme();
     } catch (error) {
-      console.error('UI.init error:', error);
+      console.error("UI.init error:", error);
     }
   },
 
@@ -731,9 +747,16 @@ const UI = {
   updateAuthUI() {
     try {
       // Safe access to Auth - may not be loaded yet
-      const isLoggedIn = typeof Auth !== 'undefined' && Auth.isLoggedIn ? Auth.isLoggedIn() : false;
-      const user = typeof Auth !== 'undefined' && Auth.getUser ? Auth.getUser() : null;
-      const initials = typeof Auth !== 'undefined' && Auth.getInitials ? Auth.getInitials() : 'U';
+      const isLoggedIn =
+        typeof Auth !== "undefined" && Auth.isLoggedIn
+          ? Auth.isLoggedIn()
+          : false;
+      const user =
+        typeof Auth !== "undefined" && Auth.getUser ? Auth.getUser() : null;
+      const initials =
+        typeof Auth !== "undefined" && Auth.getInitials
+          ? Auth.getInitials()
+          : "U";
 
       // Update user avatar/button if exists
       const userBtn = document.getElementById("user-avatar-btn");
@@ -758,7 +781,7 @@ const UI = {
         userMenu.style.display = isLoggedIn ? "flex" : "none";
       }
     } catch (error) {
-      console.error('UI.updateAuthUI error:', error);
+      console.error("UI.updateAuthUI error:", error);
     }
   },
 
@@ -775,24 +798,49 @@ const UI = {
         btn.classList.toggle("active", target === currentPage);
       });
     } catch (error) {
-      console.error('UI.setActiveNav error:', error);
+      console.error("UI.setActiveNav error:", error);
     }
   },
 
   /**
    * Initialize theme and role
+   * Page-aware: index.html forces King theme, queen.html forces Queen theme
+   * App pages (/app/*) use user's role preference from localStorage
+   * Note: Light mode is disabled - always dark theme with King/Queen styling
    */
   initTheme() {
     try {
-      const data = typeof Storage !== 'undefined' && Storage.getData ? Storage.getData() : {};
-      const theme = data.settings?.theme || "dark";
-      const role = data.settings?.role || "king";
+      const data =
+        typeof Storage !== "undefined" && Storage.getData
+          ? Storage.getData()
+          : {};
 
-      // Apply light/dark theme
+      // Always use dark theme (light mode disabled)
+      const theme = "dark";
+
+      // Determine role based on current page context
+      // index.html = King, queen.html = Queen, app/* = user preference
+      const pathname = window.location.pathname;
+      const isQueenPage = pathname.includes("queen");
+      const isAppPage = pathname.includes("/app/");
+
+      let effectiveRole;
+      if (isQueenPage) {
+        effectiveRole = "queen";
+      } else if (isAppPage) {
+        // App pages use user's stored preference
+        effectiveRole = data.settings?.role || "king";
+      } else {
+        // Root pages (index.html, /) = King theme
+        effectiveRole = "king";
+      }
+
+      // Apply dark theme (always) and remove any light-theme remnants
       document.documentElement.setAttribute("data-theme", theme);
+      document.body.classList.remove("light-theme");
 
       // Apply role theme (queen gets special styling)
-      if (role === "queen") {
+      if (effectiveRole === "queen") {
         document.body.classList.add("queen-theme");
         document.body.classList.remove("king-theme");
       } else {
@@ -800,21 +848,31 @@ const UI = {
         document.body.classList.remove("queen-theme");
       }
     } catch (error) {
-      console.error('UI.initTheme error:', error);
+      console.error("UI.initTheme error:", error);
     }
   },
 
   /**
-   * Get current user role
+   * Get current user role (page-aware)
    * @returns {string} 'king' or 'queen'
    */
   getRole() {
-    const data = Storage.getData();
-    return data.settings?.role || "king";
+    const pathname = window.location.pathname;
+    const isQueenPage = pathname.includes("queen");
+    const isAppPage = pathname.includes("/app/");
+
+    if (isQueenPage) {
+      return "queen";
+    } else if (isAppPage) {
+      const data = Storage.getData();
+      return data.settings?.role || "king";
+    } else {
+      return "king";
+    }
   },
 
   /**
-   * Check if current user is Queen
+   * Check if current user is Queen (page-aware)
    * @returns {boolean}
    */
   isQueen() {
@@ -1288,12 +1346,11 @@ const FocusTimer = {
       indicator.id = "focus-timer-indicator";
       indicator.className = "focus-timer-indicator";
       indicator.onclick = () => {
-        // Navigate to focus page
-        if (typeof app !== "undefined" && app.navigate) {
-          app.navigate("focus");
-        } else {
-          window.location.href = "/app/focus.html";
-        }
+        // Navigate to focus page (use .html for localhost compatibility)
+        const basePath = window.location.pathname.includes("/app/")
+          ? ""
+          : "app/";
+        window.location.href = basePath + "focus.html";
       };
 
       // Insert after header or at top of body
@@ -1329,10 +1386,8 @@ const FocusTimer = {
             </div>
         `;
 
+    // Position is handled by CSS, only set z-index inline
     indicator.style.cssText = `
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
             z-index: 9999;
             cursor: pointer;
         `;
@@ -1450,17 +1505,17 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof UI !== "undefined") {
     UI.init();
   }
-  
+
   // Initialize Sync (defined in sync.js)
   if (typeof Sync !== "undefined" && typeof Sync.init === "function") {
     Sync.init();
   }
-  
+
   // Initialize other modules
   if (typeof CloseHandler !== "undefined") {
     CloseHandler.init();
   }
-  
+
   if (typeof FocusTimer !== "undefined") {
     FocusTimer.init();
   }

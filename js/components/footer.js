@@ -138,44 +138,48 @@ const FooterComponent = {
       if (!container) return;
 
       // Safe access to Nav - may not be loaded yet
-      const currentPage = typeof Nav !== 'undefined' && Nav.getCurrentPage ? Nav.getCurrentPage() : 'dashboard';
+      const currentPage =
+        typeof Nav !== "undefined" && Nav.getCurrentPage
+          ? Nav.getCurrentPage()
+          : "dashboard";
       const basePath = window.location.pathname.includes("/app/") ? "../" : "";
+      // Role-aware landing page (with .html extension for local dev)
       const landingPage =
         typeof UI !== "undefined" && UI.isQueen && UI.isQueen()
           ? "queen.html"
           : "index.html";
 
-    let navHTML = "";
+      let navHTML = "";
 
-    this.quickActions.forEach((item) => {
-      if (item.type === "action") {
-        navHTML += `
+      this.quickActions.forEach((item) => {
+        if (item.type === "action") {
+          navHTML += `
                     <button class="bottom-nav-btn action-btn" onclick="${item.action}" title="${item.label}">
                         <i class="ph-bold ${item.icon}"></i>
                         <span>${item.label}</span>
                     </button>
                 `;
-      } else {
-        const isActive = item.id === currentPage;
-        const href =
-          item.id === "dashboard"
-            ? `${basePath}${landingPage}`
-            : `${basePath}${item.href}`;
+        } else {
+          const isActive = item.id === currentPage;
+          const href =
+            item.id === "dashboard"
+              ? `${basePath}${landingPage}`
+              : `${basePath}${item.href}`;
 
-        navHTML += `
+          navHTML += `
                     <a href="${href}" class="bottom-nav-btn ${
-          isActive ? "active" : ""
-        }">
+            isActive ? "active" : ""
+          }">
                         <i class="ph-${isActive ? "fill" : "duotone"} ${
-          item.icon
-        }"></i>
+            item.icon
+          }"></i>
                         <span>${item.label}</span>
                     </a>
                 `;
-      }
-    });
+        }
+      });
 
-    container.innerHTML = `
+      container.innerHTML = `
             <nav class="mobile-nav">
                 ${navHTML}
             </nav>
@@ -204,7 +208,7 @@ const FooterComponent = {
             </div>
         `;
     } catch (error) {
-      console.error('FooterComponent.render error:', error);
+      console.error("FooterComponent.render error:", error);
       // Show minimal fallback footer
       const container = document.getElementById(containerId);
       if (container) {
@@ -257,27 +261,27 @@ const FooterComponent = {
             </div>
             <div class="modal-body">
                 <div class="quick-add-grid">
-                    <a href="${this.getBasePath()}app/morning.html" class="quick-add-item">
+                    <a href="${this.getBasePath()}app/morning" class="quick-add-item">
                         <i class="ph-duotone ph-sun-horizon" style="color: #f59e0b;"></i>
                         <span>Morning Tasks</span>
                     </a>
-                    <a href="${this.getBasePath()}app/idea.html" class="quick-add-item">
+                    <a href="${this.getBasePath()}app/idea" class="quick-add-item">
                         <i class="ph-duotone ph-lightbulb" style="color: #8b5cf6;"></i>
                         <span>New Idea</span>
                     </a>
-                    <a href="${this.getBasePath()}app/lessons.html" class="quick-add-item">
+                    <a href="${this.getBasePath()}app/lessons" class="quick-add-item">
                         <i class="ph-duotone ph-book-open-text" style="color: #60a5fa; text-shadow: 0 0 8px rgba(96, 165, 250, 0.4);"></i>
                         <span>Daily Lesson</span>
                     </a>
-                    <a href="${this.getBasePath()}app/dailygood.html" class="quick-add-item">
+                    <a href="${this.getBasePath()}app/dailygood" class="quick-add-item">
                         <i class="ph-duotone ph-heart" style="color: #ec4899;"></i>
                         <span>Good Thing</span>
                     </a>
-                    <a href="${this.getBasePath()}app/relationships.html" class="quick-add-item">
+                    <a href="${this.getBasePath()}app/relationships" class="quick-add-item">
                         <i class="ph-duotone ph-user-plus" style="color: #10b981;"></i>
                         <span>Add Person</span>
                     </a>
-                    <a href="${this.getBasePath()}app/events.html" class="quick-add-item">
+                    <a href="${this.getBasePath()}app/events" class="quick-add-item">
                         <i class="ph-duotone ph-calendar-plus" style="color: #06b6d4;"></i>
                         <span>New Event</span>
                     </a>

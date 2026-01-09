@@ -5,34 +5,45 @@
  */
 
 const HeaderComponent = {
-    /**
-     * Render the header into a container
-     * @param {string} containerId - ID of the container element
-     * @param {Object} options - Configuration options
-     */
-    render(containerId = 'header-container', options = {}) {
-        try {
-            const {
-                showBreadcrumb = true,
-                pageTitle = '',
-                pageIcon = 'ph-crown'
-            } = options;
+  /**
+   * Render the header into a container
+   * @param {string} containerId - ID of the container element
+   * @param {Object} options - Configuration options
+   */
+  render(containerId = "header-container", options = {}) {
+    try {
+      const {
+        showBreadcrumb = true,
+        pageTitle = "",
+        pageIcon = "ph-crown",
+      } = options;
 
-            const container = document.getElementById(containerId);
-            if (!container) {
-                console.error('Header container not found:', containerId);
-                return;
-            }
+      const container = document.getElementById(containerId);
+      if (!container) {
+        console.error("Header container not found:", containerId);
+        return;
+      }
 
-            // Safe access to Auth - may not be loaded yet
-            const isLoggedIn = typeof Auth !== 'undefined' && Auth.isLoggedIn ? Auth.isLoggedIn() : false;
-            const user = typeof Auth !== 'undefined' && Auth.getUser ? Auth.getUser() : null;
-            const userInitials = typeof Auth !== 'undefined' && Auth.getInitials ? Auth.getInitials() : 'U';
+      // Safe access to Auth - may not be loaded yet
+      const isLoggedIn =
+        typeof Auth !== "undefined" && Auth.isLoggedIn
+          ? Auth.isLoggedIn()
+          : false;
+      const user =
+        typeof Auth !== "undefined" && Auth.getUser ? Auth.getUser() : null;
+      const userInitials =
+        typeof Auth !== "undefined" && Auth.getInitials
+          ? Auth.getInitials()
+          : "U";
 
-            const basePath = window.location.pathname.includes('/app/') ? '../' : '';
-            const landingPage = (typeof UI !== 'undefined' && UI.isQueen && UI.isQueen()) ? 'queen.html' : 'index.html';
+      const basePath = window.location.pathname.includes("/app/") ? "../" : "";
+      // Role-aware landing page (with .html extension for local dev)
+      const landingPage =
+        typeof UI !== "undefined" && UI.isQueen && UI.isQueen()
+          ? "queen.html"
+          : "index.html";
 
-            container.innerHTML = `
+      container.innerHTML = `
                 <header class="header">
                     <button class="mobile-menu-btn" onclick="UI.toggleSidebar()" title="Menu">
                         <i class="ph-bold ph-list"></i>
@@ -52,30 +63,42 @@ const HeaderComponent = {
                         </div>
 
                         <!-- Notifications (shown when logged in) -->
-                        ${isLoggedIn ? `
+                        ${
+                          isLoggedIn
+                            ? `
                             <a href="${basePath}app/notifications.html" id="notifications-btn" class="icon-btn notification-btn hidden-mobile" title="Notifications">
                                 <i class="ph-bold ph-bell"></i>
                                 <span id="notification-badge" class="notification-dot hidden"></span>
                             </a>
-                        ` : ''}
+                        `
+                            : ""
+                        }
 
                         <!-- User Profile (shown when logged in) -->
-                        ${isLoggedIn ? `
+                        ${
+                          isLoggedIn
+                            ? `
                             <div id="user-profile" class="user-profile">
                                 <a href="${basePath}app/profile.html" class="user-avatar" title="Profile">
                                     <span id="user-initials">${userInitials}</span>
                                 </a>
                                 <span id="sync-status" class="sync-status" title="Sync Status"></span>
                             </div>
-                        ` : ''}
+                        `
+                            : ""
+                        }
 
                         <!-- Guest Prompt (shown when not logged in) -->
-                        ${!isLoggedIn ? `
+                        ${
+                          !isLoggedIn
+                            ? `
                             <a href="${basePath}auth.html" id="guest-prompt" class="guest-prompt">
                                 <i class="ph-bold ph-sign-in"></i>
                                 <span>Log In</span>
                             </a>
-                        ` : ''}
+                        `
+                            : ""
+                        }
 
                         <div class="header-time hidden-mobile">
                             <p class="date" id="current-date">Today</p>
@@ -98,76 +121,80 @@ const HeaderComponent = {
                 </header>
             `;
 
-            // Update streak badge
-            this.updateStreakBadge();
+      // Update streak badge
+      this.updateStreakBadge();
 
-            // Apply role theme (King/Queen) after components render
-            if (typeof UI !== 'undefined' && UI.initTheme) {
-                UI.initTheme();
-            }
-        } catch (error) {
-            console.error('HeaderComponent.render error:', error);
-            // Show minimal fallback header
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = `
+      // Apply role theme (King/Queen) after components render
+      if (typeof UI !== "undefined" && UI.initTheme) {
+        UI.initTheme();
+      }
+    } catch (error) {
+      console.error("HeaderComponent.render error:", error);
+      // Show minimal fallback header
+      const container = document.getElementById(containerId);
+      if (container) {
+        container.innerHTML = `
                     <header class="header">
                         <a href="/" class="header-brand">
                             <h1 class="header-title">REIGN</h1>
                         </a>
                     </header>
                 `;
-            }
-        }
-    },
-
-    /**
-     * Toggle user dropdown menu
-     */
-    toggleUserMenu() {
-        const dropdown = document.getElementById('user-dropdown');
-        if (dropdown) {
-            dropdown.classList.toggle('hidden');
-        }
-    },
-
-    /**
-     * Toggle theme between light and dark
-     */
-    toggleTheme() {
-        const data = Storage.getData();
-        const newTheme = data.settings?.theme === 'dark' ? 'light' : 'dark';
-        data.settings = data.settings || {};
-        data.settings.theme = newTheme;
-        Storage.saveData(data);
-        document.documentElement.setAttribute('data-theme', newTheme);
-    },
-
-    /**
-     * Update the streak badge display
-     */
-    updateStreakBadge() {
-        const data = Storage.getData();
-        const streak = data.learning?.streak || 0;
-        const badge = document.getElementById('streak-badge');
-        const count = document.getElementById('streak-count');
-
-        if (badge && count) {
-            if (streak > 0) {
-                badge.classList.remove('hidden');
-                count.textContent = streak;
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
+      }
     }
+  },
+
+  /**
+   * Toggle user dropdown menu
+   */
+  toggleUserMenu() {
+    const dropdown = document.getElementById("user-dropdown");
+    if (dropdown) {
+      dropdown.classList.toggle("hidden");
+    }
+  },
+
+  /**
+   * Toggle theme between light and dark
+   */
+  toggleTheme() {
+    const data = Storage.getData();
+    const newTheme = data.settings?.theme === "dark" ? "light" : "dark";
+    data.settings = data.settings || {};
+    data.settings.theme = newTheme;
+    Storage.saveData(data);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  },
+
+  /**
+   * Update the streak badge display
+   */
+  updateStreakBadge() {
+    const data = Storage.getData();
+    const streak = data.learning?.streak || 0;
+    const badge = document.getElementById("streak-badge");
+    const count = document.getElementById("streak-count");
+
+    if (badge && count) {
+      if (streak > 0) {
+        badge.classList.remove("hidden");
+        count.textContent = streak;
+      } else {
+        badge.classList.add("hidden");
+      }
+    }
+  },
 };
 
 // Close dropdown when clicking outside
-document.addEventListener('click', (e) => {
-    const dropdown = document.getElementById('user-dropdown');
-    const avatarBtn = document.getElementById('user-avatar-btn');
-    if (dropdown && !dropdown.contains(e.target) && !avatarBtn?.contains(e.target)) {
-        dropdown.classList.add('hidden');
-    }
+document.addEventListener("click", (e) => {
+  const dropdown = document.getElementById("user-dropdown");
+  const avatarBtn = document.getElementById("user-avatar-btn");
+  if (
+    dropdown &&
+    !dropdown.contains(e.target) &&
+    !avatarBtn?.contains(e.target)
+  ) {
+    dropdown.classList.add("hidden");
+  }
 });

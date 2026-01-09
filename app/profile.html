@@ -1,75 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description"
-        content="Manage your REIGN profile, update your information, and customize your royal experience.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="Manage your REIGN profile, update your information, and customize your royal experience."
+    />
     <title>Profile | REIGN</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- Toastify -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/enhancements.css">
-    <link rel="stylesheet" href="../css/mobile.css">
-    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/enhancements.css" />
+    <link rel="stylesheet" href="../css/mobile.css" />
+    <link rel="stylesheet" href="../css/profile.css" />
 
     <!-- PWA -->
-    <link rel="manifest" href="../manifest.json">
-    <meta name="theme-color" content="#0B0F19">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="../icons/icon-192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#0B0F19" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <link rel="apple-touch-icon" href="../icons/icon-192.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../icons/icon-192.png"
+    />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://reign-pi.vercel.app/app/profile.html">
-    <meta property="og:title" content="Profile | REIGN">
-    <meta property="og:description"
-        content="Manage your REIGN profile, update your information, and customize your royal experience.">
-    <meta property="og:image" content="https://reign-pi.vercel.app/icons/og-cover.jpg">
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://reign-pi.vercel.app/app/profile.html"
+    />
+    <meta property="og:title" content="Profile | REIGN" />
+    <meta
+      property="og:description"
+      content="Manage your REIGN profile, update your information, and customize your royal experience."
+    />
+    <meta
+      property="og:image"
+      content="https://reign-pi.vercel.app/icons/og-cover.jpg"
+    />
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Profile | REIGN">
-    <meta name="twitter:image" content="https://reign-pi.vercel.app/icons/og-cover.jpg">
-</head>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Profile | REIGN" />
+    <meta
+      name="twitter:image"
+      content="https://reign-pi.vercel.app/icons/og-cover.jpg"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="app-container">
-        <!-- Header -->
-        <div id="header-container"></div>
+      <!-- Header -->
+      <div id="header-container"></div>
 
-        <div class="main-layout">
-            <!-- Sidebar -->
-            <div id="sidebar-container"></div>
+      <div class="main-layout">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
 
-            <!-- Main Content -->
-            <main class="main-content fade-in">
-                <div id="profile-content" class="content-area">
-                    <!-- Profile content will be rendered here -->
-                </div>
-            </main>
-        </div>
+        <!-- Main Content -->
+        <main class="main-content fade-in">
+          <div id="profile-content" class="content-area">
+            <!-- Profile content will be rendered here -->
+          </div>
+        </main>
+      </div>
 
-        <!-- Footer -->
-        <div id="footer-container"></div>
+      <!-- Footer -->
+      <div id="footer-container"></div>
     </div>
 
     <!-- Scripts -->
@@ -86,158 +113,180 @@
     <script src="../js/profile-view.js"></script>
 
     <script>
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check authentication
-            if (!Auth.isLoggedIn()) {
-                window.location.href = '../auth.html';
-                return;
-            }
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Check authentication
+        if (!Auth.isLoggedIn()) {
+          window.location.href = "../auth.html";
+          return;
+        }
 
-            // Render components
-            if (typeof HeaderComponent !== 'undefined') {
-                HeaderComponent.render('header-container');
-            }
-            if (typeof SidebarComponent !== 'undefined') {
-                SidebarComponent.render('sidebar-container');
-            }
-            if (typeof FooterComponent !== 'undefined') {
-                FooterComponent.render('footer-container');
-            }
+        // Render components
+        if (typeof HeaderComponent !== "undefined") {
+          HeaderComponent.render("header-container");
+        }
+        if (typeof SidebarComponent !== "undefined") {
+          SidebarComponent.render("sidebar-container");
+        }
+        if (typeof FooterComponent !== "undefined") {
+          FooterComponent.render("footer-container");
+        }
 
-            // Apply role theme (King/Queen)
-            if (typeof UI !== 'undefined' && UI.initTheme) {
-                UI.initTheme();
-            }
+        // Apply role theme (King/Queen)
+        if (typeof UI !== "undefined" && UI.initTheme) {
+          UI.initTheme();
+        }
 
-            // Load user data
-            const data = Storage.getData();
-            const container = document.getElementById('profile-content');
+        // Load user data
+        const data = Storage.getData();
+        const container = document.getElementById("profile-content");
 
-            // Render profile
-            if (typeof Views !== 'undefined' && typeof Views.renderProfile === 'function') {
-                Views.renderProfile(container, data);
-            } else if (typeof window.renderProfileView === 'function') {
-                window.renderProfileView(container, data);
-            } else {
-                container.innerHTML = `
+        // Render profile
+        if (
+          typeof Views !== "undefined" &&
+          typeof Views.renderProfile === "function"
+        ) {
+          Views.renderProfile(container, data);
+        } else if (typeof window.renderProfileView === "function") {
+          window.renderProfileView(container, data);
+        } else {
+          container.innerHTML = `
                     <div class="error-state">
                         <i class="ph-duotone ph-warning-circle" style="font-size: 4rem; color: var(--danger);"></i>
                         <h2>Profile View Not Loaded</h2>
                         <p>Please refresh the page or contact support.</p>
                     </div>
                 `;
+        }
+      });
+
+      // Profile management functions
+      const app = {
+        toggleProfileEdit() {
+          const viewMode = document.getElementById("profile-view-mode");
+          const editMode = document.getElementById("profile-edit-mode");
+          const toggleBtn = document.getElementById("toggle-edit-btn");
+
+          if (viewMode && editMode) {
+            viewMode.classList.toggle("hidden");
+            editMode.classList.toggle("hidden");
+
+            if (editMode.classList.contains("hidden")) {
+              toggleBtn.innerHTML =
+                '<i class="ph-bold ph-pencil-simple"></i> Edit Profile';
+            } else {
+              toggleBtn.innerHTML = '<i class="ph-bold ph-x"></i> Cancel';
             }
-        });
+          }
+        },
 
-        // Profile management functions
-        const app = {
-            toggleProfileEdit() {
-                const viewMode = document.getElementById('profile-view-mode');
-                const editMode = document.getElementById('profile-edit-mode');
-                const toggleBtn = document.getElementById('toggle-edit-btn');
+        cancelProfileEdit() {
+          this.toggleProfileEdit();
+        },
 
-                if (viewMode && editMode) {
-                    viewMode.classList.toggle('hidden');
-                    editMode.classList.toggle('hidden');
+        async saveProfileChanges(e) {
+          e.preventDefault();
+          const formData = new FormData(e.target);
 
-                    if (editMode.classList.contains('hidden')) {
-                        toggleBtn.innerHTML = '<i class="ph-bold ph-pencil-simple"></i> Edit Profile';
-                    } else {
-                        toggleBtn.innerHTML = '<i class="ph-bold ph-x"></i> Cancel';
-                    }
-                }
-            },
+          const updates = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+          };
 
-            cancelProfileEdit() {
-                this.toggleProfileEdit();
-            },
+          try {
+            LoadingComponent.show("spinner", "Saving changes...");
+            await Auth.updateProfile(updates);
+            LoadingComponent.hide();
 
-            async saveProfileChanges(e) {
-                e.preventDefault();
-                const formData = new FormData(e.target);
+            Utils.showToast("Profile updated successfully!", "gold");
+            this.toggleProfileEdit();
 
-                const updates = {
-                    name: formData.get('name'),
-                    email: formData.get('email')
-                };
+            // Refresh page
+            setTimeout(() => {
+              window.location.reload();
+            }, 500);
+          } catch (error) {
+            LoadingComponent.hide();
+            Utils.showToast(
+              "Failed to update profile: " + error.message,
+              "danger"
+            );
+          }
+        },
 
-                try {
-                    LoadingComponent.show('spinner', 'Saving changes...');
-                    await Auth.updateProfile(updates);
-                    LoadingComponent.hide();
+        openAvatarUpload() {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = "image/jpeg,image/png,image/jpg,image/webp";
+          input.onchange = (e) => this.handleAvatarUpload(e);
+          input.click();
+        },
 
-                    Utils.showToast('Profile updated successfully!', 'gold');
-                    this.toggleProfileEdit();
+        async handleAvatarUpload(e) {
+          const file = e.target.files[0];
+          if (!file) return;
 
-                    // Refresh page
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
-                } catch (error) {
-                    LoadingComponent.hide();
-                    Utils.showToast('Failed to update profile: ' + error.message, 'danger');
-                }
-            },
+          const validTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/jpg",
+            "image/webp",
+          ];
+          if (!validTypes.includes(file.type)) {
+            Utils.showToast(
+              "Please select a valid image file (JPEG, PNG, WebP)",
+              "danger"
+            );
+            return;
+          }
 
-            openAvatarUpload() {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/jpeg,image/png,image/jpg,image/webp';
-                input.onchange = (e) => this.handleAvatarUpload(e);
-                input.click();
-            },
+          if (file.size > 500 * 1024) {
+            Utils.showToast("Image too large! Maximum size is 500KB", "danger");
+            return;
+          }
 
-            async handleAvatarUpload(e) {
-                const file = e.target.files[0];
-                if (!file) return;
+          try {
+            LoadingComponent.show("spinner", "Uploading avatar...");
+            await Auth.uploadAvatar(file);
+            LoadingComponent.hide();
 
-                const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-                if (!validTypes.includes(file.type)) {
-                    Utils.showToast('Please select a valid image file (JPEG, PNG, WebP)', 'danger');
-                    return;
-                }
+            Utils.showToast("Avatar updated successfully!", "gold");
+            setTimeout(() => window.location.reload(), 500);
+          } catch (error) {
+            LoadingComponent.hide();
+            Utils.showToast(
+              "Failed to upload avatar: " + error.message,
+              "danger"
+            );
+          }
+        },
 
-                if (file.size > 500 * 1024) {
-                    Utils.showToast('Image too large! Maximum size is 500KB', 'danger');
-                    return;
-                }
+        async confirmRemoveAvatar() {
+          if (
+            !confirm("Are you sure you want to remove your profile picture?")
+          ) {
+            return;
+          }
 
-                try {
-                    LoadingComponent.show('spinner', 'Uploading avatar...');
-                    await Auth.uploadAvatar(file);
-                    LoadingComponent.hide();
+          try {
+            LoadingComponent.show("spinner", "Removing avatar...");
+            await Auth.removeAvatar();
+            LoadingComponent.hide();
 
-                    Utils.showToast('Avatar updated successfully!', 'gold');
-                    setTimeout(() => window.location.reload(), 500);
-                } catch (error) {
-                    LoadingComponent.hide();
-                    Utils.showToast('Failed to upload avatar: ' + error.message, 'danger');
-                }
-            },
+            Utils.showToast("Avatar removed", "indigo");
+            setTimeout(() => window.location.reload(), 500);
+          } catch (error) {
+            LoadingComponent.hide();
+            Utils.showToast(
+              "Failed to remove avatar: " + error.message,
+              "danger"
+            );
+          }
+        },
+      };
 
-            async confirmRemoveAvatar() {
-                if (!confirm('Are you sure you want to remove your profile picture?')) {
-                    return;
-                }
-
-                try {
-                    LoadingComponent.show('spinner', 'Removing avatar...');
-                    await Auth.removeAvatar();
-                    LoadingComponent.hide();
-
-                    Utils.showToast('Avatar removed', 'indigo');
-                    setTimeout(() => window.location.reload(), 500);
-                } catch (error) {
-                    LoadingComponent.hide();
-                    Utils.showToast('Failed to remove avatar: ' + error.message, 'danger');
-                }
-            }
-        };
-
-        // Make app available globally
-        window.app = app;
+      // Make app available globally
+      window.app = app;
     </script>
-</body>
-
+  </body>
 </html>

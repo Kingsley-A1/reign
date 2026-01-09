@@ -5,95 +5,229 @@
  */
 
 const SidebarComponent = {
-    /**
-     * Navigation items configuration
-     */
-    navItems: [
-        // Main Section
-        { id: 'dashboard', label: 'The Throne', icon: 'ph-crown', href: 'index.html', section: null },
-        { id: 'morning', label: 'Morning Protocol', icon: 'ph-sun-horizon', href: 'app/morning.html' },
-        { id: 'evening', label: 'Evening Report', icon: 'ph-moon-stars', href: 'app/evening.html' },
+  /**
+   * Navigation items configuration
+   * NOTE: Using .html extension for local dev compatibility. Vercel cleanUrls handles production.
+   */
+  navItems: [
+    // Main Section
+    {
+      id: "dashboard",
+      label: "The Throne",
+      icon: "ph-crown",
+      href: "index.html",
+      section: null,
+    },
+    {
+      id: "morning",
+      label: "Morning Protocol",
+      icon: "ph-sun-horizon",
+      href: "app/morning.html",
+    },
+    {
+      id: "evening",
+      label: "Evening Report",
+      icon: "ph-moon-stars",
+      href: "app/evening.html",
+    },
 
-        // Growth Section
-        { id: 'divider-growth', type: 'divider', label: 'Growth' },
-        { id: 'focus', label: 'Focus Chamber (Timer)', icon: 'ph-timer', href: 'app/focus.html' },
-        { id: 'learning', label: 'Learning Forge', icon: 'ph-graduation-cap', href: 'app/learning.html' },
-        { id: 'idea', label: "Today's Idea", icon: 'ph-lightbulb', href: 'app/idea.html' },
-        { id: 'lessons', label: "Today's Lessons", icon: 'ph-book-open-text', href: 'app/lessons.html' },
-        { id: 'analytics', label: 'My Progress', icon: 'ph-chart-line-up', href: 'app/analytics.html' },
+    // Growth Section
+    { id: "divider-growth", type: "divider", label: "Growth" },
+    {
+      id: "focus",
+      label: "Focus Chamber (Timer)",
+      icon: "ph-timer",
+      href: "app/focus.html",
+    },
+    {
+      id: "learning",
+      label: "Learning Forge",
+      icon: "ph-graduation-cap",
+      href: "app/learning.html",
+    },
+    {
+      id: "idea",
+      label: "Today's Idea",
+      icon: "ph-lightbulb",
+      href: "app/idea.html",
+    },
+    {
+      id: "lessons",
+      label: "Today's Lessons",
+      icon: "ph-book-open-text",
+      href: "app/lessons.html",
+    },
+    {
+      id: "analytics",
+      label: "My Progress",
+      icon: "ph-chart-line-up",
+      href: "app/analytics.html",
+    },
 
-        // Reflection Section
-        { id: 'divider-reflection', type: 'divider', label: 'Reflection' },
-        { id: 'dailygood', label: 'The Good in Today', icon: 'ph-heart', href: 'app/dailygood.html' },
-        { id: 'archive', label: 'Journal Archive', icon: 'ph-book-bookmark', href: 'app/archive.html' },
-        { id: 'relationships', label: 'My Relationships', icon: 'ph-heart-half', href: 'app/relationships.html' },
+    // Reflection Section
+    { id: "divider-reflection", type: "divider", label: "Reflection" },
+    {
+      id: "dailygood",
+      label: "The Good in Today",
+      icon: "ph-heart",
+      href: "app/dailygood.html",
+    },
+    {
+      id: "archive",
+      label: "Journal Archive",
+      icon: "ph-book-bookmark",
+      href: "app/archive.html",
+    },
+    {
+      id: "relationships",
+      label: "My Relationships",
+      icon: "ph-heart-half",
+      href: "app/relationships.html",
+    },
 
-        // Planning Section
-        { id: 'divider-planning', type: 'divider', label: 'Planning' },
-        { id: 'goals', label: 'Personal Goals', icon: 'ph-target', href: 'app/goals.html' },
-        { id: 'reviews', label: 'Weekly Review', icon: 'ph-calendar-check', href: 'app/reviews.html' },
-        { id: 'events', label: 'Calendar & Events', icon: 'ph-calendar-dots', href: 'app/events.html' },
-        { id: 'savings', label: 'Daily Savings', icon: 'ph-piggy-bank', href: 'app/savings.html', badge: 'Soon' },
+    // Planning Section
+    { id: "divider-planning", type: "divider", label: "Planning" },
+    {
+      id: "goals",
+      label: "Personal Goals",
+      icon: "ph-target",
+      href: "app/goals.html",
+    },
+    {
+      id: "reviews",
+      label: "Weekly Review",
+      icon: "ph-calendar-check",
+      href: "app/reviews.html",
+    },
+    {
+      id: "events",
+      label: "Calendar & Events",
+      icon: "ph-calendar-dots",
+      href: "app/events.html",
+    },
+    {
+      id: "savings",
+      label: "Daily Savings",
+      icon: "ph-piggy-bank",
+      href: "app/savings.html",
+      badge: "Soon",
+    },
 
-        // System Section
-        { id: 'divider-system', type: 'divider', label: '' },
-        { id: 'profile', label: 'Profile', icon: 'ph-user-circle', href: 'app/profile.html' },
-        { id: 'docs', label: 'Help & Docs', icon: 'ph-book-open', href: 'app/docs.html' },
-        { id: 'about', label: 'About REIGN', icon: 'ph-info', href: 'app/about.html' },
-        { id: 'support', label: 'Support', icon: 'ph-hand-heart', href: 'app/support.html' },
-        { id: 'notifications', label: 'Notifications', icon: 'ph-bell', href: 'app/notifications.html' },
-        { id: 'settings', label: 'Settings', icon: 'ph-gear-six', href: 'app/settings.html' }
-    ],
+    // System Section
+    { id: "divider-system", type: "divider", label: "" },
+    {
+      id: "profile",
+      label: "Profile",
+      icon: "ph-user-circle",
+      href: "app/profile.html",
+    },
+    {
+      id: "docs",
+      label: "Help & Docs",
+      icon: "ph-book-open",
+      href: "app/docs.html",
+    },
+    {
+      id: "about",
+      label: "About REIGN",
+      icon: "ph-info",
+      href: "app/about.html",
+    },
+    {
+      id: "support",
+      label: "Support",
+      icon: "ph-hand-heart",
+      href: "app/support.html",
+    },
+    {
+      id: "notifications",
+      label: "Notifications",
+      icon: "ph-bell",
+      href: "app/notifications.html",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: "ph-gear-six",
+      href: "app/settings.html",
+    },
+  ],
 
-    /**
-     * Render the sidebar into a container
-     * @param {string} containerId - ID of the container element
-     */
-    render(containerId = 'sidebar-container') {
-        try {
-            const container = document.getElementById(containerId);
-            if (!container) {
-                console.error('Sidebar container not found:', containerId);
-                return;
-            }
+  /**
+   * Render the sidebar into a container
+   * @param {string} containerId - ID of the container element
+   */
+  render(containerId = "sidebar-container") {
+    try {
+      const container = document.getElementById(containerId);
+      if (!container) {
+        console.error("Sidebar container not found:", containerId);
+        return;
+      }
 
-            // Safe access to Nav - may not be loaded yet
-            const currentPage = typeof Nav !== 'undefined' && Nav.getCurrentPage ? Nav.getCurrentPage() : 'dashboard';
-            const basePath = window.location.pathname.includes('/app/') ? '../' : '';
-            const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-            const landingPage = (typeof UI !== 'undefined' && UI.isQueen && UI.isQueen()) ? 'queen.html' : 'index.html';
+      // Safe access to Nav - may not be loaded yet
+      const currentPage =
+        typeof Nav !== "undefined" && Nav.getCurrentPage
+          ? Nav.getCurrentPage()
+          : "dashboard";
+      const basePath = window.location.pathname.includes("/app/") ? "../" : "";
+      const isCollapsed = localStorage.getItem("sidebar-collapsed") === "true";
+      // Role-aware landing page (with .html extension for local dev)
+      const landingPage =
+        typeof UI !== "undefined" && UI.isQueen && UI.isQueen()
+          ? "queen.html"
+          : "index.html";
 
-        let navHTML = '';
+      let navHTML = "";
 
-        this.navItems.forEach(item => {
-            if (item.type === 'divider') {
-                navHTML += `
+      this.navItems.forEach((item) => {
+        if (item.type === "divider") {
+          navHTML += `
                     <div class="nav-divider"></div>
-                    ${item.label ? `<p class="nav-section-label">${item.label}</p>` : ''}
+                    ${
+                      item.label
+                        ? `<p class="nav-section-label">${item.label}</p>`
+                        : ""
+                    }
                 `;
-            } else {
-                const isActive = item.id === currentPage;
-                const isDisabled = item.badge === 'Soon';
-                const href = item.id === 'dashboard'
-                    ? `${basePath}${landingPage}`
-                    : `${basePath}${item.href}`;
+        } else {
+          const isActive = item.id === currentPage;
+          const isDisabled = item.badge === "Soon";
+          const href =
+            item.id === "dashboard"
+              ? `${basePath}${landingPage}`
+              : `${basePath}${item.href}`;
 
-                navHTML += `
-                    <a href="${isDisabled ? '#' : href}" class="nav-btn ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}" data-target="${item.id}" title="${item.label}" aria-label="${item.label}${isActive ? ' (current page)' : ''}${isDisabled ? ' - coming soon' : ''}">
-                        <i class="ph-duotone ${item.icon}" aria-hidden="true"></i>
+          navHTML += `
+                    <a href="${isDisabled ? "#" : href}" class="nav-btn ${
+            isActive ? "active" : ""
+          } ${isDisabled ? "disabled" : ""}" data-target="${item.id}" title="${
+            item.label
+          }" aria-label="${item.label}${isActive ? " (current page)" : ""}${
+            isDisabled ? " - coming soon" : ""
+          }">
+                        <i class="ph-duotone ${
+                          item.icon
+                        }" aria-hidden="true"></i>
                         <span>${item.label}</span>
-                        ${item.badge ? `<span class="nav-badge coming-soon" aria-label="Coming soon">${item.badge}</span>` : ''}
+                        ${
+                          item.badge
+                            ? `<span class="nav-badge coming-soon" aria-label="Coming soon">${item.badge}</span>`
+                            : ""
+                        }
                     </a>
                 `;
-            }
-        });
+        }
+      });
 
-        container.innerHTML = `
+      container.innerHTML = `
             <!-- Sidebar Overlay (Mobile) -->
             <div class="sidebar-overlay" onclick="SidebarComponent.toggleMobile()"></div>
 
             <!-- Sidebar -->
-            <aside class="sidebar ${isCollapsed ? 'collapsed' : ''}" id="app-sidebar">
+            <aside class="sidebar ${
+              isCollapsed ? "collapsed" : ""
+            }" id="app-sidebar">
                 <!-- Toggle Button -->
                 <button class="sidebar-toggle" onclick="SidebarComponent.toggleCollapse()" title="Toggle Sidebar" aria-label="Toggle sidebar navigation" aria-expanded="true">
                     <i class="ph-bold ph-caret-left" aria-hidden="true"></i>
@@ -112,59 +246,62 @@ const SidebarComponent = {
                 </div>
             </aside>
         `;
-        } catch (error) {
-            console.error('SidebarComponent.render error:', error);
-            // Show minimal fallback sidebar
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.innerHTML = `
+    } catch (error) {
+      console.error("SidebarComponent.render error:", error);
+      // Show minimal fallback sidebar
+      const container = document.getElementById(containerId);
+      if (container) {
+        container.innerHTML = `
                     <aside class="sidebar" id="app-sidebar">
                         <nav class="sidebar-nav">
                             <a href="/" class="nav-btn">Home</a>
                         </nav>
                     </aside>
                 `;
-            }
-        }
-    },
-
-    /**
-     * Toggle sidebar collapsed state on desktop
-     */
-    toggleCollapse() {
-        const sidebar = document.getElementById('app-sidebar');
-        if (!sidebar) return;
-
-        const isCollapsed = sidebar.classList.toggle('collapsed');
-        localStorage.setItem('sidebar-collapsed', isCollapsed);
-    },
-
-    /**
-     * Toggle sidebar on mobile
-     */
-    toggleMobile() {
-        const sidebar = document.querySelector('.sidebar');
-        const overlay = document.querySelector('.sidebar-overlay');
-        if (sidebar) {
-            sidebar.classList.toggle('open');
-        }
-        if (overlay) {
-            overlay.classList.toggle('active');
-        }
-    },
-
-    /**
-     * Update active state based on current page
-     */
-    updateActiveState() {
-        try {
-            const currentPage = typeof Nav !== 'undefined' && Nav.getCurrentPage ? Nav.getCurrentPage() : 'dashboard';
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                const target = btn.dataset.target;
-                btn.classList.toggle('active', target === currentPage);
-            });
-        } catch (error) {
-            console.error('SidebarComponent.updateActiveState error:', error);
-        }
+      }
     }
+  },
+
+  /**
+   * Toggle sidebar collapsed state on desktop
+   */
+  toggleCollapse() {
+    const sidebar = document.getElementById("app-sidebar");
+    if (!sidebar) return;
+
+    const isCollapsed = sidebar.classList.toggle("collapsed");
+    localStorage.setItem("sidebar-collapsed", isCollapsed);
+  },
+
+  /**
+   * Toggle sidebar on mobile
+   */
+  toggleMobile() {
+    const sidebar = document.querySelector(".sidebar");
+    const overlay = document.querySelector(".sidebar-overlay");
+    if (sidebar) {
+      sidebar.classList.toggle("open");
+    }
+    if (overlay) {
+      overlay.classList.toggle("active");
+    }
+  },
+
+  /**
+   * Update active state based on current page
+   */
+  updateActiveState() {
+    try {
+      const currentPage =
+        typeof Nav !== "undefined" && Nav.getCurrentPage
+          ? Nav.getCurrentPage()
+          : "dashboard";
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        const target = btn.dataset.target;
+        btn.classList.toggle("active", target === currentPage);
+      });
+    } catch (error) {
+      console.error("SidebarComponent.updateActiveState error:", error);
+    }
+  },
 };

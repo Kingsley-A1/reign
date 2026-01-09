@@ -1,597 +1,688 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description"
-        content="REIGN Documentation - Learn how to use every feature of your royal productivity platform">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="REIGN Documentation - Learn how to use every feature of your royal productivity platform"
+    />
     <title>Help & Docs | REIGN</title>
 
     <!-- PWA -->
-    <link rel="manifest" href="../manifest.json">
-    <meta name="theme-color" content="#D4AF37">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="../icons/icon-192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../icons/icon-192.png">
+    <link rel="manifest" href="../manifest.json" />
+    <meta name="theme-color" content="#D4AF37" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <link rel="apple-touch-icon" href="../icons/icon-192.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../icons/icon-192.png"
+    />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://reign-pi.vercel.app/app/docs.html">
-    <meta property="og:title" content="Help & Docs | REIGN">
-    <meta property="og:description" content="Learn how to master your royal productivity platform.">
-    <meta property="og:image" content="https://reign-pi.vercel.app/icons/og-cover.jpg">
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://reign-pi.vercel.app/app/docs.html"
+    />
+    <meta property="og:title" content="Help & Docs | REIGN" />
+    <meta
+      property="og:description"
+      content="Learn how to master your royal productivity platform."
+    />
+    <meta
+      property="og:image"
+      content="https://reign-pi.vercel.app/icons/og-cover.jpg"
+    />
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <!-- Toastify -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/mobile.css" />
 
     <style>
-        /* Documentation Styles */
-        .docs-container {
-            max-width: 1000px;
-            margin: 0 auto;
+      /* Documentation Styles */
+      .docs-container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      /* Search Bar */
+      .docs-search {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+
+      .docs-search-input {
+        width: 100%;
+        padding: 1rem 1.25rem 1rem 3.5rem;
+        background: var(--glass-bg);
+        border: 2px solid var(--royal-gold-30);
+        border-radius: 1rem;
+        color: white;
+        font-size: 1rem;
+        font-family: var(--font-sans);
+        transition: all 0.3s ease;
+      }
+
+      .docs-search-input:focus {
+        outline: none;
+        border-color: var(--royal-gold);
+        box-shadow: 0 0 20px var(--royal-gold-20);
+      }
+
+      .docs-search-input::placeholder {
+        color: #64748b;
+      }
+
+      .docs-search-icon {
+        position: absolute;
+        left: 1.25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 1.25rem;
+        transition: color 0.3s ease;
+      }
+
+      .docs-search-input:focus + .docs-search-icon {
+        color: var(--royal-gold);
+      }
+
+      .docs-search-clear {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #64748b;
+        font-size: 1.25rem;
+        cursor: pointer;
+        display: none;
+        transition: color 0.3s ease;
+      }
+
+      .docs-search-clear:hover {
+        color: var(--danger);
+      }
+
+      .docs-search-clear.visible {
+        display: block;
+      }
+
+      /* Category Filters */
+      .docs-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .docs-filter {
+        padding: 0.625rem 1.25rem;
+        background: var(--glass-bg);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 2rem;
+        color: #94a3b8;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .docs-filter:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--royal-gold-50);
+        color: white;
+      }
+
+      .docs-filter.active {
+        background: linear-gradient(
+          135deg,
+          var(--royal-gold),
+          var(--royal-accent)
+        );
+        color: var(--royal-dark);
+        border-color: var(--royal-gold);
+        border-color: transparent;
+        font-weight: 600;
+      }
+
+      .docs-filter i {
+        font-size: 1rem;
+      }
+
+      /* Results Count */
+      .docs-results {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        color: #64748b;
+        font-size: 0.875rem;
+      }
+
+      /* Doc Cards Grid */
+      .docs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      /* Doc Card */
+      .doc-card {
+        background: var(--glass-bg);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .doc-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--cat-color, var(--royal-gold));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      .doc-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--royal-gold);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3),
+          0 0 20px var(--royal-gold-10);
+      }
+
+      /* Hot/Popular Article Indicator */
+      .doc-card.hot::after {
+        content: "🔥";
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        font-size: 1rem;
+        animation: flicker 1.5s infinite alternate;
+      }
+
+      @keyframes flicker {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      .doc-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .doc-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        background: rgba(var(--cat-color-rgb, 212, 175, 55), 0.15);
+        color: var(--cat-color, var(--royal-gold));
+      }
+
+      .doc-card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+      }
+
+      .doc-card-title mark {
+        background: var(--royal-gold-30);
+        color: white;
+        border-radius: 2px;
+        padding: 0 2px;
+      }
+
+      .doc-card-desc {
+        font-size: 0.875rem;
+        color: #94a3b8;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .doc-card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .doc-card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+      }
+
+      .doc-tag {
+        padding: 0.25rem 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 0.375rem;
+        font-size: 0.6875rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .doc-card-time {
+        font-size: 0.75rem;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .doc-card-arrow {
+        position: absolute;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        color: var(--royal-gold);
+        font-size: 1.25rem;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.3s ease;
+      }
+
+      .doc-card:hover .doc-card-arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      /* Empty State */
+      .docs-empty {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 1rem;
+      }
+
+      .docs-empty i {
+        font-size: 4rem;
+        color: #64748b;
+        margin-bottom: 1rem;
+      }
+
+      .docs-empty h3 {
+        font-family: var(--font-serif);
+        font-size: 1.25rem;
+        color: white;
+        margin-bottom: 0.5rem;
+      }
+
+      .docs-empty p {
+        color: #94a3b8;
+      }
+
+      /* Doc Detail Modal */
+      .doc-detail {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* Center modal on desktop */
+      @media (min-width: 768px) {
+        #modal .modal-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 2rem;
         }
 
-        /* Search Bar */
-        .docs-search {
-            position: relative;
-            margin-bottom: 1.5rem;
+        #modal .modal-content {
+          max-width: 700px;
+          width: 100%;
+          max-height: 85vh;
+          overflow-y: auto;
+          border-radius: 1rem;
         }
+      }
 
-        .docs-search-input {
-            width: 100%;
-            padding: 1rem 1.25rem 1rem 3.5rem;
-            background: var(--glass-bg);
-            border: 2px solid var(--royal-gold-30);
-            border-radius: 1rem;
-            color: white;
-            font-size: 1rem;
-            font-family: var(--font-sans);
-            transition: all 0.3s ease;
-        }
+      .doc-detail-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
 
-        .docs-search-input:focus {
-            outline: none;
-            border-color: var(--royal-gold);
-            box-shadow: 0 0 20px var(--royal-gold-20);
-        }
+      .doc-detail-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        flex-shrink: 0;
+      }
 
-        .docs-search-input::placeholder {
-            color: #64748b;
-        }
+      .doc-detail-content h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.25rem;
+      }
 
-        .docs-search-icon {
-            position: absolute;
-            left: 1.25rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #64748b;
-            font-size: 1.25rem;
-            transition: color 0.3s ease;
-        }
+      .doc-detail-content p {
+        color: #94a3b8;
+        font-size: 0.875rem;
+      }
 
-        .docs-search-input:focus+.docs-search-icon {
-            color: var(--royal-gold);
-        }
+      .doc-detail-body {
+        color: #cbd5e1;
+        line-height: 1.7;
+        font-size: 0.9375rem;
+      }
 
-        .docs-search-clear {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #64748b;
-            font-size: 1.25rem;
-            cursor: pointer;
-            display: none;
-            transition: color 0.3s ease;
-        }
+      .doc-detail-body h3 {
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.75rem;
+      }
 
-        .docs-search-clear:hover {
-            color: var(--danger);
-        }
+      .doc-detail-body h3:first-child {
+        margin-top: 0;
+      }
 
-        .docs-search-clear.visible {
-            display: block;
-        }
+      .doc-detail-body ul {
+        margin: 0.75rem 0;
+        padding-left: 1.5rem;
+      }
 
-        /* Category Filters */
-        .docs-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
-            -webkit-overflow-scrolling: touch;
-        }
+      .doc-detail-body li {
+        margin-bottom: 0.5rem;
+      }
 
-        .docs-filter {
-            padding: 0.625rem 1.25rem;
-            background: var(--glass-bg);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 2rem;
-            color: #94a3b8;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .doc-detail-body strong {
+        color: var(--royal-gold);
+      }
 
-        .docs-filter:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--royal-gold-50);
-            color: white;
-        }
+      .doc-detail-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--glass-border);
+      }
 
-        .docs-filter.active {
-            background: linear-gradient(135deg, var(--royal-gold), var(--royal-accent));
-            color: var(--royal-dark);
-            border-color: var(--royal-gold);
-            border-color: transparent;
-            font-weight: 600;
-        }
+      /* Quick Start Banner */
+      .quick-start-banner {
+        background: linear-gradient(
+          135deg,
+          var(--royal-gold-15),
+          var(--royal-gold-05)
+        );
+        border: 1px solid var(--royal-gold-30);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
 
-        .docs-filter i {
-            font-size: 1rem;
-        }
+      .quick-start-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 1rem;
+        background: linear-gradient(
+          135deg,
+          var(--royal-gold),
+          var(--royal-accent)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--royal-dark);
+        flex-shrink: 0;
+      }
 
-        /* Results Count */
-        .docs-results {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            color: #64748b;
-            font-size: 0.875rem;
-        }
+      .quick-start-content h3 {
+        font-family: var(--font-serif);
+        font-size: 1.125rem;
+        color: var(--royal-gold);
+        margin-bottom: 0.25rem;
+      }
 
-        /* Doc Cards Grid */
+      .quick-start-content p {
+        color: #94a3b8;
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .quick-start-content a {
+        color: var(--royal-gold);
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .quick-start-content a:hover {
+        text-decoration: underline;
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 640px) {
         .docs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+          grid-template-columns: 1fr;
         }
 
-        /* Doc Card */
-        .doc-card {
-            background: var(--glass-bg);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .doc-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--cat-color, var(--royal-gold));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .doc-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--royal-gold);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--royal-gold-10);
-        }
-        
-        /* Hot/Popular Article Indicator */
-        .doc-card.hot::after {
-            content: '🔥';
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            font-size: 1rem;
-            animation: flicker 1.5s infinite alternate;
-        }
-        
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .doc-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .doc-card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            background: rgba(var(--cat-color-rgb, 212, 175, 55), 0.15);
-            color: var(--cat-color, var(--royal-gold));
-        }
-
-        .doc-card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-
-        .doc-card-title mark {
-            background: var(--royal-gold-30);
-            color: white;
-            border-radius: 2px;
-            padding: 0 2px;
-        }
-
-        .doc-card-desc {
-            font-size: 0.875rem;
-            color: #94a3b8;
-            line-height: 1.5;
-            margin-bottom: 1rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .doc-card-meta {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .doc-card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.375rem;
-        }
-
-        .doc-tag {
-            padding: 0.25rem 0.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.375rem;
-            font-size: 0.6875rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .doc-card-time {
-            font-size: 0.75rem;
-            color: #64748b;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .doc-card-arrow {
-            position: absolute;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            color: var(--royal-gold);
-            font-size: 1.25rem;
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: all 0.3s ease;
-        }
-
-        .doc-card:hover .doc-card-arrow {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Empty State */
-        .docs-empty {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 1rem;
-        }
-
-        .docs-empty i {
-            font-size: 4rem;
-            color: #64748b;
-            margin-bottom: 1rem;
-        }
-
-        .docs-empty h3 {
-            font-family: var(--font-serif);
-            font-size: 1.25rem;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        .docs-empty p {
-            color: #94a3b8;
-        }
-
-        /* Doc Detail Modal */
-        .doc-detail {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Center modal on desktop */
-        @media (min-width: 768px) {
-            #modal .modal-container {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                padding: 2rem;
-            }
-            
-            #modal .modal-content {
-                max-width: 700px;
-                width: 100%;
-                max-height: 85vh;
-                overflow-y: auto;
-                border-radius: 1rem;
-            }
-        }
-
-        .doc-detail-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .doc-detail-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            flex-shrink: 0;
-        }
-
-        .doc-detail-content h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.25rem;
-        }
-
-        .doc-detail-content p {
-            color: #94a3b8;
-            font-size: 0.875rem;
-        }
-
-        .doc-detail-body {
-            color: #cbd5e1;
-            line-height: 1.7;
-            font-size: 0.9375rem;
-        }
-
-        .doc-detail-body h3 {
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            margin: 1.5rem 0 0.75rem;
-        }
-
-        .doc-detail-body h3:first-child {
-            margin-top: 0;
-        }
-
-        .doc-detail-body ul {
-            margin: 0.75rem 0;
-            padding-left: 1.5rem;
-        }
-
-        .doc-detail-body li {
-            margin-bottom: 0.5rem;
-        }
-
-        .doc-detail-body strong {
-            color: var(--royal-gold);
-        }
-
-        .doc-detail-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        /* Quick Start Banner */
         .quick-start-banner {
-            background: linear-gradient(135deg, var(--royal-gold-15), var(--royal-gold-05));
-            border: 1px solid var(--royal-gold-30);
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
+          flex-direction: column;
+          text-align: center;
         }
 
-        .quick-start-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 1rem;
-            background: linear-gradient(135deg, var(--royal-gold), var(--royal-accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: var(--royal-dark);
-            flex-shrink: 0;
+        .docs-filters {
+          justify-content: flex-start;
         }
-
-        .quick-start-content h3 {
-            font-family: var(--font-serif);
-            font-size: 1.125rem;
-            color: var(--royal-gold);
-            margin-bottom: 0.25rem;
-        }
-
-        .quick-start-content p {
-            color: #94a3b8;
-            font-size: 0.875rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .quick-start-content a {
-            color: var(--royal-gold);
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .quick-start-content a:hover {
-            text-decoration: underline;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 640px) {
-            .docs-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-start-banner {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .docs-filters {
-                justify-content: flex-start;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="app-container">
-        <div id="header-container"></div>
-        <div class="main-layout">
-            <div id="sidebar-container"></div>
-            <main class="main-content fade-in" id="main-view">
-                <!-- Page Hero -->
-                <div class="page-hero">
-                    <div class="page-hero-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
-                        <i class="ph-fill ph-book-open"></i>
-                    </div>
-                    <h1 class="page-hero-title">Help & Documentation</h1>
-                    <p class="page-hero-subtitle">Learn how to use every feature of REIGN to rule your day.</p>
-                </div>
-
-                <div class="docs-container">
-                    <!-- Quick Start Banner -->
-                    <div class="quick-start-banner">
-                        <div class="quick-start-icon">
-                            <i class="ph-fill ph-rocket"></i>
-                        </div>
-                        <div class="quick-start-content">
-                            <h3>New to REIGN?</h3>
-                            <p>Start with our quick guide to understand the basics and set up your royal journey.</p>
-                            <a href="#" onclick="openDoc('welcome'); return false;">
-                                Start the Quick Tour <i class="ph-bold ph-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Search Bar -->
-                    <div class="docs-search">
-                        <input type="text" class="docs-search-input" id="search-input"
-                            placeholder="Search documentation..." oninput="filterDocs()">
-                        <i class="ph-bold ph-magnifying-glass docs-search-icon"></i>
-                        <button class="docs-search-clear" id="search-clear" onclick="clearSearch()">
-                            <i class="ph-bold ph-x"></i>
-                        </button>
-                    </div>
-
-                    <!-- Category Filters -->
-                    <div class="docs-filters">
-                        <button class="docs-filter active" data-category="all" onclick="setFilter('all')">
-                            <i class="ph-bold ph-squares-four"></i> All
-                        </button>
-                        <button class="docs-filter" data-category="getting-started"
-                            onclick="setFilter('getting-started')">
-                            <i class="ph-bold ph-rocket"></i> Getting Started
-                        </button>
-                        <button class="docs-filter" data-category="daily" onclick="setFilter('daily')">
-                            <i class="ph-bold ph-sun"></i> Daily Rituals
-                        </button>
-                        <button class="docs-filter" data-category="goals" onclick="setFilter('goals')">
-                            <i class="ph-bold ph-target"></i> Goals & Planning
-                        </button>
-                        <button class="docs-filter" data-category="learning" onclick="setFilter('learning')">
-                            <i class="ph-bold ph-graduation-cap"></i> Learning & Ideas
-                        </button>
-                        <button class="docs-filter" data-category="reflection" onclick="setFilter('reflection')">
-                            <i class="ph-bold ph-heart"></i> Reflection & Insights
-                        </button>
-                        <button class="docs-filter" data-category="data" onclick="setFilter('data')">
-                            <i class="ph-bold ph-cloud"></i> Data & Sync
-                        </button>
-                    </div>
-
-                    <!-- Results Count -->
-                    <div class="docs-results">
-                        <span id="results-count">Showing all articles</span>
-                    </div>
-
-                    <!-- Docs Grid -->
-                    <div class="docs-grid" id="docs-grid">
-                        <!-- Cards rendered dynamically -->
-                    </div>
-                </div>
-            </main>
-        </div>
-
-        <!-- Modal -->
-        <div id="modal" class="modal">
-            <div class="modal-overlay" onclick="closeModal()"></div>
-            <div class="modal-container">
-                <div class="modal-content" id="modal-content"></div>
+      <div id="header-container"></div>
+      <div class="main-layout">
+        <div id="sidebar-container"></div>
+        <main class="main-content fade-in" id="main-view">
+          <!-- Page Hero -->
+          <div class="page-hero">
+            <div
+              class="page-hero-icon"
+              style="background: linear-gradient(135deg, #8b5cf6, #7c3aed)"
+            >
+              <i class="ph-fill ph-book-open"></i>
             </div>
-        </div>
+            <h1 class="page-hero-title">Help & Documentation</h1>
+            <p class="page-hero-subtitle">
+              Learn how to use every feature of REIGN to rule your day.
+            </p>
+          </div>
 
-        <div id="footer-container"></div>
+          <div class="docs-container">
+            <!-- Quick Start Banner -->
+            <div class="quick-start-banner">
+              <div class="quick-start-icon">
+                <i class="ph-fill ph-rocket"></i>
+              </div>
+              <div class="quick-start-content">
+                <h3>New to REIGN?</h3>
+                <p>
+                  Start with our quick guide to understand the basics and set up
+                  your royal journey.
+                </p>
+                <a href="#" onclick="openDoc('welcome'); return false;">
+                  Start the Quick Tour <i class="ph-bold ph-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="docs-search">
+              <input
+                type="text"
+                class="docs-search-input"
+                id="search-input"
+                placeholder="Search documentation..."
+                oninput="filterDocs()"
+              />
+              <i class="ph-bold ph-magnifying-glass docs-search-icon"></i>
+              <button
+                class="docs-search-clear"
+                id="search-clear"
+                onclick="clearSearch()"
+              >
+                <i class="ph-bold ph-x"></i>
+              </button>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="docs-filters">
+              <button
+                class="docs-filter active"
+                data-category="all"
+                onclick="setFilter('all')"
+              >
+                <i class="ph-bold ph-squares-four"></i> All
+              </button>
+              <button
+                class="docs-filter"
+                data-category="getting-started"
+                onclick="setFilter('getting-started')"
+              >
+                <i class="ph-bold ph-rocket"></i> Getting Started
+              </button>
+              <button
+                class="docs-filter"
+                data-category="daily"
+                onclick="setFilter('daily')"
+              >
+                <i class="ph-bold ph-sun"></i> Daily Rituals
+              </button>
+              <button
+                class="docs-filter"
+                data-category="goals"
+                onclick="setFilter('goals')"
+              >
+                <i class="ph-bold ph-target"></i> Goals & Planning
+              </button>
+              <button
+                class="docs-filter"
+                data-category="learning"
+                onclick="setFilter('learning')"
+              >
+                <i class="ph-bold ph-graduation-cap"></i> Learning & Ideas
+              </button>
+              <button
+                class="docs-filter"
+                data-category="reflection"
+                onclick="setFilter('reflection')"
+              >
+                <i class="ph-bold ph-heart"></i> Reflection & Insights
+              </button>
+              <button
+                class="docs-filter"
+                data-category="data"
+                onclick="setFilter('data')"
+              >
+                <i class="ph-bold ph-cloud"></i> Data & Sync
+              </button>
+            </div>
+
+            <!-- Results Count -->
+            <div class="docs-results">
+              <span id="results-count">Showing all articles</span>
+            </div>
+
+            <!-- Docs Grid -->
+            <div class="docs-grid" id="docs-grid">
+              <!-- Cards rendered dynamically -->
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- Modal -->
+      <div id="modal" class="modal">
+        <div class="modal-overlay" onclick="closeModal()"></div>
+        <div class="modal-container">
+          <div class="modal-content" id="modal-content"></div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Core Dependencies (must load in this order) -->
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
     <script src="../js/core.js"></script>
     <script src="../js/components/header.js"></script>
     <script src="../js/components/sidebar.js"></script>
@@ -599,22 +690,22 @@
     <script src="../js/components/share-prompt.js"></script>
 
     <script>
-        // ==========================================
-        // DOCUMENTATION DATA
-        // ==========================================
-        const docs = [
-            // Getting Started
-            {
-                id: 'welcome',
-                title: 'Welcome to REIGN',
-                desc: 'Your journey to ruling your day begins here. Learn the core philosophy and features.',
-                category: 'getting-started',
-                icon: 'ph-crown',
-                color: 'var(--royal-gold)',
-                tags: ['overview', 'beginner', 'introduction'],
-                time: '5 min',
-                hot: true,
-                content: `
+      // ==========================================
+      // DOCUMENTATION DATA
+      // ==========================================
+      const docs = [
+        // Getting Started
+        {
+          id: "welcome",
+          title: "Welcome to REIGN",
+          desc: "Your journey to ruling your day begins here. Learn the core philosophy and features.",
+          category: "getting-started",
+          icon: "ph-crown",
+          color: "var(--royal-gold)",
+          tags: ["overview", "beginner", "introduction"],
+          time: "5 min",
+          hot: true,
+          content: `
                     <h3>Welcome, Royalty!</h3>
                     <p>REIGN is your personal productivity command center, designed to help you plan, execute, and reflect on your days with intention and excellence. Built for those who demand more from themselves.</p>
                     
@@ -644,18 +735,18 @@
                         <li>Use keyboard shortcuts: <kbd>M</kbd> for Morning, <kbd>E</kbd> for Evening</li>
                         <li>Install REIGN as a PWA for the best mobile experience</li>
                     </ul>
-                `
-            },
-            {
-                id: 'roles',
-                title: 'Choosing Your Role',
-                desc: 'King or Queen? Customize your experience with role-appropriate styling and language.',
-                category: 'getting-started',
-                icon: 'ph-user-switch',
-                color: '#ec4899',
-                tags: ['settings', 'personalization', 'theme'],
-                time: '2 min',
-                content: `
+                `,
+        },
+        {
+          id: "roles",
+          title: "Choosing Your Role",
+          desc: "King or Queen? Customize your experience with role-appropriate styling and language.",
+          category: "getting-started",
+          icon: "ph-user-switch",
+          color: "#ec4899",
+          tags: ["settings", "personalization", "theme"],
+          time: "2 min",
+          content: `
                     <h3>King or Queen?</h3>
                     <p>REIGN adapts to your identity. Choose the role that resonates with you and watch the entire app transform.</p>
                     
@@ -685,18 +776,18 @@
                     
                     <h3>Role Persists Everywhere</h3>
                     <p>Your role choice syncs to the cloud, so whether you're on mobile or desktop, your preference follows you.</p>
-                `
-            },
-            {
-                id: 'navigation',
-                title: 'Navigating REIGN',
-                desc: 'Master the sidebar, dashboard, and mobile navigation to move efficiently.',
-                category: 'getting-started',
-                icon: 'ph-compass',
-                color: '#3b82f6',
-                tags: ['navigation', 'ui', 'mobile'],
-                time: '3 min',
-                content: `
+                `,
+        },
+        {
+          id: "navigation",
+          title: "Navigating REIGN",
+          desc: "Master the sidebar, dashboard, and mobile navigation to move efficiently.",
+          category: "getting-started",
+          icon: "ph-compass",
+          color: "#3b82f6",
+          tags: ["navigation", "ui", "mobile"],
+          time: "3 min",
+          content: `
                     <h3>The Sidebar</h3>
                     <p>Your main navigation hub, organized into logical sections for quick access:</p>
                     <ul>
@@ -736,18 +827,18 @@
                         <li><kbd>G</kbd> then <kbd>E</kbd> - Go to Evening Report</li>
                         <li><kbd>?</kbd> - Show all keyboard shortcuts</li>
                     </ul>
-                `
-            },
-            {
-                id: 'account',
-                title: 'Creating Your Account',
-                desc: 'Sign up, sync your data, and access REIGN from any device.',
-                category: 'getting-started',
-                icon: 'ph-user-plus',
-                color: '#10b981',
-                tags: ['account', 'registration', 'sync'],
-                time: '3 min',
-                content: `
+                `,
+        },
+        {
+          id: "account",
+          title: "Creating Your Account",
+          desc: "Sign up, sync your data, and access REIGN from any device.",
+          category: "getting-started",
+          icon: "ph-user-plus",
+          color: "#10b981",
+          tags: ["account", "registration", "sync"],
+          time: "3 min",
+          content: `
                     <h3>Why Create an Account?</h3>
                     <p>While REIGN works offline without an account, signing up unlocks:</p>
                     <ul>
@@ -781,18 +872,18 @@
                     
                     <h3>Data Privacy</h3>
                     <p>Your data belongs to you. We never sell your information or use it for advertising. See our Privacy & Security section for details.</p>
-                `
-            },
-            {
-                id: 'pwa',
-                title: 'Installing REIGN (PWA)',
-                desc: 'Install REIGN on your device for the best experience and offline access.',
-                category: 'getting-started',
-                icon: 'ph-device-mobile',
-                color: '#8b5cf6',
-                tags: ['install', 'pwa', 'mobile', 'offline'],
-                time: '2 min',
-                content: `
+                `,
+        },
+        {
+          id: "pwa",
+          title: "Installing REIGN (PWA)",
+          desc: "Install REIGN on your device for the best experience and offline access.",
+          category: "getting-started",
+          icon: "ph-device-mobile",
+          color: "#8b5cf6",
+          tags: ["install", "pwa", "mobile", "offline"],
+          time: "2 min",
+          content: `
                     <h3>What is a PWA?</h3>
                     <p>REIGN is a Progressive Web App (PWA). This means you can install it on your device like a native app, with:</p>
                     <ul>
@@ -827,21 +918,21 @@
                     
                     <h3>Offline Mode</h3>
                     <p>Once installed, REIGN works offline! Your data saves locally and syncs when you're back online.</p>
-                `
-            },
+                `,
+        },
 
-            // Daily Rituals
-            {
-                id: 'morning',
-                title: 'Morning Protocol',
-                desc: 'Start your day with intention. Plan tasks, set priorities, and prepare for victory.',
-                category: 'daily',
-                icon: 'ph-sun-horizon',
-                color: '#f59e0b',
-                tags: ['tasks', 'planning', 'routine', 'morning'],
-                time: '5 min',
-                hot: true,
-                content: `
+        // Daily Rituals
+        {
+          id: "morning",
+          title: "Morning Protocol",
+          desc: "Start your day with intention. Plan tasks, set priorities, and prepare for victory.",
+          category: "daily",
+          icon: "ph-sun-horizon",
+          color: "#f59e0b",
+          tags: ["tasks", "planning", "routine", "morning"],
+          time: "5 min",
+          hot: true,
+          content: `
                     <h3>The Power of Mornings</h3>
                     <p>Research shows that how you start your day determines how you'll finish it. Morning Protocol helps you plan with intention and set yourself up for success.</p>
                     
@@ -888,18 +979,18 @@
                     
                     <h3>Viewing Past Mornings</h3>
                     <p>Access previous Morning Protocols in the Journal Archive to review your planning patterns and improve over time.</p>
-                `
-            },
-            {
-                id: 'evening',
-                title: 'Evening Report',
-                desc: 'Reflect on your victories and learnings. Close out the day with wisdom.',
-                category: 'daily',
-                icon: 'ph-moon-stars',
-                color: '#6366f1',
-                tags: ['reflection', 'review', 'routine', 'evening'],
-                time: '4 min',
-                content: `
+                `,
+        },
+        {
+          id: "evening",
+          title: "Evening Report",
+          desc: "Reflect on your victories and learnings. Close out the day with wisdom.",
+          category: "daily",
+          icon: "ph-moon-stars",
+          color: "#6366f1",
+          tags: ["reflection", "review", "routine", "evening"],
+          time: "4 min",
+          content: `
                     <h3>End with Reflection</h3>
                     <p>The Evening Report transforms your day's experiences into wisdom for tomorrow. This is where growth happens—in the pause between action and rest.</p>
                     
@@ -929,18 +1020,18 @@
                     
                     <h3>Mood Tracking Over Time</h3>
                     <p>Your daily mood ratings build a pattern visible in Analytics. Spot trends, identify what days are typically hard, and optimize your schedule.</p>
-                `
-            },
-            {
-                id: 'focus',
-                title: 'Focus Chamber (Pomodoro)',
-                desc: 'Deep work sessions with the Pomodoro technique. Build your focus muscle.',
-                category: 'daily',
-                icon: 'ph-timer',
-                color: '#ef4444',
-                tags: ['focus', 'pomodoro', 'productivity', 'deep-work'],
-                time: '4 min',
-                content: `
+                `,
+        },
+        {
+          id: "focus",
+          title: "Focus Chamber (Pomodoro)",
+          desc: "Deep work sessions with the Pomodoro technique. Build your focus muscle.",
+          category: "daily",
+          icon: "ph-timer",
+          color: "#ef4444",
+          tags: ["focus", "pomodoro", "productivity", "deep-work"],
+          time: "4 min",
+          content: `
                     <h3>The Pomodoro Technique</h3>
                     <p>Developed by Francesco Cirillo, the Pomodoro Technique uses focused work intervals (traditionally 25 minutes) followed by short breaks to maximize productivity while preventing burnout.</p>
                     
@@ -987,18 +1078,18 @@
                         <li><strong>15 minutes</strong> - Quick tasks, email, admin work</li>
                         <li><strong>50 minutes</strong> - Extended sessions for flow state</li>
                     </ul>
-                `
-            },
-            {
-                id: 'tasks',
-                title: 'Task Management',
-                desc: 'Master your daily tasks with priorities, statuses, and goal alignment.',
-                category: 'daily',
-                icon: 'ph-check-square',
-                color: '#14b8a6',
-                tags: ['tasks', 'todo', 'productivity'],
-                time: '3 min',
-                content: `
+                `,
+        },
+        {
+          id: "tasks",
+          title: "Task Management",
+          desc: "Master your daily tasks with priorities, statuses, and goal alignment.",
+          category: "daily",
+          icon: "ph-check-square",
+          color: "#14b8a6",
+          tags: ["tasks", "todo", "productivity"],
+          time: "3 min",
+          content: `
                     <h3>Task Lifecycle</h3>
                     <p>Every task in REIGN follows a clear lifecycle:</p>
                     <ol>
@@ -1028,20 +1119,20 @@
                     
                     <h3>Task Analytics</h3>
                     <p>View your task completion trends in Analytics to understand your productivity patterns.</p>
-                `
-            },
+                `,
+        },
 
-            // Goals
-            {
-                id: 'goals-overview',
-                title: 'Royal Ambitions: Goal System',
-                desc: 'Set yearly visions, monthly milestones, and weekly targets. Build your legacy.',
-                category: 'goals',
-                icon: 'ph-target',
-                color: '#10b981',
-                tags: ['goals', 'planning', 'strategy', 'ambitions'],
-                time: '6 min',
-                content: `
+        // Goals
+        {
+          id: "goals-overview",
+          title: "Royal Ambitions: Goal System",
+          desc: "Set yearly visions, monthly milestones, and weekly targets. Build your legacy.",
+          category: "goals",
+          icon: "ph-target",
+          color: "#10b981",
+          tags: ["goals", "planning", "strategy", "ambitions"],
+          time: "6 min",
+          content: `
                     <h3>The REIGN Goal Hierarchy</h3>
                     <p>REIGN uses a cascading goal structure that connects your big vision to daily action:</p>
                     <ul>
@@ -1097,18 +1188,18 @@
                         <li><strong>Completed</strong> - Successfully achieved</li>
                         <li><strong>Abandoned</strong> - Decided not to pursue</li>
                     </ul>
-                `
-            },
-            {
-                id: 'weekly-review',
-                title: 'Weekly Review',
-                desc: 'Assess your week, celebrate wins, learn from challenges, and plan ahead.',
-                category: 'goals',
-                icon: 'ph-calendar-check',
-                color: '#8b5cf6',
-                tags: ['review', 'reflection', 'weekly', 'planning'],
-                time: '5 min',
-                content: `
+                `,
+        },
+        {
+          id: "weekly-review",
+          title: "Weekly Review",
+          desc: "Assess your week, celebrate wins, learn from challenges, and plan ahead.",
+          category: "goals",
+          icon: "ph-calendar-check",
+          color: "#8b5cf6",
+          tags: ["review", "reflection", "weekly", "planning"],
+          time: "5 min",
+          content: `
                     <h3>Why Weekly Reviews Matter</h3>
                     <p>Without regular review, goals drift and lessons are lost. The Weekly Review is your reset button—keeping you on track and growing.</p>
                     
@@ -1143,18 +1234,18 @@
                     
                     <h3>Monthly Reviews</h3>
                     <p>At the end of each month, REIGN prompts you to do a deeper Monthly Review covering the entire month's progress across all categories.</p>
-                `
-            },
-            {
-                id: 'goal-linking',
-                title: 'Linking Tasks to Goals',
-                desc: 'Connect your daily actions to weekly goals for aligned productivity.',
-                category: 'goals',
-                icon: 'ph-link',
-                color: '#06b6d4',
-                tags: ['goals', 'tasks', 'alignment', 'productivity'],
-                time: '2 min',
-                content: `
+                `,
+        },
+        {
+          id: "goal-linking",
+          title: "Linking Tasks to Goals",
+          desc: "Connect your daily actions to weekly goals for aligned productivity.",
+          category: "goals",
+          icon: "ph-link",
+          color: "#06b6d4",
+          tags: ["goals", "tasks", "alignment", "productivity"],
+          time: "2 min",
+          content: `
                     <h3>Why Link Tasks to Goals?</h3>
                     <p>When your daily tasks connect to weekly goals, you ensure every day contributes to your bigger vision. No more busy work that doesn't move the needle.</p>
                     
@@ -1176,20 +1267,20 @@
                     
                     <h3>Goal Progress Updates</h3>
                     <p>Completing linked tasks doesn't auto-update goal progress. Manually update your goal progress during Evening Report or Weekly Review for accurate tracking.</p>
-                `
-            },
+                `,
+        },
 
-            // Learning
-            {
-                id: 'learning',
-                title: 'Learning Forge',
-                desc: 'Track courses, build learning streaks, and grow continuously.',
-                category: 'learning',
-                icon: 'ph-graduation-cap',
-                color: '#3b82f6',
-                tags: ['courses', 'learning', 'growth', 'education'],
-                time: '5 min',
-                content: `
+        // Learning
+        {
+          id: "learning",
+          title: "Learning Forge",
+          desc: "Track courses, build learning streaks, and grow continuously.",
+          category: "learning",
+          icon: "ph-graduation-cap",
+          color: "#3b82f6",
+          tags: ["courses", "learning", "growth", "education"],
+          time: "5 min",
+          content: `
                     <h3>The Learning Forge Philosophy</h3>
                     <p>Continuous learning is the key to growth. Learning Forge helps you stay consistent with your educational goals and build lasting habits.</p>
                     
@@ -1235,18 +1326,18 @@
                     
                     <h3>Course Completion</h3>
                     <p>When you complete all lessons, the course moves to "Completed" status. Celebrate your achievement! 🎉</p>
-                `
-            },
-            {
-                id: 'ideas',
-                title: "Today's Idea",
-                desc: 'Capture those lightning-bolt moments before they disappear.',
-                category: 'learning',
-                icon: 'ph-lightbulb',
-                color: '#eab308',
-                tags: ['ideas', 'creativity', 'capture'],
-                time: '2 min',
-                content: `
+                `,
+        },
+        {
+          id: "ideas",
+          title: "Today's Idea",
+          desc: "Capture those lightning-bolt moments before they disappear.",
+          category: "learning",
+          icon: "ph-lightbulb",
+          color: "#eab308",
+          tags: ["ideas", "creativity", "capture"],
+          time: "2 min",
+          content: `
                     <h3>Capture Ideas Instantly</h3>
                     <p>Great ideas strike at unexpected moments. Today's Idea gives you a quick-capture space so nothing slips away.</p>
                     
@@ -1275,18 +1366,18 @@
                         <li>Save for later</li>
                         <li>Discard if no longer relevant</li>
                     </ul>
-                `
-            },
-            {
-                id: 'lessons-page',
-                title: 'Daily Lessons',
-                desc: 'Capture wisdom and insights as you live. Build your personal knowledge base.',
-                category: 'learning',
-                icon: 'ph-book-open-text',
-                color: '#f59e0b',
-                tags: ['wisdom', 'learning', 'insights', 'journal'],
-                time: '3 min',
-                content: `
+                `,
+        },
+        {
+          id: "lessons-page",
+          title: "Daily Lessons",
+          desc: "Capture wisdom and insights as you live. Build your personal knowledge base.",
+          category: "learning",
+          icon: "ph-book-open-text",
+          color: "#f59e0b",
+          tags: ["wisdom", "learning", "insights", "journal"],
+          time: "3 min",
+          content: `
                     <h3>Capture Wisdom Daily</h3>
                     <p>Every day teaches us something. Daily Lessons helps you capture and remember those insights before they fade.</p>
                     
@@ -1315,20 +1406,20 @@
                         <li>Spot patterns in your life</li>
                         <li>Remember old wisdom when needed</li>
                     </ul>
-                `
-            },
+                `,
+        },
 
-            // Reflection
-            {
-                id: 'dailygood',
-                title: 'The Good in Today',
-                desc: 'Gratitude practice to shift your perspective and build positivity.',
-                category: 'reflection',
-                icon: 'ph-heart',
-                color: '#ec4899',
-                tags: ['gratitude', 'mindfulness', 'positivity', 'mental-health'],
-                time: '3 min',
-                content: `
+        // Reflection
+        {
+          id: "dailygood",
+          title: "The Good in Today",
+          desc: "Gratitude practice to shift your perspective and build positivity.",
+          category: "reflection",
+          icon: "ph-heart",
+          color: "#ec4899",
+          tags: ["gratitude", "mindfulness", "positivity", "mental-health"],
+          time: "3 min",
+          content: `
                     <h3>The Science of Gratitude</h3>
                     <p>Research consistently shows that gratitude practices:</p>
                     <ul>
@@ -1370,18 +1461,18 @@
                     
                     <h3>Reviewing Past Gratitude</h3>
                     <p>Browse your gratitude history in the Journal Archive. On tough days, reading past entries reminds you of life's good moments.</p>
-                `
-            },
-            {
-                id: 'relationships',
-                title: 'Rainy Day People',
-                desc: 'Honor the people who hold your hand on rainy days.',
-                category: 'reflection',
-                icon: 'ph-heart-half',
-                color: '#f43f5e',
-                tags: ['relationships', 'people', 'gratitude', 'connections'],
-                time: '4 min',
-                content: `
+                `,
+        },
+        {
+          id: "relationships",
+          title: "Rainy Day People",
+          desc: "Honor the people who hold your hand on rainy days.",
+          category: "reflection",
+          icon: "ph-heart-half",
+          color: "#f43f5e",
+          tags: ["relationships", "people", "gratitude", "connections"],
+          time: "4 min",
+          content: `
                     <h3>Who Are Your Rainy Day People?</h3>
                     <p>These are the people who show up when life gets hard. The ones who carry your burdens, connect you to purpose, influence your growth, and bring unique gifts to your life.</p>
                     
@@ -1421,18 +1512,18 @@
                     
                     <h3>Favorites</h3>
                     <p>Mark your closest people as favorites. They appear at the top for quick access.</p>
-                `
-            },
-            {
-                id: 'archive',
-                title: 'Journal Archive',
-                desc: 'Browse your past entries and see your journey over time.',
-                category: 'reflection',
-                icon: 'ph-book-bookmark',
-                color: '#8b5cf6',
-                tags: ['history', 'archive', 'journal', 'browse'],
-                time: '2 min',
-                content: `
+                `,
+        },
+        {
+          id: "archive",
+          title: "Journal Archive",
+          desc: "Browse your past entries and see your journey over time.",
+          category: "reflection",
+          icon: "ph-book-bookmark",
+          color: "#8b5cf6",
+          tags: ["history", "archive", "journal", "browse"],
+          time: "2 min",
+          content: `
                     <h3>Your Personal History</h3>
                     <p>The Journal Archive is your time machine—browse past Morning Protocols, Evening Reports, Gratitude entries, and more.</p>
                     
@@ -1460,18 +1551,18 @@
                         <li>Remember lessons you've learned</li>
                         <li>Celebrate your consistency</li>
                     </ul>
-                `
-            },
-            {
-                id: 'analytics',
-                title: 'Analytics & Insights',
-                desc: 'View your progress charts, trends, and patterns over time.',
-                category: 'reflection',
-                icon: 'ph-chart-line-up',
-                color: '#a855f7',
-                tags: ['analytics', 'charts', 'progress', 'data'],
-                time: '3 min',
-                content: `
+                `,
+        },
+        {
+          id: "analytics",
+          title: "Analytics & Insights",
+          desc: "View your progress charts, trends, and patterns over time.",
+          category: "reflection",
+          icon: "ph-chart-line-up",
+          color: "#a855f7",
+          tags: ["analytics", "charts", "progress", "data"],
+          time: "3 min",
+          content: `
                     <h3>Data-Driven Self-Improvement</h3>
                     <p>Analytics transforms your daily logging into actionable insights. See patterns you'd never notice otherwise.</p>
                     
@@ -1500,20 +1591,20 @@
                         <li>Which goal categories need attention?</li>
                         <li>When do you skip logging?</li>
                     </ul>
-                `
-            },
+                `,
+        },
 
-            // Data & Sync
-            {
-                id: 'sync',
-                title: 'Cloud Sync',
-                desc: 'Keep your data synchronized across all devices automatically.',
-                category: 'data',
-                icon: 'ph-cloud',
-                color: '#06b6d4',
-                tags: ['sync', 'backup', 'devices', 'cloud'],
-                time: '4 min',
-                content: `
+        // Data & Sync
+        {
+          id: "sync",
+          title: "Cloud Sync",
+          desc: "Keep your data synchronized across all devices automatically.",
+          category: "data",
+          icon: "ph-cloud",
+          color: "#06b6d4",
+          tags: ["sync", "backup", "devices", "cloud"],
+          time: "4 min",
+          content: `
                     <h3>Automatic Cloud Sync</h3>
                     <p>When logged in, your data automatically syncs to the cloud within seconds of any change. Access your journal from any device, anywhere.</p>
                     
@@ -1548,18 +1639,18 @@
                         <li><strong>Data missing?</strong> Try refreshing the page</li>
                         <li><strong>Conflict loop?</strong> Pick one device as "master" and sync from there</li>
                     </ul>
-                `
-            },
-            {
-                id: 'privacy',
-                title: 'Privacy & Security',
-                desc: 'Your data is yours. Understand how we protect your information.',
-                category: 'data',
-                icon: 'ph-shield-check',
-                color: '#10b981',
-                tags: ['privacy', 'security', 'data', 'protection'],
-                time: '3 min',
-                content: `
+                `,
+        },
+        {
+          id: "privacy",
+          title: "Privacy & Security",
+          desc: "Your data is yours. Understand how we protect your information.",
+          category: "data",
+          icon: "ph-shield-check",
+          color: "#10b981",
+          tags: ["privacy", "security", "data", "protection"],
+          time: "3 min",
+          content: `
                     <h3>Your Data, Your Control</h3>
                     <p>REIGN respects your privacy. Your journal entries, goals, and personal reflections belong to you—not us.</p>
                     
@@ -1598,18 +1689,18 @@
                     
                     <h3>Deleting Your Data</h3>
                     <p>You can delete your account and all associated data from Settings → Account → Delete Account. This action is permanent and cannot be undone.</p>
-                `
-            },
-            {
-                id: 'local-storage',
-                title: 'Local Storage & Offline',
-                desc: 'Understand how REIGN stores data locally and works offline.',
-                category: 'data',
-                icon: 'ph-hard-drives',
-                color: '#64748b',
-                tags: ['storage', 'offline', 'local', 'backup'],
-                time: '3 min',
-                content: `
+                `,
+        },
+        {
+          id: "local-storage",
+          title: "Local Storage & Offline",
+          desc: "Understand how REIGN stores data locally and works offline.",
+          category: "data",
+          icon: "ph-hard-drives",
+          color: "#64748b",
+          tags: ["storage", "offline", "local", "backup"],
+          time: "3 min",
+          content: `
                     <h3>Local-First Architecture</h3>
                     <p>REIGN stores all your data locally in your browser first. This means:</p>
                     <ul>
@@ -1639,18 +1730,18 @@
                     
                     <h3>Multiple Browsers</h3>
                     <p>Each browser has its own LocalStorage. To access the same data across browsers, log in to sync with the cloud.</p>
-                `
-            },
-            {
-                id: 'export-import',
-                title: 'Export & Backup',
-                desc: 'Download your data for backup or transfer to another device.',
-                category: 'data',
-                icon: 'ph-download',
-                color: '#f59e0b',
-                tags: ['export', 'backup', 'download', 'data'],
-                time: '2 min',
-                content: `
+                `,
+        },
+        {
+          id: "export-import",
+          title: "Export & Backup",
+          desc: "Download your data for backup or transfer to another device.",
+          category: "data",
+          icon: "ph-download",
+          color: "#f59e0b",
+          tags: ["export", "backup", "download", "data"],
+          time: "2 min",
+          content: `
                     <h3>Exporting Your Data</h3>
                     <p>Download a complete backup of all your REIGN data:</p>
                     <ol>
@@ -1688,18 +1779,18 @@
                         <li>Confirm the import</li>
                     </ol>
                     <p>⚠️ Importing replaces all current data!</p>
-                `
-            },
-            {
-                id: 'troubleshooting',
-                title: 'Troubleshooting',
-                desc: 'Common issues and how to fix them.',
-                category: 'data',
-                icon: 'ph-wrench',
-                color: '#ef4444',
-                tags: ['help', 'issues', 'bugs', 'support'],
-                time: '4 min',
-                content: `
+                `,
+        },
+        {
+          id: "troubleshooting",
+          title: "Troubleshooting",
+          desc: "Common issues and how to fix them.",
+          category: "data",
+          icon: "ph-wrench",
+          color: "#ef4444",
+          tags: ["help", "issues", "bugs", "support"],
+          time: "4 min",
+          content: `
                     <h3>Common Issues & Solutions</h3>
                     
                     <h3>App Not Loading</h3>
@@ -1748,18 +1839,18 @@
                         <li>Include what you were doing when the issue occurred</li>
                         <li>Note your browser and device type</li>
                     </ul>
-                `
-            },
-            {
-                id: 'keyboard-shortcuts',
-                title: 'Keyboard Shortcuts',
-                desc: 'Navigate REIGN faster with keyboard shortcuts.',
-                category: 'data',
-                icon: 'ph-keyboard',
-                color: '#6366f1',
-                tags: ['keyboard', 'shortcuts', 'productivity', 'power-user'],
-                time: '2 min',
-                content: `
+                `,
+        },
+        {
+          id: "keyboard-shortcuts",
+          title: "Keyboard Shortcuts",
+          desc: "Navigate REIGN faster with keyboard shortcuts.",
+          category: "data",
+          icon: "ph-keyboard",
+          color: "#6366f1",
+          tags: ["keyboard", "shortcuts", "productivity", "power-user"],
+          time: "2 min",
+          content: `
                     <h3>Navigation Shortcuts</h3>
                     <ul>
                         <li><kbd>G</kbd> + <kbd>D</kbd> - Go to Dashboard</li>
@@ -1791,124 +1882,141 @@
                         <li><kbd>R</kbd> - Reset timer</li>
                         <li><kbd>D</kbd> - Log distraction</li>
                     </ul>
-                `
-            }
-        ];
+                `,
+        },
+      ];
 
-        // ==========================================
-        // STATE
-        // ==========================================
-        let currentFilter = 'all';
-        let searchQuery = '';
+      // ==========================================
+      // STATE
+      // ==========================================
+      let currentFilter = "all";
+      let searchQuery = "";
 
-        // ==========================================
-        // INITIALIZATION
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            HeaderComponent.render('header-container', {
-                showBreadcrumb: true,
-                pageTitle: 'Help & Docs',
-                pageIcon: 'ph-book-open'
-            });
-            SidebarComponent.render('sidebar-container');
-            FooterComponent.render('footer-container');
+      // ==========================================
+      // INITIALIZATION
+      // ==========================================
+      document.addEventListener("DOMContentLoaded", () => {
+        HeaderComponent.render("header-container", {
+          showBreadcrumb: true,
+          pageTitle: "Help & Docs",
+          pageIcon: "ph-book-open",
+        });
+        SidebarComponent.render("sidebar-container");
+        FooterComponent.render("footer-container");
 
-            // Apply role theme (King/Queen)
-            if (typeof UI !== 'undefined' && UI.initTheme) {
-                UI.initTheme();
-            }
+        // Apply role theme (King/Queen)
+        if (typeof UI !== "undefined" && UI.initTheme) {
+          UI.initTheme();
+        }
 
-            renderDocs();
+        renderDocs();
+      });
+
+      // ==========================================
+      // FILTERING
+      // ==========================================
+      function setFilter(category) {
+        currentFilter = category;
+
+        // Update filter button states
+        document.querySelectorAll(".docs-filter").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.category === category);
         });
 
-        // ==========================================
-        // FILTERING
-        // ==========================================
-        function setFilter(category) {
-            currentFilter = category;
+        renderDocs();
+      }
 
-            // Update filter button states
-            document.querySelectorAll('.docs-filter').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.category === category);
-            });
+      function filterDocs() {
+        searchQuery = document
+          .getElementById("search-input")
+          .value.toLowerCase()
+          .trim();
 
-            renderDocs();
-        }
+        // Show/hide clear button
+        document
+          .getElementById("search-clear")
+          .classList.toggle("visible", searchQuery.length > 0);
 
-        function filterDocs() {
-            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+        renderDocs();
+      }
 
-            // Show/hide clear button
-            document.getElementById('search-clear').classList.toggle('visible', searchQuery.length > 0);
+      function clearSearch() {
+        document.getElementById("search-input").value = "";
+        searchQuery = "";
+        document.getElementById("search-clear").classList.remove("visible");
+        renderDocs();
+      }
 
-            renderDocs();
-        }
+      // ==========================================
+      // RENDERING
+      // ==========================================
+      function renderDocs() {
+        const container = document.getElementById("docs-grid");
 
-        function clearSearch() {
-            document.getElementById('search-input').value = '';
-            searchQuery = '';
-            document.getElementById('search-clear').classList.remove('visible');
-            renderDocs();
-        }
+        // Filter docs
+        let filtered = docs.filter((doc) => {
+          const matchesCategory =
+            currentFilter === "all" || doc.category === currentFilter;
+          const matchesSearch =
+            !searchQuery ||
+            doc.title.toLowerCase().includes(searchQuery) ||
+            doc.desc.toLowerCase().includes(searchQuery) ||
+            doc.tags.some((tag) => tag.toLowerCase().includes(searchQuery));
 
-        // ==========================================
-        // RENDERING
-        // ==========================================
-        function renderDocs() {
-            const container = document.getElementById('docs-grid');
+          return matchesCategory && matchesSearch;
+        });
 
-            // Filter docs
-            let filtered = docs.filter(doc => {
-                const matchesCategory = currentFilter === 'all' || doc.category === currentFilter;
-                const matchesSearch = !searchQuery ||
-                    doc.title.toLowerCase().includes(searchQuery) ||
-                    doc.desc.toLowerCase().includes(searchQuery) ||
-                    doc.tags.some(tag => tag.toLowerCase().includes(searchQuery));
+        // Update results count
+        const countText =
+          filtered.length === docs.length
+            ? "Showing all articles"
+            : `Showing ${filtered.length} of ${docs.length} articles`;
+        document.getElementById("results-count").textContent = countText;
 
-                return matchesCategory && matchesSearch;
-            });
-
-            // Update results count
-            const countText = filtered.length === docs.length
-                ? 'Showing all articles'
-                : `Showing ${filtered.length} of ${docs.length} articles`;
-            document.getElementById('results-count').textContent = countText;
-
-            // Render cards
-            if (filtered.length === 0) {
-                container.innerHTML = `
+        // Render cards
+        if (filtered.length === 0) {
+          container.innerHTML = `
                     <div class="docs-empty" style="grid-column: 1 / -1;">
                         <i class="ph-duotone ph-magnifying-glass"></i>
                         <h3>No Results Found</h3>
                         <p>Try a different search term or category.</p>
                     </div>
                 `;
-                return;
+          return;
+        }
+
+        container.innerHTML = filtered
+          .map((doc) => {
+            // Highlight search matches in title
+            let title = Utils.sanitize(doc.title);
+            if (searchQuery) {
+              const regex = new RegExp(`(${searchQuery})`, "gi");
+              title = title.replace(regex, "<mark>$1</mark>");
             }
 
-            container.innerHTML = filtered.map(doc => {
-                // Highlight search matches in title
-                let title = Utils.sanitize(doc.title);
-                if (searchQuery) {
-                    const regex = new RegExp(`(${searchQuery})`, 'gi');
-                    title = title.replace(regex, '<mark>$1</mark>');
-                }
-                
-                // Add hot class for popular articles
-                const hotClass = doc.hot ? ' hot' : '';
+            // Add hot class for popular articles
+            const hotClass = doc.hot ? " hot" : "";
 
-                return `
+            return `
                     <div class="doc-card${hotClass}" 
                          style="--cat-color: ${doc.color};"
                          onclick="openDoc('${doc.id}')">
-                        <div class="doc-card-icon" style="background: ${doc.color}20; color: ${doc.color};">
+                        <div class="doc-card-icon" style="background: ${
+                          doc.color
+                        }20; color: ${doc.color};">
                             <i class="ph-duotone ${doc.icon}"></i>
                         </div>
                         <h3 class="doc-card-title">${title}</h3>
                         <p class="doc-card-desc">${Utils.sanitize(doc.desc)}</p>
                         <div class="doc-card-meta">
                             <div class="doc-card-tags">
-                                ${doc.tags.slice(0, 2).map(tag => `<span class="doc-tag">${tag}</span>`).join('')}
+                                ${doc.tags
+                                  .slice(0, 2)
+                                  .map(
+                                    (tag) =>
+                                      `<span class="doc-tag">${tag}</span>`
+                                  )
+                                  .join("")}
                             </div>
                             <span class="doc-card-time">
                                 <i class="ph-bold ph-clock"></i> ${doc.time}
@@ -1917,17 +2025,18 @@
                         <i class="ph-bold ph-arrow-right doc-card-arrow"></i>
                     </div>
                 `;
-            }).join('');
-        }
+          })
+          .join("");
+      }
 
-        // ==========================================
-        // DOC DETAIL MODAL
-        // ==========================================
-        function openDoc(docId) {
-            const doc = docs.find(d => d.id === docId);
-            if (!doc) return;
+      // ==========================================
+      // DOC DETAIL MODAL
+      // ==========================================
+      function openDoc(docId) {
+        const doc = docs.find((d) => d.id === docId);
+        if (!doc) return;
 
-            document.getElementById('modal-content').innerHTML = `
+        document.getElementById("modal-content").innerHTML = `
                 <div class="modal-header" style="display: flex; justify-content: flex-end; padding: 0.5rem 0;">
                     <button class="modal-close" onclick="closeModal()" aria-label="Close" style="position: relative; top: 0; right: 0;">
                         <i class="ph-bold ph-x"></i>
@@ -1936,7 +2045,9 @@
                 </div>
                 <div class="doc-detail">
                     <div class="doc-detail-header">
-                        <div class="doc-detail-icon" style="background: ${doc.color}20; color: ${doc.color};">
+                        <div class="doc-detail-icon" style="background: ${
+                          doc.color
+                        }20; color: ${doc.color};">
                             <i class="ph-duotone ${doc.icon}"></i>
                         </div>
                         <div class="doc-detail-content">
@@ -1955,13 +2066,12 @@
                 </div>
             `;
 
-            document.getElementById('modal').classList.add('active');
-        }
+        document.getElementById("modal").classList.add("active");
+      }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-        }
+      function closeModal() {
+        document.getElementById("modal").classList.remove("active");
+      }
     </script>
-</body>
-
+  </body>
 </html>

@@ -362,7 +362,11 @@
       <div id="footer-container"></div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Core Dependencies (must load in this order) -->
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
     <script src="../js/core.js"></script>
     <script src="../js/components/header.js"></script>
     <script src="../js/components/sidebar.js"></script>
@@ -396,8 +400,8 @@
         FooterComponent.render("footer-container");
 
         // Apply role theme (King/Queen)
-        if (typeof UI !== 'undefined' && UI.initTheme) {
-            UI.initTheme();
+        if (typeof UI !== "undefined" && UI.initTheme) {
+          UI.initTheme();
         }
 
         loadRelationships();
