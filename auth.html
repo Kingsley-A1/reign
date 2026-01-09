@@ -10,6 +10,7 @@
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D4AF37">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -799,14 +800,14 @@
                         <div class="input-icon-wrap">
                             <i class="ph-duotone ph-user"></i>
                             <input type="text" name="email" class="form-input" placeholder="email or phone number"
-                                required>
+                                required autocomplete="email">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Password</label>
                         <div class="input-icon-wrap">
                             <i class="ph-duotone ph-lock"></i>
-                            <input type="password" name="password" class="form-input" placeholder="••••••••" required>
+                            <input type="password" name="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
                             <button type="button" class="password-toggle" onclick="togglePassword(this)">
                                 <i class="ph-bold ph-eye"></i>
                             </button>
@@ -835,7 +836,7 @@
                         <label class="form-label">Your Name</label>
                         <div class="input-icon-wrap">
                             <i class="ph-duotone ph-user"></i>
-                            <input type="text" name="name" class="form-input" placeholder="Your full name" required>
+                            <input type="text" name="name" class="form-input" placeholder="Your full name" required autocomplete="name">
                         </div>
                     </div>
                     <div class="form-group">
@@ -852,7 +853,7 @@
                             <i class="ph-duotone ph-lock"></i>
                             <input type="password" name="password" id="reg-password" class="form-input"
                                 placeholder="Create a strong password" required minlength="6"
-                                oninput="checkPasswordStrength(this)">
+                                oninput="checkPasswordStrength(this)" autocomplete="new-password">
                             <button type="button" class="password-toggle" onclick="togglePassword(this)">
                                 <i class="ph-bold ph-eye"></i>
                             </button>
@@ -877,7 +878,7 @@
                         <div class="input-icon-wrap">
                             <i class="ph-duotone ph-lock-key"></i>
                             <input type="password" name="confirmPassword" class="form-input" placeholder="••••••••"
-                                required>
+                                required autocomplete="new-password">
                         </div>
                     </div>
                     <button type="submit" class="auth-btn" id="register-btn">
